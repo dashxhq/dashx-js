@@ -1,0 +1,30 @@
+{
+  "name": "@dashx/react-native-pigeon",
+  "title": "react-native-pigeon",
+  "version": "0.1.0",
+  "description": "Dashx Pigeon SDK for React Native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashx-oss/dashx",
+    "baseUrl": "https://github.com/dashx-oss/dashx"
+  },
+  "keywords": [
+    "react-native",
+    "dashx"
+  ],
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "react": "^16.11.0",
+    "react-native": "^0.62.0-rc.2"
+  }
+}
