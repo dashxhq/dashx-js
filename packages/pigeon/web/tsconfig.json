@@ -5,6 +5,5 @@
     "baseUrl": "./src",
     "outDir": "build"
   },
-  "include": ["src"],
-  "exclude": ["build"]
+  "include": ["src"]
 }
