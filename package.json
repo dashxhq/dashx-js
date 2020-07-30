@@ -2,8 +2,17 @@
   "name": "dashx",
   "private": true,
   "devDependencies": {
-    "eslint-config-airbnb-base": "^14.1.0",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-typescript": "^9.0.0",
     "eslint-plugin-import": "^2.20.2",
-    "lerna": "^3.20.2"
+    "lerna": "^3.22.1",
+    "typescript": "^3.9.7"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna clean",
+    "build": "lerna exec -- yarn build"
   }
 }

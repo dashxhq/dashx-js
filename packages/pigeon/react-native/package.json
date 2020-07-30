@@ -9,8 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dashx-oss/dashx",
-    "baseUrl": "https://github.com/dashx-oss/dashx"
+    "url": "git+https://github.com/dashxhq/dashx-js",
+    "baseUrl": "https://github.com/dashxhq/dashx-js"
   },
   "keywords": [
     "react-native",
