@@ -6,7 +6,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc -p ./"
+    "build": "tsdx build --tsconfig tsconfig.json",
+    "start": "tsdx watch --tsconfig tsconfig.json --verbose --noClean"
   },
   "repository": {
     "type": "git",
