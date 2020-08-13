@@ -1,3 +1,3 @@
-import 'unfetch/polyfill'
+import Dashx from './dashx'
 
-export { default as indentify } from 'identify'
+export default (): Dashx => new Dashx()
