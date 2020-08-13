@@ -17,5 +17,8 @@
   "keywords": [
     "dashx"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "unfetch": "^4.1.0"
+  }
 }

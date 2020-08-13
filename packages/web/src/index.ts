@@ -1,1 +1,3 @@
-export default <T>(x: T): T => x
+import 'unfetch/polyfill'
+
+export { default as indentify } from 'identify'
