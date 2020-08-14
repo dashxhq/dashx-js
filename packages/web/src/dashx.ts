@@ -1,11 +1,16 @@
 import uuid from 'uuid-random'
 
+import generateContext from './context'
 import { getItem, setItem } from './storage'
+import type { Context } from './context'
 
 class Dashx {
   anonymousUid: string | null = null
 
+  context: Context
+
   constructor() {
+    this.context = generateContext()
     this.generateAnonymousUid()
   }
 
@@ -18,6 +23,10 @@ class Dashx {
 
     this.anonymousUid = uuid()
     setItem('anonymousUid', this.anonymousUid)
+  }
+
+  setContextItem<K extends keyof Context>(key: K, value: Context[K]): void {
+    this.context[key] = value
   }
 }
 
