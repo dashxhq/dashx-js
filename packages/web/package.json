@@ -1,12 +1,13 @@
 {
-  "name": "@dashx/pigeon-web",
-  "title": "pigeon-web",
+  "name": "@dashx/web",
+  "title": "dashx-web",
   "version": "0.1.0",
-  "description": "Dashx Pigeon SDK for Browser",
+  "description": "Dashx SDK for Browser",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc -p ./"
+    "build": "tsdx build --tsconfig tsconfig.json",
+    "start": "tsdx watch --tsconfig tsconfig.json --verbose --noClean"
   },
   "repository": {
     "type": "git",
@@ -14,7 +15,6 @@
     "baseUrl": "https://github.com/dashxhq/dashx-js"
   },
   "keywords": [
-    "pigeon",
     "dashx"
   ],
   "license": "MIT"
