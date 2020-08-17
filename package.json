@@ -15,6 +15,7 @@
     "bootstrap": "lerna bootstrap",
     "clean": "lerna clean",
     "build:web": "lerna run build --scope=@dashx/web",
+    "build:node": "lerna run build --scope=@dashx/node",
     "start:web": "lerna run start --scope=@dashx/web"
   }
 }
