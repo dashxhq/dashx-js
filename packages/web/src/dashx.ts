@@ -9,7 +9,10 @@ class Dashx {
 
   context: Context
 
-  constructor() {
+  publicKey?: string
+
+  constructor({ publicKey = process.env.DASHX_PUBLIC_KEY }: { publicKey?: string }) {
+    this.publicKey = publicKey
     this.context = generateContext()
     this.generateAnonymousUid()
   }

@@ -1,3 +1,3 @@
 import Dashx from './dashx'
 
-export default (): Dashx => new Dashx()
+export default ({ publicKey }: { publicKey: string }): Dashx => new Dashx({ publicKey })
