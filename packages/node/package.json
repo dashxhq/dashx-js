@@ -1,0 +1,24 @@
+{
+  "name": "@dashx/node",
+  "title": "dashx-node",
+  "version": "0.1.0",
+  "description": "Dashx SDK for Node",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsdx build --tsconfig tsconfig.json",
+    "start": "tsdx watch --tsconfig tsconfig.json --verbose --noClean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dashxhq/dashx-js",
+    "baseUrl": "https://github.com/dashxhq/dashx-js"
+  },
+  "keywords": [
+    "dashx"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "got": "^11.5.2"
+  }
+}
