@@ -2,7 +2,7 @@ import uuid from 'uuid-random'
 
 import { getItem, setItem } from './storage'
 
-class Dashx {
+class Client {
   anonymousUid: string | null = null
 
   constructor() {
@@ -21,4 +21,4 @@ class Dashx {
   }
 }
 
-export default Dashx
+export default Client

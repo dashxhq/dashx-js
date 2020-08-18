@@ -1,3 +1,3 @@
-import Dashx from './dashx'
+import Client from './Client'
 
-export default (): Dashx => new Dashx()
+export default (): Client => new Client()
