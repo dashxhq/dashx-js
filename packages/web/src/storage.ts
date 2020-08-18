@@ -2,10 +2,10 @@ type PersistedData = {
   anonymousUid: string
 }
 
-const LOCALSTORAGE_KEY = 'dashx-sdk'
+const LOCAL_STORAGE_KEY = 'dashx-sdk'
 
 function getItem<K extends keyof PersistedData>(key: K): PersistedData[K] | null {
-  const persistedContents = window.localStorage.getItem(LOCALSTORAGE_KEY)
+  const persistedContents = window.localStorage.getItem(LOCAL_STORAGE_KEY)
 
   if (!persistedContents) {
     return null
@@ -16,11 +16,11 @@ function getItem<K extends keyof PersistedData>(key: K): PersistedData[K] | null
 }
 
 function setItem<K extends keyof PersistedData>(key: K, value: PersistedData[K]): void {
-  const persistedContents = window.localStorage.getItem(LOCALSTORAGE_KEY)
+  const persistedContents = window.localStorage.getItem(LOCAL_STORAGE_KEY)
   const persistedData = persistedContents
     ? JSON.parse(persistedContents) : {} as PersistedData
   persistedData[key] = value
-  window.localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(persistedData))
+  window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedData))
 }
 
 export { getItem, setItem }
