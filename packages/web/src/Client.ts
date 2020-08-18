@@ -4,7 +4,7 @@ import generateContext from './context'
 import { getItem, setItem } from './storage'
 import type { Context } from './context'
 
-class Dashx {
+class Client {
   anonymousUid: string | null = null
 
   context: Context
@@ -30,4 +30,4 @@ class Dashx {
   }
 }
 
-export default Dashx
+export default Client
