@@ -79,12 +79,12 @@ export type Context = {
   library: ReturnType<typeof getLibrary>,
   locale: ReturnType<typeof getLocale>,
   location?: ContextLocation,
-  network?: Record<string, any>,
+  network?: Record<string, string | number>,
   page: ReturnType<typeof getPage>,
   referrer?: ContextReferrer,
   screen: ReturnType<typeof getScreen>,
   timezone: ReturnType<typeof getTimezone>,
-  traits?: Record<string, any>
+  traits?: Record<string, string | number>
 }
 
 export default function generateContext(): Context {

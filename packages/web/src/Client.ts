@@ -1,5 +1,5 @@
-import uuid from 'uuid-random'
 import fetch from 'unfetch'
+import uuid from 'uuid-random'
 
 import generateContext from './context'
 import { getItem, setItem } from './storage'
@@ -10,11 +10,13 @@ type ClientParams = {
   baseUri?: string
 }
 
-type IdentifyParams = {
+type IdentifyParams = Record<string, string | number> & {
   uid?: string,
   firstName: string,
   lastName: string,
-  email: string
+  email: string,
+  phone?: string,
+  data?: Record<string, string | number>
 }
 
 class Client {
@@ -48,15 +50,17 @@ class Client {
     this.context[key] = value
   }
 
-  identify({ firstName, lastName, ...others }: IdentifyParams): Promise<Response> {
+  identify({ firstName, lastName, uid, ...others }: IdentifyParams): Promise<Response> {
+    const rest = uid ? { uid, ...others } : { anonymous_uid: this.anonymousUid, ...others }
+
     return fetch(`${this.baseUri}/v1/identify`, {
       method: 'POST',
       headers: {
         'X-Public-Key': this.publicKey
       },
       body: JSON.stringify({
-        ...others,
-        anonymous_uid: this.anonymousUid,
+        ...rest,
+        account_type: 'member',
         first_name: firstName,
         last_name: lastName
       })
