@@ -1,1 +1,3 @@
-export default <T>(x: T): T => x
+import Client from './Client'
+
+export default (): Client => new Client()

@@ -1,3 +1,3 @@
-## dashx-sdk-js
+## dashx-js
 
-- [react-native-pigeon](packages/pigeon/react-native/README.md)
+- [react-native](packages/react-native/README.md)
