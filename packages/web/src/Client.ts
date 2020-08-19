@@ -16,7 +16,7 @@ type IdentifyParams = Record<string, string | number> & {
   lastName: string,
   email: string,
   phone?: string,
-  data?: Record<string, string | number>
+  traits?: Record<string, string | number>
 }
 
 class Client {
@@ -50,8 +50,25 @@ class Client {
     this.context[key] = value
   }
 
-  identify({ firstName, lastName, uid, ...others }: IdentifyParams): Promise<Response> {
-    const rest = uid ? { uid, ...others } : { anonymous_uid: this.anonymousUid, ...others }
+  identify(uid: string, options: IdentifyParams) : Promise<Response>;
+  identify(options: IdentifyParams) : Promise<Response>;
+  identify(
+    uid: string | IdentifyParams, options: IdentifyParams = {} as IdentifyParams
+  ): Promise<Response> {
+    let params
+
+    if (typeof uid === 'string') {
+      const { firstName, lastName, ...others } = options
+      params = { uid, first_name: firstName, last_name: lastName, ...others }
+    } else {
+      const { firstName, lastName, ...others } = options
+      params = {
+        anonymousUid: this.anonymousUid,
+        first_name: firstName,
+        last_name: lastName,
+        ...others
+      }
+    }
 
     return fetch(`${this.baseUri}/v1/identify`, {
       method: 'POST',
@@ -59,10 +76,8 @@ class Client {
         'X-Public-Key': this.publicKey
       },
       body: JSON.stringify({
-        ...rest,
-        account_type: 'member',
-        first_name: firstName,
-        last_name: lastName
+        ...params,
+        account_type: 'member'
       })
     })
   }
