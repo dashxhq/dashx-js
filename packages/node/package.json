@@ -2,7 +2,7 @@
   "name": "@dashx/node",
   "title": "dashx-node",
   "version": "0.1.0",
-  "description": "Dashx SDK for Node",
+  "description": "DashX SDK for Node",
   "main": "index.js",
   "type": "module",
   "scripts": {

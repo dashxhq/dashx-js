@@ -1,6 +1,6 @@
-# Dashx Node
+# DashX Node
 
-_Dashx Node.js SDK_
+_DashX Node.js SDK_
 
 <p>
   <a href="/LICENSE">
@@ -18,10 +18,10 @@ $ yarn add @dashx/node
 ## Usage
 
 ```javascript
-const Dashx = require('@dashx/node');
+const DashX = require('@dashx/node');
 
-// Initialize Dashx SDK
-const dashx = Dashx.createClient({
+// Initialize DashX SDK
+const dashx = DashX.createClient({
   publicKey: process.env.DASHX_PUBLIC_KEY,
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
@@ -33,10 +33,10 @@ dashx.deliver('message-identifier', { to: 'john@example.com' }).then(_ => consol
 Can also be initialized with no parameters, `dashx-node` will look for these env variables `DASHX_PUBLIC_KEY` and `DASHX_PRIVATE_KEY`.
 
 ```javascript
-const Dashx = require('@dashx/node');
+const DashX = require('@dashx/node');
 
-// Initialize Dashx SDK
-const dashx = Dashx.createClient();
+// Initialize DashX SDK
+const dashx = DashX.createClient();
 ```
 
 ## Examples
