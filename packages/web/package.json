@@ -22,6 +22,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "unfetch": "^4.1.0",
     "uuid-random": "^1.3.2"
   }
 }
