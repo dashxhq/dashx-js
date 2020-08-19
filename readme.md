@@ -1,3 +1,3 @@
-## dashx-sdk-js
+## dashx-js
 
 - [react-native](packages/react-native/README.md)
