@@ -49,8 +49,8 @@ class Client {
     this.context[key] = value
   }
 
-  identify(uid: string, options: IdentifyParams) : Promise<Response>;
-  identify(options: IdentifyParams) : Promise<Response>;
+  identify(uid: string, options: IdentifyParams) : Promise<Response>
+  identify(options: IdentifyParams) : Promise<Response>
   identify(
     uid: string | IdentifyParams, options: IdentifyParams = {} as IdentifyParams
   ): Promise<Response> {
