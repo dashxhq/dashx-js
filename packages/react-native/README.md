@@ -1,44 +1,17 @@
-# react-native-pigeon
+# @dashx/react-native
 
 ## Getting started
 
-`$ yarn add @dashx/react-native-pigeon`
-
-or 
-
-`$ npm install @dashx/react-native-pigeon --save`
+`$ npm install @dashx/react-native --save`
 
 ### Mostly automatic installation
 
-`$ react-native link @dashx/react-native-pigeon`
+`$ react-native link @dashx/react-native`
 
 ## Usage
 ```javascript
-import Pigeon from '@dashx/react-native-pigeon';
+import DashX from '@dashx/react-native';
 
-Pigeon.setup({ publicKey: 'your_public_key' });
-Pigeon.setCustomerToken('customer_token_here');
-```
-
-## Track Events
-
-- Note that `setCustomerToken` must be called before `track` otherwise track won't work.
-
-```javascript
-import Pigeon from '@dashx/react-native-pigeon';
-
-// After Pigeon.setup and Pigeon.setCustomerToken
-Pigeon.track('demo_event', { hello: 'world' } /* Event data */);
-```
-
-## Listen to remote notifications
-
-```javascript
-import Pigeon from '@dashx/react-native-pigeon';
-
-// After Pigeon.setup and Pigeon.setCustomerToken
-Pigeon.onMessageReceived(({ notification, data }) => {
-  const { title, body } = notification;
-  // Do something with data, title and body
-});
+// TODO: What to do with the module?
+DashX;
 ```

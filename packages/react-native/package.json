@@ -1,11 +1,18 @@
 {
-  "name": "@dashx/react-native-pigeon",
-  "title": "react-native-pigeon",
-  "version": "0.1.0",
-  "description": "Dashx Pigeon SDK for React Native",
+  "name": "@dashx/react-native",
+  "title": "DashX React Native",
+  "version": "1.0.0",
+  "description": "DashX SDK for React Native",
   "main": "index.js",
+  "files": [
+    "README.md",
+    "android",
+    "index.js",
+    "ios",
+    "react-native.podspec"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\""
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -13,18 +20,21 @@
     "baseUrl": "https://github.com/dashxhq/dashx-js"
   },
   "keywords": [
-    "react-native",
-    "dashx"
+    "react-native"
   ],
+  "author": {
+    "name": "DashxDev",
+    "email": "dev@dashx.com"
+  },
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.8.1",
-    "react-native": ">=0.59.0-rc.0 <1.0.x"
+    "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
   "devDependencies": {
-    "react": "^16.11.0",
-    "react-native": "^0.62.0-rc.2"
+    "react": "^16.9.0",
+    "react-native": "^0.61.5"
   }
 }
