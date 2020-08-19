@@ -11,7 +11,6 @@ type ClientParams = {
 }
 
 type IdentifyParams = Record<string, string | number> & {
-  uid?: string,
   firstName: string,
   lastName: string,
   email: string,
@@ -61,9 +60,9 @@ class Client {
       const { firstName, lastName, ...others } = options
       params = { uid, first_name: firstName, last_name: lastName, ...others }
     } else {
-      const { firstName, lastName, ...others } = options
+      const { firstName, lastName, ...others } = uid
       params = {
-        anonymousUid: this.anonymousUid,
+        anonymous_uid: this.anonymousUid,
         first_name: firstName,
         last_name: lastName,
         ...others
