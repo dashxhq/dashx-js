@@ -30,7 +30,8 @@ type ContextLocation = {
   latitude: number,
   longitude: number,
   region: string,
-  speed: number
+  speed: number,
+  direction: string
 }
 
 type ContextReferrer = {
@@ -38,6 +39,14 @@ type ContextReferrer = {
   name: string,
   url: string,
   link: string
+}
+
+function getDisplayMetrics() {
+  return {
+    height: window.screen.height,
+    width: window.screen.width,
+    orientation: window.screen.orientation.type
+  }
 }
 
 function getLibrary() {
@@ -57,23 +66,15 @@ function getPage() {
   }
 }
 
-function getScreen() {
-  return {
-    height: window.screen.height,
-    width: window.screen.width,
-    orientation: window.screen.orientation.type
-  }
-}
-
 function getTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
 export type Context = {
-  active: boolean,
   app?: ContextApp,
   campaign?: ContextCampaign,
   device?: ContextDevice,
+  displayMetrics: ReturnType<typeof getDisplayMetrics>,
   groupId?: string,
   ip?: string,
   library: ReturnType<typeof getLibrary>,
@@ -82,18 +83,15 @@ export type Context = {
   network?: Record<string, string | number>,
   page: ReturnType<typeof getPage>,
   referrer?: ContextReferrer,
-  screen: ReturnType<typeof getScreen>,
-  timezone: ReturnType<typeof getTimezone>,
-  traits?: Record<string, string | number>
+  timezone: ReturnType<typeof getTimezone>
 }
 
 export default function generateContext(): Context {
   return {
-    active: false,
+    displayMetrics: getDisplayMetrics(),
     library: getLibrary(),
     locale: getLocale(),
     page: getPage(),
-    screen: getScreen(),
     timezone: getTimezone()
   }
 }

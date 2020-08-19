@@ -11,11 +11,10 @@ type ClientParams = {
 }
 
 type IdentifyParams = Record<string, string | number> & {
-  firstName: string,
-  lastName: string,
-  email: string,
-  phone?: string,
-  traits?: Record<string, string | number>
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  phone?: string
 }
 
 class Client {
@@ -49,10 +48,10 @@ class Client {
     this.context[key] = value
   }
 
-  identify(uid: string, options: IdentifyParams) : Promise<Response>;
-  identify(options: IdentifyParams) : Promise<Response>;
+  identify(uid: string, options?: IdentifyParams) : Promise<Response>
+  identify(options?: IdentifyParams) : Promise<Response>
   identify(
-    uid: string | IdentifyParams, options: IdentifyParams = {} as IdentifyParams
+    uid: string | IdentifyParams = {}, options: IdentifyParams = {} as IdentifyParams
   ): Promise<Response> {
     let params
 
@@ -74,10 +73,7 @@ class Client {
       headers: {
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify({
-        ...params,
-        account_type: 'member'
-      })
+      body: JSON.stringify(params)
     })
   }
 }
