@@ -15,8 +15,8 @@ type ContextCampaign = {
 }
 
 type ContextDevice = {
-  id: string,
-  advertisingId: string,
+  uid: string,
+  advertisingUid: string,
   manufacturer: string,
   model: string,
   name: string,
@@ -75,7 +75,6 @@ export type Context = {
   campaign?: ContextCampaign,
   device?: ContextDevice,
   displayMetrics: ReturnType<typeof getDisplayMetrics>,
-  groupId?: string,
   ip?: string,
   library: ReturnType<typeof getLibrary>,
   locale: ReturnType<typeof getLocale>,
