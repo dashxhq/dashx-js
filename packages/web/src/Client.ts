@@ -76,6 +76,16 @@ class Client {
       body: JSON.stringify(params)
     })
   }
+
+  track(event: string, data: Record<string, string | number>): Promise<Response> {
+    return fetch(`${this.baseUri}/v1/track`, {
+      method: 'POST',
+      headers: {
+        'X-Public-Key': this.publicKey
+      },
+      body: JSON.stringify({ event, data })
+    })
+  }
 }
 
 export default Client
