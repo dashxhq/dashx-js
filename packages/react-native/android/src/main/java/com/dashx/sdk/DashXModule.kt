@@ -18,7 +18,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
-    fun track(event: String, data: ReadableMap) {
+    fun track(event: String, data: ReadableMap?) {
         dashXClient!!.track(event, data)
     }
 

@@ -50,7 +50,7 @@ class DashXClient {
         }
     }
 
-    fun track(event: String, data: ReadableMap) {
+    fun track(event: String, data: ReadableMap?) {
         val trackRequest: TrackRequest
 
         trackRequest = try {
