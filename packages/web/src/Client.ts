@@ -77,7 +77,7 @@ class Client {
     })
   }
 
-  track(event: string, data: Record<string, string | number>): Promise<Response> {
+  track(event: string, data?: Record<string, string | number>): Promise<Response> {
     return fetch(`${this.baseUri}/v1/track`, {
       method: 'POST',
       headers: {
