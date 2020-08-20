@@ -3,6 +3,7 @@ package com.dashx.sdk
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var dashXClient: DashXClient? = null
@@ -14,6 +15,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setLogLevel(logLevel: Int) {
         DashXLog.setLogLevel(logLevel)
+    }
+
+    @ReactMethod
+    fun track(event: String, data: ReadableMap) {
+        dashXClient!!.track(event, data)
     }
 
     init {
