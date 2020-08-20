@@ -19,12 +19,12 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     @ReactMethod
     fun track(event: String, data: ReadableMap?) {
-        dashXClient!!.track(event, data)
+        dashXClient?.track(event, data)
     }
 
     init {
         dashXClient = DashXClient.instance
-        dashXClient!!.setReactApplicationContext(reactContext)
-        dashXClient!!.generateAnonymousUid()
+        dashXClient?.setReactApplicationContext(reactContext)
+        dashXClient?.generateAnonymousUid()
     }
 }

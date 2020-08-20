@@ -51,9 +51,7 @@ class DashXClient {
     }
 
     fun track(event: String, data: ReadableMap?) {
-        val trackRequest: TrackRequest
-
-        trackRequest = try {
+        val trackRequest = try {
             TrackRequest(event, convertMapToJson(data))
         } catch (e: JSONException) {
             DashXLog.d(TAG, "Encountered an error while parsing data")
@@ -76,11 +74,11 @@ class DashXClient {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    DashXLog.d(TAG, "Encountered an error during track():" + response.body!!.string())
+                    DashXLog.d(TAG, "Encountered an error during track():" + response.body?.string())
                     return
                 }
 
-                val genericResponse: GenericResponse = gson.fromJson(response.body!!.string(), GenericResponse::class.java)
+                val genericResponse: GenericResponse = gson.fromJson(response.body?.string(), GenericResponse::class.java)
 
                 if (!genericResponse.success) {
                     DashXLog.d(TAG, "Encountered an error during track(): $genericResponse")
