@@ -9,12 +9,8 @@ data class IdentifyRequest(
     val phone: String?,
     val uid: String?,
     val anonymous_uid: String?
-) {
-    companion object {
-        fun from(map: Map<String, String>) = object {
-            val first_name by map
-            val last_name by map
+)
 
-        }
-    }
-}
+data class GenericResponse(
+    val success: Boolean
+)

@@ -1,14 +1,13 @@
 package com.dashx.sdk
 
-import android.R.attr.data
 import android.content.SharedPreferences
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
+import com.google.gson.Gson
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody.Part.Companion.create
-import okhttp3.RequestBody
-import okhttp3.Response
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import java.io.IOException
 import java.util.*
@@ -19,6 +18,9 @@ class DashXClient {
     private var anonymousUid: String? = null
     private var baseURI: String? = null
     private var publicKey: String? = null
+
+    private val httpClient = OkHttpClient()
+    private val gson = Gson()
 
     fun setBaseURI(baseURI: String) {
         this.baseURI = baseURI
@@ -49,39 +51,46 @@ class DashXClient {
         }
     }
 
-    fun identify(options: ReadableMap?) {
-        val identifyParams = if (options == null) {
-            Arguments.createMap().putString("anonymous_uid", anonymousUid)
-        } else {
-            Arguments.createMap().merge(options)
+    fun identify(uid: String?, options: ReadableMap?) {
+        val identifyRequest = try {
+            if (options != null) {
+                IdentifyRequest(options.getString("firstName"), options.getString("lastName"), options.getString("email"), options.getString("phone"), uid, if (uid != null) null else anonymousUid)
+            } else {
+                IdentifyRequest(null, null, null, null, uid, if (uid != null) null else anonymousUid)
+            }
+        } catch (e: JSONException) {
+            DashXLog.d(TAG, "Encountered an error while parsing data")
+            e.printStackTrace()
+            return
         }
 
-        val body: RequestBody = create(convertMapToJson(options), JSON)
-
-        val request: Request = Builder()
-            .url("$baseURI/event_logs")
-            .addHeader("X-Public-Key", publicKey)
-            .post(body)
+        val request: Request = Request.Builder()
+            .url("$baseURI/identify")
+            .addHeader("X-Public-Key", publicKey!!)
+            .post(gson.toJson(identifyRequest).toString().toRequestBody(JSON))
             .build()
 
-        httpClient.newCall(request).enqueue(object : Callback() {
-            fun onFailure(call: Call, e: IOException) {
-                DashXLog.d(TAG, "Could not track: " + event.toString() + " " + data)
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DashXLog.d(TAG, "Could not identify with: $uid $options")
                 e.printStackTrace()
             }
 
             @Throws(IOException::class)
-            fun onResponse(call: Call, response: Response) {
+            override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    DashXLog.d(TAG, "Encountered an error during track():" + response.body!!.string())
+                    DashXLog.d(TAG, "Encountered an error during identify(): " + response.body!!.string())
                     return
                 }
+
                 val genericResponse: GenericResponse = gson.fromJson(response.body!!.string(), GenericResponse::class.java)
-                if (!genericResponse.getSuccess()) {
-                    DashXLog.d(TAG, "Encountered an error during track():" + genericResponse.toString())
+
+                if (!genericResponse.success) {
+                    DashXLog.d(TAG, "Encountered an error during identify(): $genericResponse")
                     return
                 }
-                DashXLog.d(TAG, "Sent event: " + event.toString() + " " + data)
+
+                DashXLog.d(TAG, "Sent identify: $uid $options")
             }
         })
     }
