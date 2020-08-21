@@ -1,7 +1,6 @@
 package com.dashx.sdk
 
 import android.content.SharedPreferences
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.google.gson.Gson
@@ -54,9 +53,18 @@ class DashXClient {
     fun identify(uid: String?, options: ReadableMap?) {
         val identifyRequest = try {
             if (options != null) {
-                IdentifyRequest(options.getString("firstName"), options.getString("lastName"), options.getString("email"), options.getString("phone"), uid, if (uid != null) null else anonymousUid)
+                IdentifyRequest(
+                    options.getString("firstName"),
+                    options.getString("lastName"),
+                    options.getString("email"),
+                    options.getString("phone"),
+                    uid,
+                    if (uid != null) null else anonymousUid
+                )
             } else {
-                IdentifyRequest(null, null, null, null, uid, if (uid != null) null else anonymousUid)
+                IdentifyRequest(
+                    null, null, null, null, uid, if (uid != null) null else anonymousUid
+                )
             }
         } catch (e: JSONException) {
             DashXLog.d(TAG, "Encountered an error while parsing data")
