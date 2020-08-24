@@ -1,7 +1,6 @@
-#import "Pigeon.h"
+#import "DashX.h"
 
-
-@implementation Pigeon
+@implementation DashX
 
 RCT_EXPORT_MODULE()
 

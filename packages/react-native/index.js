@@ -1,7 +1,5 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeModules } from 'react-native';
 
-const { Pigeon } = NativeModules;
-const PigeonEventEmitter = new NativeEventEmitter(Pigeon);
-Pigeon.onMessageReceived = callback => PigeonEventEmitter.addListener('messageReceived', callback);
+const { DashX } = NativeModules;
 
-export default Pigeon;
+export default DashX;
