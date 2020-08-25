@@ -88,11 +88,11 @@ class DashXClient {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    DashXLog.d(TAG, "Encountered an error during identify(): " + response.body!!.string())
+                    DashXLog.d(TAG, "Encountered an error during identify(): " + response.body?.string())
                     return
                 }
 
-                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body!!.string(), IdentifyResponse::class.java)
+                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body?.string(), IdentifyResponse::class.java)
 
                 DashXLog.d(TAG, "Sent identify: $identifyResponse")
             }
