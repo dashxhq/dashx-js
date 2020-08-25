@@ -26,6 +26,8 @@ class Client {
 
   baseUri: string
 
+  uid: string | null = null
+
   constructor({ publicKey, baseUri = 'https://api.dashx.com/v1' }: ClientParams) {
     this.baseUri = baseUri
     this.publicKey = publicKey
@@ -75,16 +77,24 @@ class Client {
       },
       body: JSON.stringify(params)
     })
+      .then((response) => response.json())
+      .then((data) => {
+        this.uid = data.uid
+        return data
+      })
   }
 
-  track(event: string, data?: Record<string, string | number>): Promise<Response> {
+  track(event: string, data?: Record<string, any>): Promise<Response> {
+    const rest = this.uid ? { uid: this.uid } : { anonymous_uid: this.anonymousUid }
+
     return fetch(`${this.baseUri}/v1/track`, {
       method: 'POST',
       headers: {
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify({ event, data })
+      body: JSON.stringify({ event, data, ...rest })
     })
+      .then((response) => response.json())
   }
 }
 
