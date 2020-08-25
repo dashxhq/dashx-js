@@ -109,7 +109,7 @@ class DashXClient {
         val request: Request = Request.Builder()
             .url("$baseURI/track")
             .addHeader("X-Public-Key", publicKey!!)
-            .post(gson.toJson(trackRequest).toString().toRequestBody(JSON))
+            .post(gson.toJson(trackRequest).toString().toRequestBody(json))
             .build()
 
         httpClient.newCall(request).enqueue(object : Callback {
