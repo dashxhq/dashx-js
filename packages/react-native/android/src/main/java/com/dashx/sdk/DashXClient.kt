@@ -92,7 +92,7 @@ class DashXClient {
 
                 this@DashXClient.uid = uid
 
-                DashXLog.d(TAG, "Sent identify: $identifyRequest")
+                DashXLog.d(tag, "Sent identify: $identifyRequest")
             }
         })
     }
@@ -101,7 +101,7 @@ class DashXClient {
         val trackRequest = try {
             TrackRequest(event, convertMapToJson(data), uid, if (uid != null) null else anonymousUid)
         } catch (e: JSONException) {
-            DashXLog.d(TAG, "Encountered an error while parsing data")
+            DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
         }
@@ -114,25 +114,25 @@ class DashXClient {
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                DashXLog.d(TAG, "Could not track: $event $data")
+                DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
             }
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    DashXLog.d(TAG, "Encountered an error during track():" + response.body?.string())
+                    DashXLog.d(tag, "Encountered an error during track():" + response.body?.string())
                     return
                 }
 
                 val trackResponse: TrackResponse = gson.fromJson(response.body?.string(), TrackResponse::class.java)
 
                 if (!trackResponse.success) {
-                    DashXLog.d(TAG, "Encountered an error during track(): $trackResponse")
+                    DashXLog.d(tag, "Encountered an error during track(): $trackResponse")
                     return
                 }
 
-                DashXLog.d(TAG, "Sent event: $trackRequest")
+                DashXLog.d(tag, "Sent event: $trackRequest")
             }
         })
     }
