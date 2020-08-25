@@ -13,7 +13,7 @@ import java.util.*
 
 
 class DashXClient {
-    private var reactApplicationContext: ReactApplicationContext? = null
+    private val tag = DashXClient::class.java.simpleName
     private var anonymousUid: String? = null
     private var baseURI: String = "https://api.dashx.com/v1"
     private var publicKey: String? = null
@@ -21,6 +21,9 @@ class DashXClient {
 
     private val httpClient = OkHttpClient()
     private val gson = Gson()
+    private val json = "application/json; charset=utf-8".toMediaType()
+
+    var reactApplicationContext: ReactApplicationContext? = null
 
     fun setBaseURI(baseURI: String) {
         this.baseURI = baseURI
@@ -28,14 +31,6 @@ class DashXClient {
 
     fun setPublicKey(publicKey: String) {
         this.publicKey = publicKey
-    }
-
-    fun setReactApplicationContext(reactApplicationContext: ReactApplicationContext?) {
-        this.reactApplicationContext = reactApplicationContext
-    }
-
-    fun getReactApplicationContext(): ReactApplicationContext? {
-        return reactApplicationContext
     }
 
     fun generateAnonymousUid() {
@@ -69,7 +64,7 @@ class DashXClient {
                 )
             }
         } catch (e: JSONException) {
-            DashXLog.d(TAG, "Encountered an error while parsing data")
+            DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
         }
@@ -77,23 +72,23 @@ class DashXClient {
         val request: Request = Request.Builder()
             .url("$baseURI/identify")
             .addHeader("X-Public-Key", publicKey!!)
-            .post(gson.toJson(identifyRequest).toString().toRequestBody(JSON))
+            .post(gson.toJson(identifyRequest).toString().toRequestBody(json))
             .build()
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                DashXLog.d(TAG, "Could not identify with: $uid $options")
+                DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
             }
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    DashXLog.d(TAG, "Encountered an error during identify(): " + response.body!!.string())
+                    DashXLog.d(tag, "Encountered an error during identify(): " + response.body?.string())
                     return
                 }
 
-                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body!!.string(), IdentifyResponse::class.java)
+                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body?.string(), IdentifyResponse::class.java)
 
                 this@DashXClient.uid = uid
 
@@ -143,7 +138,6 @@ class DashXClient {
     }
 
     companion object {
-        private val TAG = DashXClient::class.java.simpleName
         var instance: DashXClient? = null
             get() {
                 if (field == null) {
@@ -152,6 +146,5 @@ class DashXClient {
                 return field
             }
             private set
-        private val JSON = "application/json; charset=utf-8".toMediaType()
     }
 }

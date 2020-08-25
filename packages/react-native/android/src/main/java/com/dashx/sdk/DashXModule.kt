@@ -35,7 +35,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     init {
         dashXClient = DashXClient.instance
-        dashXClient?.setReactApplicationContext(reactContext)
+        dashXClient?.reactApplicationContext = reactContext
         dashXClient?.generateAnonymousUid()
     }
 }
