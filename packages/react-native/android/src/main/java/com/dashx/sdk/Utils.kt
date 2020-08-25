@@ -4,16 +4,13 @@ package com.dashx.sdk
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
 
 fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
 fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
-
 
 @Throws(JSONException::class)
 fun convertMapToJson(readableMap: ReadableMap?): JsonObject {
@@ -47,4 +44,27 @@ fun convertArrayToJson(readableArray: ReadableArray?): JsonArray {
         }
     }
     return jsonArray
+}
+
+@JvmOverloads
+@Throws(Exception::class)
+fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<String>()): WritableMap {
+    val writableMap: WritableMap = WritableNativeMap()
+    val iterator: Iterator<String> = map.keys.iterator() as Iterator<String>
+    while (iterator.hasNext()) {
+        val key = iterator.next()
+
+        if(blacklist.contains(key)) {
+            continue;
+        }
+
+        when (val value = map[key]) {
+            is Boolean -> writableMap.putBoolean(key, (value as Boolean?)!!)
+            is Int -> writableMap.putInt(key, (value as Int?)!!)
+            is Double -> writableMap.putDouble(key, (value as Double?)!!)
+            is String -> writableMap.putString(key, value as String?)
+            else -> writableMap.putString(key, value.toString())
+        }
+    }
+    return writableMap
 }

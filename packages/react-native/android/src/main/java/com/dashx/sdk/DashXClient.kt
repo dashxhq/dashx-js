@@ -15,8 +15,9 @@ import java.util.*
 class DashXClient {
     private var reactApplicationContext: ReactApplicationContext? = null
     private var anonymousUid: String? = null
-    private var baseURI: String? = null
+    private var baseURI: String = "https://api.dashx.com/v1"
     private var publicKey: String? = null
+    private var uid: String? = null
 
     private val httpClient = OkHttpClient()
     private val gson = Gson()
@@ -45,14 +46,28 @@ class DashXClient {
         } else {
             this.anonymousUid = UUID.randomUUID().toString()
             dashXSharedPreferences.edit()
-                .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, anonymousUid)
+                .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, this.anonymousUid)
                 .apply()
         }
     }
 
-    fun track(event: String, data: ReadableMap?) {
-        val trackRequest = try {
-            TrackRequest(event, convertMapToJson(data))
+    fun identify(uid: String?, options: ReadableMap?) {
+        val identifyRequest = try {
+            if (options != null) {
+                val optionsHashMap = options.toHashMap() as HashMap<String, String?>
+                IdentifyRequest(
+                    optionsHashMap["firstName"],
+                    optionsHashMap["lastName"],
+                    optionsHashMap["email"],
+                    optionsHashMap["phone"],
+                    uid,
+                    if (uid != null) null else anonymousUid
+                )
+            } else {
+                IdentifyRequest(
+                    null, null, null, null, uid, if (uid != null) null else anonymousUid
+                )
+            }
         } catch (e: JSONException) {
             DashXLog.d(TAG, "Encountered an error while parsing data")
             e.printStackTrace()
@@ -60,7 +75,44 @@ class DashXClient {
         }
 
         val request: Request = Request.Builder()
-            .url("$baseURI/event_logs")
+            .url("$baseURI/identify")
+            .addHeader("X-Public-Key", publicKey!!)
+            .post(gson.toJson(identifyRequest).toString().toRequestBody(JSON))
+            .build()
+
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DashXLog.d(TAG, "Could not identify with: $uid $options")
+                e.printStackTrace()
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    DashXLog.d(TAG, "Encountered an error during identify(): " + response.body!!.string())
+                    return
+                }
+
+                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body!!.string(), IdentifyResponse::class.java)
+
+                this@DashXClient.uid = uid
+
+                DashXLog.d(TAG, "Sent identify: $identifyRequest")
+            }
+        })
+    }
+
+    fun track(event: String, data: ReadableMap?) {
+        val trackRequest = try {
+            TrackRequest(event, convertMapToJson(data), uid, if (uid != null) null else anonymousUid)
+        } catch (e: JSONException) {
+            DashXLog.d(TAG, "Encountered an error while parsing data")
+            e.printStackTrace()
+            return
+        }
+
+        val request: Request = Request.Builder()
+            .url("$baseURI/track")
             .addHeader("X-Public-Key", publicKey!!)
             .post(gson.toJson(trackRequest).toString().toRequestBody(JSON))
             .build()
@@ -78,14 +130,14 @@ class DashXClient {
                     return
                 }
 
-                val genericResponse: GenericResponse = gson.fromJson(response.body?.string(), GenericResponse::class.java)
+                val trackResponse: TrackResponse = gson.fromJson(response.body?.string(), TrackResponse::class.java)
 
-                if (!genericResponse.success) {
-                    DashXLog.d(TAG, "Encountered an error during track(): $genericResponse")
+                if (!trackResponse.success) {
+                    DashXLog.d(TAG, "Encountered an error during track(): $trackResponse")
                     return
                 }
 
-                DashXLog.d(TAG, "Sent event: $event $data")
+                DashXLog.d(TAG, "Sent event: $trackRequest")
             }
         })
     }
