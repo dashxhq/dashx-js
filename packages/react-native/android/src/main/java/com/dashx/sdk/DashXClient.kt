@@ -2,6 +2,7 @@ package com.dashx.sdk
 
 import android.content.SharedPreferences
 import com.facebook.react.bridge.ReactApplicationContext
+<<<<<<< HEAD
 import com.facebook.react.bridge.ReadableMap
 import com.google.gson.Gson
 import okhttp3.*
@@ -9,6 +10,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import java.io.IOException
+=======
+>>>>>>> fca2f35914d87b5ff0fa4eeba61ca20cd926284f
 import java.util.*
 
 
