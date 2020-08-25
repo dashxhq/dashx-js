@@ -7,14 +7,13 @@ import android.content.SharedPreferences
 import com.facebook.react.bridge.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import okhttp3.Headers
 import org.json.JSONException
 
 fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
 fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
 
 @Throws(JSONException::class)
-fun convertMapToJson(readableMap: ReadableMap?): Headers? {
+fun convertMapToJson(readableMap: ReadableMap?): JsonObject {
     val jsonObject = JsonObject()
     val iterator = readableMap!!.keySetIterator()
     while (iterator.hasNextKey()) {

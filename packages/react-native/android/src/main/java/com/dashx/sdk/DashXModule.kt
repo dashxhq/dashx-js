@@ -18,8 +18,9 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
-    fun identify(options: ReadableMap?) {
-        dashXClient?.identify(null, options)
+    fun setup(options: ReadableMap) {
+        dashXClient?.setPublicKey(options.getString("publicKey")!!)
+        if (options.hasKey("baseUri")) dashXClient?.setBaseURI(options.getString("baseUri")!!)
     }
 
     @ReactMethod

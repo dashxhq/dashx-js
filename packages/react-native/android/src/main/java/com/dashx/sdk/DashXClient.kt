@@ -15,7 +15,7 @@ import java.util.*
 class DashXClient {
     private var reactApplicationContext: ReactApplicationContext? = null
     private var anonymousUid: String? = null
-    private var baseURI: String? = null
+    private var baseURI: String = "https://api.dashx.com/v1"
     private var publicKey: String? = null
 
     private val httpClient = OkHttpClient()
@@ -45,7 +45,7 @@ class DashXClient {
         } else {
             this.anonymousUid = UUID.randomUUID().toString()
             dashXSharedPreferences.edit()
-                .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, anonymousUid)
+                .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, this.anonymousUid)
                 .apply()
         }
     }
@@ -53,11 +53,12 @@ class DashXClient {
     fun identify(uid: String?, options: ReadableMap?) {
         val identifyRequest = try {
             if (options != null) {
+                val optionsHashMap = options.toHashMap() as HashMap<String, String?>
                 IdentifyRequest(
-                    options.getString("firstName"),
-                    options.getString("lastName"),
-                    options.getString("email"),
-                    options.getString("phone"),
+                    optionsHashMap["firstName"],
+                    optionsHashMap["lastName"],
+                    optionsHashMap["email"],
+                    optionsHashMap["phone"],
                     uid,
                     if (uid != null) null else anonymousUid
                 )
@@ -91,14 +92,9 @@ class DashXClient {
                     return
                 }
 
-                val genericResponse: GenericResponse = gson.fromJson(response.body!!.string(), GenericResponse::class.java)
+                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body!!.string(), IdentifyResponse::class.java)
 
-                if (!genericResponse.success) {
-                    DashXLog.d(TAG, "Encountered an error during identify(): $genericResponse")
-                    return
-                }
-
-                DashXLog.d(TAG, "Sent identify: $uid $options")
+                DashXLog.d(TAG, "Sent identify: $identifyResponse")
             }
         })
     }
