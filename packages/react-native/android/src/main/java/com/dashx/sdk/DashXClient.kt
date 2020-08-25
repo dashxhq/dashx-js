@@ -18,6 +18,7 @@ class DashXClient {
     private var baseURI: String = "https://api.dashx.com/v1"
     private var publicKey: String? = null
     private var uid: String? = null
+    private var deviceToken: String? = null
 
     private val httpClient = OkHttpClient()
     private val gson = Gson()
@@ -34,8 +35,8 @@ class DashXClient {
         this.reactApplicationContext = reactApplicationContext
     }
 
-    fun getReactApplicationContext(): ReactApplicationContext? {
-        return reactApplicationContext
+    fun setDeviceToken(deviceToken: String) {
+        this.deviceToken = deviceToken
     }
 
     fun generateAnonymousUid() {
