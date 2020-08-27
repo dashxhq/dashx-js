@@ -15,5 +15,6 @@ class DashXMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        dashXClient?.handleMessage(remoteMessage)
     }
 }

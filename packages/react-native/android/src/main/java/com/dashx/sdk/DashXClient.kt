@@ -58,6 +58,35 @@ class DashXClient {
         }
     }
 
+    fun handleMessage(remoteMessage: RemoteMessage) {
+        val notification = remoteMessage.notification
+        val eventProperties: WritableMap = Arguments.createMap()
+        DashXLog.d(tag, "Data: " + remoteMessage.data)
+
+        try {
+            eventProperties.putMap("data", convertToWritableMap(remoteMessage.data, Arrays.asList(dashXNotificationFilter)))
+        } catch (e: Exception) {
+            DashXLog.d(tag, "Encountered an error while parsing notification data")
+            e.printStackTrace()
+        }
+
+        if (notification != null) {
+            val notificationProperties: WritableMap = Arguments.createMap()
+            notificationProperties.putString("title", notification.title)
+            notificationProperties.putString("body", notification.body)
+            eventProperties.putMap("notification", notificationProperties)
+            DashXLog.d(tag, "onMessageReceived: " + notification.title)
+        }
+
+        sendJsEvent("messageReceived", eventProperties)
+    }
+
+    private fun sendJsEvent(eventName: String, params: WritableMap) {
+        reactApplicationContext
+            ?.getJSModule(RCTDeviceEventEmitter::class.java)
+            ?.emit(eventName, params)
+    }
+
     fun identify(uid: String?, options: ReadableMap?) {
         val identifyRequest = try {
             if (options != null) {
