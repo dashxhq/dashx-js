@@ -42,6 +42,7 @@ class DashXClient {
 
     fun setDeviceToken(deviceToken: String) {
         this.deviceToken = deviceToken
+        subscribe()
     }
 
     fun generateAnonymousUid() {
@@ -144,6 +145,51 @@ class DashXClient {
                 }
 
                 DashXLog.d(tag, "Sent event: $trackRequest")
+            }
+        })
+    }
+
+    private fun subscribe() {
+        val deviceName = Build.BRAND + " " + Build.MODEL
+        val deviceKind = "android"
+
+        val subscribeRequest = try {
+            deviceToken?.let { deviceToken ->
+                SubscribeRequest(deviceToken, deviceName, deviceKind, uid, if (uid != null) null else anonymousUid)
+            }
+        } catch (e: JSONException) {
+            DashXLog.d(tag, "Encountered an error while parsing data")
+            e.printStackTrace()
+            return
+        }
+
+        val request: Request = Request.Builder()
+            .url("$baseURI/subscribe")
+            .addHeader("X-Public-Key", publicKey!!)
+            .post(gson.toJson(subscribeRequest).toString().toRequestBody(json))
+            .build()
+
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DashXLog.d(tag, "Could not subscribe: $deviceToken")
+                e.printStackTrace()
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    DashXLog.d(tag, "Encountered an error during subscribe():" + response.body?.string())
+                    return
+                }
+
+                val subscribeResponse: SubscribeResponse = gson.fromJson(response.body?.string(), SubscribeResponse::class.java)
+
+                if (!subscribeResponse.success) {
+                    DashXLog.d(tag, "Encountered an error during track(): $subscribeResponse")
+                    return
+                }
+
+                DashXLog.d(tag, "Subscribed: $deviceToken")
             }
         })
     }

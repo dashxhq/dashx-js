@@ -31,3 +31,15 @@ data class TrackRequest(
 data class TrackResponse(
     val success: Boolean
 )
+
+data class SubscribeRequest(
+    val deviceToken: String,
+    val deviceName: String,
+    val deviceKind: String,
+    val uid: String?,
+    val anonymous_uid: String?
+)
+
+data class SubscribeResponse(
+    val success: Boolean
+)
