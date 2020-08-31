@@ -1,9 +1,6 @@
 package com.dashx.sdk
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.*
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var dashXClient: DashXClient? = null
@@ -24,8 +21,8 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
-    fun identify(uid: String?, options: ReadableMap?) {
-        dashXClient?.identify(uid, options)
+    fun identify(uid: String?, options: ReadableMap?, promise: Promise) {
+        dashXClient?.identify(uid, options, promise)
     }
 
     @ReactMethod

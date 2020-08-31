@@ -1,13 +1,12 @@
 package com.dashx.sdk
 
 import android.content.SharedPreferences
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.*
 import com.google.gson.Gson
 import okhttp3.*
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONException
 import java.io.IOException
 import java.util.*
 
@@ -46,7 +45,7 @@ class DashXClient {
         }
     }
 
-    fun identify(uid: String?, options: ReadableMap?) {
+    fun identify(uid: String?, options: ReadableMap?, promise: Promise) {
         val identifyRequest = try {
             val optionsHashMap = options?.toHashMap() as? HashMap<String, String?>
             IdentifyRequest(
@@ -57,7 +56,7 @@ class DashXClient {
                 uid,
                 if (uid != null) null else anonymousUid
             )
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
@@ -78,15 +77,18 @@ class DashXClient {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
+                    promise.reject(API_ERROR_TAG, response.body?.string())
                     DashXLog.d(tag, "Encountered an error during identify(): " + response.body?.string())
                     return
                 }
 
                 val identifyResponse: IdentifyResponse? = gson.fromJson(response.body?.string(), IdentifyResponse::class.java)
 
+                promise.resolve(null)
+
                 this@DashXClient.uid = uid
 
-                DashXLog.d(tag, "Sent identify: $identifyRequest")
+                DashXLog.d(tag, "Sent identify: $identifyResponse")
             }
         })
     }
@@ -94,7 +96,7 @@ class DashXClient {
     fun track(event: String, data: ReadableMap?) {
         val trackRequest = try {
             TrackRequest(event, convertMapToJson(data), uid, if (uid != null) null else anonymousUid)
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
