@@ -20,7 +20,18 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setup(options: ReadableMap) {
         dashXClient?.setPublicKey(options.getString("publicKey")!!)
-        if (options.hasKey("baseUri")) dashXClient?.setBaseURI(options.getString("baseUri")!!)
+
+        if (options.getBoolean("trackAppExceptions")) {
+            DashXExceptionHandler.enable();
+        }
+
+        if (options.getBoolean("trackAppLifecycleEvents")) {
+            DashXActivityLifecycleCallbacks.enable(reactContext.applicationContext);
+        }
+
+        if (options.hasKey("baseUri")) {
+            dashXClient?.setBaseURI(options.getString("baseUri")!!)
+        }
     }
 
     @ReactMethod

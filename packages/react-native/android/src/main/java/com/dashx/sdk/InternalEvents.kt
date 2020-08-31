@@ -11,6 +11,17 @@ import kotlin.math.roundToInt
 fun DashXClient.trackAppStarted() {
     val context = this.reactApplicationContext?.applicationContext ?: return
 
+    val packageInfo = context.getPackageInfo()
+    val currentBuild = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        packageInfo.longVersionCode
+    } else {
+        packageInfo.versionCode.toLong()
+    }
+
+    val eventProperties = Arguments.createMap()
+    eventProperties.putString("version", packageInfo.versionName)
+    eventProperties.putString("build", currentBuild.toString())
+
     when {
         getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE ->
             this.track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
