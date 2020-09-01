@@ -89,21 +89,15 @@ class DashXClient {
 
     fun identify(uid: String?, options: ReadableMap?) {
         val identifyRequest = try {
-            if (options != null) {
-                val optionsHashMap = options.toHashMap() as HashMap<String, String?>
-                IdentifyRequest(
-                    optionsHashMap["firstName"],
-                    optionsHashMap["lastName"],
-                    optionsHashMap["email"],
-                    optionsHashMap["phone"],
-                    uid,
-                    if (uid != null) null else anonymousUid
-                )
-            } else {
-                IdentifyRequest(
-                    null, null, null, null, uid, if (uid != null) null else anonymousUid
-                )
-            }
+            val optionsHashMap = options?.toHashMap() as? HashMap<String, String?>
+            IdentifyRequest(
+                optionsHashMap?.get("firstName"),
+                optionsHashMap?.get("lastName"),
+                optionsHashMap?.get("email"),
+                optionsHashMap?.get("phone"),
+                uid,
+                if (uid != null) null else anonymousUid
+            )
         } catch (e: JSONException) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
