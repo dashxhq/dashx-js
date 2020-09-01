@@ -1,7 +1,7 @@
 # React Native Example App
 
 
-## Setting up developement environment
+## Setting up development environment
 
 - Make sure you have `node` and `watchman` installed on your system, if not run these commands to install both.
 
