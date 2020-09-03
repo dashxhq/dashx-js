@@ -27,11 +27,12 @@ class DashXClient {
     // Account variables
     private var anonymousUid: String? = null
     private var uid: String? = null
+    private var deviceToken: String? = null
 
     private val httpClient = OkHttpClient()
     private val gson = Gson()
     private val json = "application/json; charset=utf-8".toMediaType()
-    private val dashXNotificationFilter = "DASH_X_PN_TYPE"
+    private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
     var reactApplicationContext: ReactApplicationContext? = null
 
@@ -61,7 +62,7 @@ class DashXClient {
         }
     }
 
-fun handleMessage(remoteMessage: RemoteMessage) {
+    fun handleMessage(remoteMessage: RemoteMessage) {
         val notification = remoteMessage.notification
         val eventProperties: WritableMap = Arguments.createMap()
         DashXLog.d(tag, "Data: " + remoteMessage.data)
@@ -89,7 +90,7 @@ fun handleMessage(remoteMessage: RemoteMessage) {
             ?.getJSModule(RCTDeviceEventEmitter::class.java)
             ?.emit(eventName, params)
     }
-    
+
     private fun <T> makeHttpRequest(uri: String, body: T, callback: Callback) {
         val request: Request = Request.Builder()
             .url("$baseURI/$uri")
@@ -184,7 +185,7 @@ fun handleMessage(remoteMessage: RemoteMessage) {
 
         val subscribeRequest = try {
             deviceToken?.let { deviceToken ->
-                SubscribeRequest(deviceToken, deviceName, deviceKind, uid, if (uid != null) null else anonymousUid)
+                SubscribeRequest(deviceToken, deviceName, deviceKind, uid, anonymousUid)
             }
         } catch (e: JSONException) {
             DashXLog.d(tag, "Encountered an error while parsing data")
@@ -192,13 +193,7 @@ fun handleMessage(remoteMessage: RemoteMessage) {
             return
         }
 
-        val request: Request = Request.Builder()
-            .url("$baseURI/subscribe")
-            .addHeader("X-Public-Key", publicKey!!)
-            .post(gson.toJson(subscribeRequest).toString().toRequestBody(json))
-            .build()
-
-        httpClient.newCall(request).enqueue(object : Callback {
+        makeHttpRequest("subscribe", subscribeRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
                 e.printStackTrace()
