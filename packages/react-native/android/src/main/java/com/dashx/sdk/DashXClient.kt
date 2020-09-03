@@ -1,10 +1,10 @@
 package com.dashx.sdk
 
 import android.content.SharedPreferences
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableMap
 import com.google.gson.Gson
 import okhttp3.*
-import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -45,9 +45,20 @@ class DashXClient {
         }
     }
 
+    private fun<T> makeHttpRequest(uri: String, body: T, callback: Callback) {
+        val request: Request = Request.Builder()
+            .url("$baseURI/$uri")
+            .addHeader("X-Public-Key", publicKey!!)
+            .post(gson.toJson(body).toString().toRequestBody(json))
+            .build()
+
+        httpClient.newCall(request).enqueue(callback)
+    }
+
     fun identify(uid: String?, options: ReadableMap?) {
         if (uid != null) {
             this.uid = uid
+            DashXLog.d(tag, "Set Uid: $uid")
             return
         }
 
@@ -66,13 +77,7 @@ class DashXClient {
             return
         }
 
-        val request: Request = Request.Builder()
-            .url("$baseURI/identify")
-            .addHeader("X-Public-Key", publicKey!!)
-            .post(gson.toJson(identifyRequest).toString().toRequestBody(json))
-            .build()
-
-        httpClient.newCall(request).enqueue(object : Callback {
+        makeHttpRequest("identify", identifyRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -85,9 +90,7 @@ class DashXClient {
                     return
                 }
 
-                val identifyResponse: IdentifyResponse? = gson.fromJson(response.body?.string(), IdentifyResponse::class.java)
-
-                DashXLog.d(tag, "Sent identify: $identifyResponse")
+                DashXLog.d(tag, "Sent identify: $identifyRequest")
             }
         })
     }
@@ -101,13 +104,7 @@ class DashXClient {
             return
         }
 
-        val request: Request = Request.Builder()
-            .url("$baseURI/track")
-            .addHeader("X-Public-Key", publicKey!!)
-            .post(gson.toJson(trackRequest).toString().toRequestBody(json))
-            .build()
-
-        httpClient.newCall(request).enqueue(object : Callback {
+        makeHttpRequest("track", trackRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
