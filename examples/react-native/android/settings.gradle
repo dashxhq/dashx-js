@@ -6,20 +6,8 @@ project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '.
 include ':@dashx_react-native'
 project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
 include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
+project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../../../packages/react-native/android')
 include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
-include ':@dashx_react-native'
-project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@dashx/react-native/android')
+project(':@dashx_react-native').projectDir = new File(rootProject.projectDir, '../../../packages/react-native/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
