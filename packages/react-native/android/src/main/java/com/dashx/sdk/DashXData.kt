@@ -7,7 +7,6 @@ data class IdentifyRequest(
     val last_name: String?,
     val email: String?,
     val phone: String?,
-    val uid: String?,
     val anonymous_uid: String?
 )
 

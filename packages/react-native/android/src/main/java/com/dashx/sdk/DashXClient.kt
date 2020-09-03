@@ -45,7 +45,12 @@ class DashXClient {
         }
     }
 
-    fun identify(uid: String?, options: ReadableMap?, promise: Promise) {
+    fun identify(uid: String?, options: ReadableMap?) {
+        if (uid != null) {
+            this.uid = uid
+            return
+        }
+
         val identifyRequest = try {
             val optionsHashMap = options?.toHashMap() as? HashMap<String, String?>
             IdentifyRequest(
@@ -53,8 +58,7 @@ class DashXClient {
                 optionsHashMap?.get("lastName"),
                 optionsHashMap?.get("email"),
                 optionsHashMap?.get("phone"),
-                uid,
-                if (uid != null) null else anonymousUid
+                anonymousUid
             )
         } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing data")
@@ -77,16 +81,11 @@ class DashXClient {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    promise.reject(API_ERROR_TAG, response.body?.string())
                     DashXLog.d(tag, "Encountered an error during identify(): " + response.body?.string())
                     return
                 }
 
                 val identifyResponse: IdentifyResponse? = gson.fromJson(response.body?.string(), IdentifyResponse::class.java)
-
-                promise.resolve(null)
-
-                this@DashXClient.uid = uid
 
                 DashXLog.d(tag, "Sent identify: $identifyResponse")
             }
@@ -95,7 +94,7 @@ class DashXClient {
 
     fun track(event: String, data: ReadableMap?) {
         val trackRequest = try {
-            TrackRequest(event, convertMapToJson(data), uid, if (uid != null) null else anonymousUid)
+            TrackRequest(event, convertMapToJson(data), uid, anonymousUid)
         } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()

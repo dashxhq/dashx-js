@@ -21,8 +21,8 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
-    fun identify(uid: String?, options: ReadableMap?, promise: Promise) {
-        dashXClient?.identify(uid, options, promise)
+    fun identify(uid: String?, options: ReadableMap?) {
+        dashXClient?.identify(uid, options)
     }
 
     @ReactMethod

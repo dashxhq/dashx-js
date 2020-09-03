@@ -6,11 +6,11 @@ const { identify, track } = DashX;
 
 // Handle overloads at JS, because Native modules doesn't allow that
 // https://github.com/facebook/react-native/issues/19116
-DashX.identify = (uid, options) => {
-  if (typeof uid === 'string') {
-    return identify(uid, options || null);
+DashX.identify = (options) => {
+  if (typeof options === 'string') {
+    return identify(options, null); // options is a string ie. uid
   } else {
-    return identify(null, uid); // options are passed as first parameter
+    return identify(null, options); 
   }
 };
 
