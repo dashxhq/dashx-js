@@ -16,7 +16,7 @@ brew install watchman
 npm i -g yarn
 ```
 
-#### Android App development
+### Android App development
 
 - Install JDK, either download [Amazon Coretto](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html) or install using brew.
 
@@ -36,9 +36,9 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
 
-#### Ios App development
+### Ios App development
 
-- Install XCode and make sure to install the latest XCode Command Line Tools from `Preferences > Locations > Command Line Tools`.
+- Install XCode and make sure to install the latest XCode Command Line Tools from `Preferences > Locations > Command Line Tools`
 
 - Install `cocoapods` via gem, you will require to use `sudo` for this step if you are using Mac's default Ruby installation.
 
