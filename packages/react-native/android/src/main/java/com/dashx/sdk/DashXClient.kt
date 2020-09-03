@@ -49,7 +49,7 @@ class DashXClient {
         }
     }
 
-    private fun<T> makeHttpRequest(uri: String, body: T, callback: Callback) {
+    private fun <T> makeHttpRequest(uri: String, body: T, callback: Callback) {
         val request: Request = Request.Builder()
             .url("$baseURI/$uri")
             .addHeader("X-Public-Key", publicKey!!)
@@ -66,8 +66,12 @@ class DashXClient {
             return
         }
 
+        if (options == null) {
+            throw Exception("Cannot be called with null, either pass uid: string or options: object")
+        }
+
         val identifyRequest = try {
-            val optionsHashMap = options?.toHashMap() as? HashMap<String, String?>
+            val optionsHashMap = options.toHashMap() as? HashMap<String, String?>
             IdentifyRequest(
                 optionsHashMap?.get("firstName"),
                 optionsHashMap?.get("lastName"),
