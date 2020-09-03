@@ -1,11 +1,7 @@
 # React Native Example App
 
 
-<<<<<<< HEAD
-## Setting up developement environment
-=======
 ## Setting up development environment
->>>>>>> b9074c3cbb7e154483f624d0b3f6c7752199baac
 
 - Make sure you have `node` and `watchman` installed on your system, if not run these commands to install both.
 
@@ -20,11 +16,8 @@ brew install watchman
 npm i -g yarn
 ```
 
-<<<<<<< HEAD
-=======
 ### Android App development
 
->>>>>>> b9074c3cbb7e154483f624d0b3f6c7752199baac
 - Install JDK, either download [Amazon Coretto](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html) or install using brew.
 
 ```sh
