@@ -13,9 +13,13 @@ import java.util.*
 
 class DashXClient {
     private val tag = DashXClient::class.java.simpleName
-    private var anonymousUid: String? = null
+
+    // Setup variables
     private var baseURI: String = "https://api.dashx.com/v1"
     private var publicKey: String? = null
+
+    // Account variables
+    private var anonymousUid: String? = null
     private var uid: String? = null
 
     private val httpClient = OkHttpClient()
