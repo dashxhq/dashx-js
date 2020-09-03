@@ -1,11 +1,9 @@
 package com.dashx.sdk
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.*
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private var dashXClient: DashXClient? = null
+    private var dashXClient: DashXClient = DashXClient.instance!!
 
     override fun getName(): String {
         return "DashX"
@@ -16,9 +14,24 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         DashXLog.setLogLevel(logLevel)
     }
 
+    @ReactMethod
+    fun setup(options: ReadableMap) {
+        dashXClient.setPublicKey(options.getString("publicKey")!!)
+        if (options.hasKey("baseUri")) dashXClient.setBaseURI(options.getString("baseUri")!!)
+    }
+
+    @ReactMethod
+    fun identify(uid: String?, options: ReadableMap?) {
+        dashXClient.identify(uid, options)
+    }
+
+    @ReactMethod
+    fun track(event: String, data: ReadableMap?) {
+        dashXClient.track(event, data)
+    }
+
     init {
-        dashXClient = DashXClient.instance
-        dashXClient!!.setReactApplicationContext(reactContext)
-        dashXClient!!.generateAnonymousUid()
+        dashXClient.reactApplicationContext = reactContext
+        dashXClient.generateAnonymousUid()
     }
 }
