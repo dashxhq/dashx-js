@@ -46,55 +46,43 @@ class Client {
     setItem('anonymousUid', this.anonymousUid)
   }
 
-  setContextItem<K extends keyof Context>(key: K, value: Context[K]): void {
-    this.context[key] = value
-  }
-
-  identify(uid: string, options?: IdentifyParams) : Promise<Response>
-  identify(options?: IdentifyParams) : Promise<Response>
-  identify(
-    uid: string | IdentifyParams = {}, options: IdentifyParams = {} as IdentifyParams
-  ): Promise<Response> {
-    let params
-
-    if (typeof uid === 'string') {
-      const { firstName, lastName, ...others } = options
-      params = { uid, first_name: firstName, last_name: lastName, ...others }
-    } else {
-      const { firstName, lastName, ...others } = uid
-      params = {
-        anonymous_uid: this.anonymousUid,
-        first_name: firstName,
-        last_name: lastName,
-        ...others
-      }
-    }
-
-    return fetch(`${this.baseUri}/v1/identify`, {
+  private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
+    return fetch(`${this.baseUri}/${uri}`, {
       method: 'POST',
       headers: {
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify(params)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        this.uid = data.uid
-        return data
-      })
+      body: JSON.stringify(body)
+    }).then((response) => response.json())
+  }
+
+  identify(uid: string) : void
+  identify(options: IdentifyParams) : Promise<Response>
+  identify(options: string | IdentifyParams): Promise<Response> | void {
+    if (typeof options === 'string') {
+      this.uid = options
+      return undefined
+    }
+
+    if (!options) {
+      throw new Error('Cannot be called with undefined or null, either pass uid: string or options: object')
+    }
+
+    const { firstName, lastName, ...others } = options
+    const params = {
+      anonymous_uid: this.anonymousUid,
+      first_name: firstName,
+      last_name: lastName,
+      ...others
+    }
+
+    return this.makeHttpRequest('identify', params)
   }
 
   track(event: string, data?: Record<string, any>): Promise<Response> {
-    const rest = this.uid ? { uid: this.uid } : { anonymous_uid: this.anonymousUid }
+    const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 
-    return fetch(`${this.baseUri}/v1/track`, {
-      method: 'POST',
-      headers: {
-        'X-Public-Key': this.publicKey
-      },
-      body: JSON.stringify({ event, data, ...rest })
-    })
-      .then((response) => response.json())
+    return this.makeHttpRequest('track', params)
   }
 }
 
