@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 class DashXLog {
     enum LogLevel: Int {
@@ -6,8 +7,12 @@ class DashXLog {
         case debug = 0
         case off = -1
                 
-        static func >= (lhs: Self, rhs: Self) -> Bool {
-            return lhs.rawValue >= rhs.rawValue
+        static func <= (lhs: Self, rhs: Self) -> Bool {
+            return lhs.rawValue <= rhs.rawValue
+        }
+        
+        static func > (lhs: DashXLog.LogLevel, rhs: DashXLog.LogLevel) -> Bool {
+            return lhs.rawValue > rhs.rawValue
         }
     }
     
@@ -17,15 +22,23 @@ class DashXLog {
         self.logLevel = LogLevel(rawValue: to) ?? .off
     }
     
-    func d(tag: String, data: Any) {
-        if (logLevel >= .debug) {
-            os_log(tag, type: .debug, data)
+    func d(tag: String, data: String) {
+        if (logLevel <= .debug && logLevel > .off) {
+            if #available(iOS 10.0, *) {
+                os_log("%@: %@", type: .debug, tag, data)
+            } else {
+                print("%@: %@", tag, data)
+            }
         }
     }
     
-    func i(tag: String, data: Any) {
-        if (logLevel >= .info) {
-            os_log(tag, type: .info, data)
+    func i(tag: String, data: String) {
+        if (logLevel <= .info && logLevel > .off) {
+            if #available(iOS 10.0, *) {
+                os_log("%@: %@", type: .info, tag, data)
+            } else {
+                print("%@: %@", tag, data)
+            }
         }
     }
 }
