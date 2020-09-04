@@ -11,8 +11,8 @@ class DashXLog {
             return lhs.rawValue <= rhs.rawValue
         }
         
-        static func > (lhs: DashXLog.LogLevel, rhs: DashXLog.LogLevel) -> Bool {
-            return lhs.rawValue > rhs.rawValue
+        func on () -> Bool {
+            return self.rawValue > LogLevel.off.rawValue
         }
     }
     
@@ -23,7 +23,7 @@ class DashXLog {
     }
     
     func d(tag: String, data: String) {
-        if (logLevel <= .debug && logLevel > .off) {
+        if (logLevel.on() && logLevel <= .debug) {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .debug, tag, data)
             } else {
@@ -33,7 +33,7 @@ class DashXLog {
     }
     
     func i(tag: String, data: String) {
-        if (logLevel <= .info && logLevel > .off) {
+        if (logLevel.on() && logLevel <= .info) {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .info, tag, data)
             } else {
