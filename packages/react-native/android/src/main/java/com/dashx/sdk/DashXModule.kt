@@ -1,6 +1,9 @@
 package com.dashx.sdk
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var dashXClient: DashXClient = DashXClient.instance!!
@@ -16,18 +19,18 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     @ReactMethod
     fun setup(options: ReadableMap) {
-        dashXClient?.setPublicKey(options.getString("publicKey")!!)
+        dashXClient.setPublicKey(options.getString("publicKey")!!)
 
-        if (options.getBoolean("trackAppExceptions")) {
+        if (options.hasKey("trackAppExceptions") && options.getBoolean("trackAppExceptions")) {
             DashXExceptionHandler.enable();
         }
 
-        if (options.getBoolean("trackAppLifecycleEvents")) {
+        if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
             DashXActivityLifecycleCallbacks.enable(reactContext.applicationContext);
         }
 
         if (options.hasKey("baseUri")) {
-            dashXClient?.setBaseURI(options.getString("baseUri")!!)
+            dashXClient.setBaseURI(options.getString("baseUri")!!)
         }
     }
 

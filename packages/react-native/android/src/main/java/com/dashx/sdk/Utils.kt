@@ -16,9 +16,9 @@ fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.pac
 fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
 
 @Throws(JSONException::class)
-fun convertMapToJson(readableMap: ReadableMap?): JsonObject {
+fun convertMapToJson(readableMap: ReadableMap?): JsonObject? {
+    val iterator = readableMap?.keySetIterator() ?: return null;
     val jsonObject = JsonObject()
-    val iterator = readableMap!!.keySetIterator()
     while (iterator.hasNextKey()) {
         val key = iterator.nextKey()
         when (readableMap.getType(key)) {

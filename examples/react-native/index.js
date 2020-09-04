@@ -12,6 +12,8 @@ DashX.setLogLevel(0);
 DashX.setup({
   publicKey: 'ceaTX7hJTevAKRiMe61gwZpW',
   baseUri: 'http://api.dashx-staging.com/v1',
+  trackAppLifecycleEvents: true,
+  trackAppExceptions: true
 });
 
 DashX.identify('uid');
