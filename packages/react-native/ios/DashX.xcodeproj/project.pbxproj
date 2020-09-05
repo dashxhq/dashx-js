@@ -12,6 +12,7 @@
 		71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF132501959800EE19F0 /* DashXLog.swift */; };
 		71FCBF172502106D00EE19F0 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71FCBF162502106D00EE19F0 /* OSLog.framework */; };
 		71FCBF1925035B2600EE19F0 /* DashXClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF1825035B2600EE19F0 /* DashXClient.swift */; };
+		71FCBF1B25036BC000EE19F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF1A25036BC000EE19F0 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,7 @@
 		71FCBF132501959800EE19F0 /* DashXLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashXLog.swift; sourceTree = "<group>"; };
 		71FCBF162502106D00EE19F0 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OSLog.framework; sourceTree = DEVELOPER_DIR; };
 		71FCBF1825035B2600EE19F0 /* DashXClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashXClient.swift; sourceTree = "<group>"; };
+		71FCBF1A25036BC000EE19F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				71FCBF1A25036BC000EE19F0 /* Constants.swift */,
 				71FCBF1825035B2600EE19F0 /* DashXClient.swift */,
 				71FCBF132501959800EE19F0 /* DashXLog.swift */,
 				71FCBF0F25001E9200EE19F0 /* DashX.m */,
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71FCBF1B25036BC000EE19F0 /* Constants.swift in Sources */,
 				71FCBF1025001E9200EE19F0 /* DashX.m in Sources */,
 				71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */,
 				71FCBF0E2500031100EE19F0 /* DashX.swift in Sources */,

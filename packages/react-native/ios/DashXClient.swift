@@ -8,7 +8,7 @@ struct DashXClient {
 
     private func generateAnonymousUid() {
         let preferences = UserDefaults.standard
-        let anonymousUidKey = "DashX.anonymousUid"
+        let anonymousUidKey = Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID
 
         if (preferences.object(forKey: anonymousUidKey) != nil) {
             self.anonymousUid = preferences.string(forKey: anonymousUidKey)
