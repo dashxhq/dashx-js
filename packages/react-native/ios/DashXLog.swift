@@ -22,7 +22,7 @@ struct DashXLog {
         self.logLevel = LogLevel(rawValue: to) ?? .off
     }
     
-    func d(tag: String, data: String) {
+    func d(tag: String, _ data: String) {
         if (logLevel.on() && logLevel <= .debug) {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .debug, tag, data)
@@ -32,7 +32,7 @@ struct DashXLog {
         }
     }
     
-    func i(tag: String, data: String) {
+    func i(tag: String, _ data: String) {
         if (logLevel.on() && logLevel <= .info) {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .info, tag, data)
