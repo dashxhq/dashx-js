@@ -2,6 +2,7 @@ import Foundation
 
 @objc(DashX)
 class DashX: NSObject {
+    private var dashXClient = DashXClient.instance
     
     @objc
     func setLogLevel(logLevel: Int) {
@@ -9,7 +10,7 @@ class DashX: NSObject {
     }
     
     @objc
-    func setup(logLevel: Int) {
-        DashXClient.generateAnonymousUid()
+    func setup() {
+        dashXClient.generateAnonymousUid()
     }
 }

@@ -1,9 +1,12 @@
 import Foundation
 
-class DashXClient {
+struct DashXClient {
+    static let instance = DashXClient()
     private var anonymousUid
     
-    func generateAnonymousUid() {
+    private init() { }
+    
+    private func generateAnonymousUid() {
         let preferences = UserDefaults.standard
         let anonymousUidKey = "DashX.anonymousUid"
         
