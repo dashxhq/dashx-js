@@ -10,7 +10,7 @@ DashX.identify = (options) => {
   if (typeof options === 'string') {
     return identify(options, null); // options is a string ie. uid
   } else {
-    return identify(null, options); 
+    return identify(null, options);
   }
 };
 

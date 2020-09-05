@@ -6,6 +6,13 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		71FCBF0E2500031100EE19F0 /* DashX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF0D2500031100EE19F0 /* DashX.swift */; };
+		71FCBF1025001E9200EE19F0 /* DashX.m in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF0F25001E9200EE19F0 /* DashX.m */; };
+		71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF132501959800EE19F0 /* DashXLog.swift */; };
+		71FCBF172502106D00EE19F0 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71FCBF162502106D00EE19F0 /* OSLog.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,6 +27,11 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libDashX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDashX.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		71FCBF0C2500031000EE19F0 /* DashX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DashX-Bridging-Header.h"; sourceTree = "<group>"; };
+		71FCBF0D2500031100EE19F0 /* DashX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashX.swift; sourceTree = "<group>"; };
+		71FCBF0F25001E9200EE19F0 /* DashX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashX.m; sourceTree = "<group>"; };
+		71FCBF132501959800EE19F0 /* DashXLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashXLog.swift; sourceTree = "<group>"; };
+		71FCBF162502106D00EE19F0 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OSLog.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71FCBF172502106D00EE19F0 /* OSLog.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,8 +57,21 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				71FCBF132501959800EE19F0 /* DashXLog.swift */,
+				71FCBF0F25001E9200EE19F0 /* DashX.m */,
+				71FCBF0D2500031100EE19F0 /* DashX.swift */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				71FCBF0C2500031000EE19F0 /* DashX-Bridging-Header.h */,
+				71FCBF152502106C00EE19F0 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		71FCBF152502106C00EE19F0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				71FCBF162502106D00EE19F0 /* OSLog.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -79,6 +105,7 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1160;
 					};
 				};
 			};
@@ -105,6 +132,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71FCBF1025001E9200EE19F0 /* DashX.m in Sources */,
+				71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */,
+				71FCBF0E2500031100EE19F0 /* DashX.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,32 +255,41 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = DashX;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "DashX-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = DashX;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "DashX-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
