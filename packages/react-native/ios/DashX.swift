@@ -20,11 +20,11 @@ class DashX: NSObject {
     
     @objc(identify:options:)
     func identify(_ uid: String?, _ options: NSDictionary?) {
-        try? dashXClient.identify(uid: uid, options: options)
+        try? dashXClient.identify(uid, withOptions: options)
     }
     
     @objc(track:data:)
     func track(_ event: String, _ data: NSDictionary?) {
-        dashXClient.track(event: event, data: data)
+        dashXClient.track(event, withData: data)
     }
 }

@@ -28,7 +28,7 @@ class DashXClient {
         let preferences = UserDefaults.standard
         let anonymousUidKey = Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID
 
-        if (preferences.object(forKey: anonymousUidKey) != nil) {
+        if preferences.object(forKey: anonymousUidKey) != nil {
             self.anonymousUid = preferences.string(forKey: anonymousUidKey) ?? nil
         } else {
             self.anonymousUid = UUID().uuidString
@@ -57,17 +57,17 @@ class DashXClient {
         }
     }
     
-    func identify(uid: String?, options: NSDictionary?) throws {
-        if (uid != nil) {
+    func identify(_ uid: String?, withOptions: NSDictionary?) throws {
+        if uid != nil {
             self.uid = uid
             return
         }
         
-        if (options == nil) {
+        if withOptions == nil {
             throw DashXClientError.noArgsInIdentify
         }
         
-        let optionsDictionary = options as? Dictionary<String, String>
+        let optionsDictionary = withOptions as? Dictionary<String, String>
         
         let identifyRequest = IdentifyRequest(
             first_name: optionsDictionary?["firstName"],
@@ -85,10 +85,10 @@ class DashXClient {
         )
     }
     
-    func track(event: String, data: NSDictionary?) {
+    func track(_ event: String, withData: NSDictionary?) {
         let trackRequest: TrackRequest
         
-        if let trackData = try? JSONSerialization.data(withJSONObject: data) {
+        if let trackData = try? JSONSerialization.data(withJSONObject: withData) {
             trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
         } else {
             Logger.d(tag: #function, "Encountered an error while encoding track data")
