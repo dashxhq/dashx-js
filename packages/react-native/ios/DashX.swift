@@ -22,4 +22,9 @@ class DashX: NSObject {
     func identify(_ uid: String?, _ options: NSDictionary?) {
         try? dashXClient.identify(uid: uid, options: options)
     }
+    
+    @objc(track:data:)
+    func track(_ event: String, _ data: NSDictionary?) {
+        dashXClient.track(event: event, data: data)
+    }
 }

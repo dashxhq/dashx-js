@@ -43,6 +43,11 @@ class DashXClient {
             "X-Public-Key": publicKey ?? ""
         ]
         
+        let jsonData = try? JSONEncoder().encode(request)
+        let jsonString = String(data: jsonData!, encoding: .utf8)!
+        
+        Logger.d(tag: #function, jsonString)
+        
         AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
@@ -74,11 +79,27 @@ class DashXClient {
         
         Logger.d(tag: #function, "Calling Identify with \(identifyRequest)")
         
-        makeHttpRequest(
-            uri: "identify",
-            identifyRequest,
+        makeHttpRequest(uri: "identify", identifyRequest,
             { response in Logger.d(tag: #function, "Sent identify with \(String(describing: response))") },
             { error in Logger.d(tag: #function, "Encountered an error during identify(): \(error)") }
+        )
+    }
+    
+    func track(event: String, data: NSDictionary?) {
+        let trackRequest: TrackRequest
+        
+        if let trackData = try? JSONSerialization.data(withJSONObject: data) {
+            trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
+        } else {
+            Logger.d(tag: #function, "Encountered an error while encoding track data")
+            return
+        }
+        
+        Logger.d(tag: #function, "Calling track with \(trackRequest)")
+        
+        makeHttpRequest(uri: "track", trackRequest,
+            { response in Logger.d(tag: #function, "Sent track with \(String(describing: response))") },
+            { error in Logger.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
     }
 }

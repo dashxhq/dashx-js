@@ -14,7 +14,7 @@ DashX.setup({
   baseUri: 'http://api.dashx-staging.com/v1',
 });
 
-DashX.identify({ firstName: "John" });
-// DashX.track('Hello World');
+DashX.identify({ firstName: 'John' });
+DashX.track('Hello World', { hello: 'world' });
 
 AppRegistry.registerComponent(appName, () => App);
