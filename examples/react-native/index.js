@@ -10,11 +10,11 @@ import DashX from '@dashx/react-native';
 DashX.setLogLevel(0);
 
 DashX.setup({
-  publicKey: 'ceaTX7hJTevAKRiMe61gwZpW',
+  publicKey: '1kWfBU39WyDCD7j7SkWkL8Ma',
   baseUri: 'http://api.dashx-staging.com/v1',
 });
 
-DashX.identify('uid');
-DashX.track('Hello World');
+DashX.identify({ firstName: "John" });
+// DashX.track('Hello World');
 
 AppRegistry.registerComponent(appName, () => App);

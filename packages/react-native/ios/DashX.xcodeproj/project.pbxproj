@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		71758CAB25038D00007197D5 /* DashXData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71758CAA25038D00007197D5 /* DashXData.swift */; };
 		71FCBF0E2500031100EE19F0 /* DashX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF0D2500031100EE19F0 /* DashX.swift */; };
 		71FCBF1025001E9200EE19F0 /* DashX.m in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF0F25001E9200EE19F0 /* DashX.m */; };
 		71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FCBF132501959800EE19F0 /* DashXLog.swift */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libDashX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDashX.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		71758CAA25038D00007197D5 /* DashXData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashXData.swift; sourceTree = "<group>"; };
 		71FCBF0C2500031000EE19F0 /* DashX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DashX-Bridging-Header.h"; sourceTree = "<group>"; };
 		71FCBF0D2500031100EE19F0 /* DashX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashX.swift; sourceTree = "<group>"; };
 		71FCBF0F25001E9200EE19F0 /* DashX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashX.m; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				71758CAA25038D00007197D5 /* DashXData.swift */,
 				71FCBF1A25036BC000EE19F0 /* Constants.swift */,
 				71FCBF1825035B2600EE19F0 /* DashXClient.swift */,
 				71FCBF132501959800EE19F0 /* DashXLog.swift */,
@@ -140,6 +143,7 @@
 			files = (
 				71FCBF1B25036BC000EE19F0 /* Constants.swift in Sources */,
 				71FCBF1025001E9200EE19F0 /* DashX.m in Sources */,
+				71758CAB25038D00007197D5 /* DashXData.swift in Sources */,
 				71FCBF142501959800EE19F0 /* DashXLog.swift in Sources */,
 				71FCBF0E2500031100EE19F0 /* DashX.swift in Sources */,
 				71FCBF1925035B2600EE19F0 /* DashXClient.swift in Sources */,
