@@ -1,7 +1,7 @@
 import Foundation
 import os.log
 
-struct DashXLog {
+class DashXLog {
     enum LogLevel: Int {
         case info = 1
         case debug = 0

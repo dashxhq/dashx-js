@@ -10,7 +10,5 @@ class DashX: NSObject {
     }
 
     @objc
-    func setup() {
-        dashXClient.generateAnonymousUid()
-    }
+    func setup() { }
 }
