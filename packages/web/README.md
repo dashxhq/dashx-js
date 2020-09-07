@@ -23,7 +23,7 @@ $ yarn add @dashx/web
 ```javascript
 import DashX from '@dashx/web';
 
-const dashX = DashX({ publicKey: 'your_public_key' });
+const dashx = DashX({ publicKey: 'your_public_key' });
 ```
 
 `DashX` constructor accepts following properties:
@@ -40,13 +40,13 @@ By default the value of `baseUri` is `https://api.dashx.com/v1`
 - Existing user
 
 ```javascript
-dashX.identify('uid_of_user');
+dashx.identify('uid_of_user');
 ```
 
 - New user
 
 ```javascript
-dashX.identify({ 
+dashx.identify({ 
   firstName: 'John', 
   lastName: 'Doe', 
   email: 'john@example.com', 
@@ -68,5 +68,5 @@ For new user `identify()` accepts following properties:
 ### Track Events
 
 ```javascript
-dashX.track('event_name', { hello: 'world' } /* Event data */);
+dashx.track('event_name', { hello: 'world' } /* Event data */);
 ```
