@@ -40,9 +40,15 @@ local.properties
 .vscode
 
 # BUCK
+#
 buck-out/
 \.buckd/
 *.keystore
 
 # Build
+#
 dist
+
+# Environment Variables
+#
+.env
