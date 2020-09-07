@@ -16,13 +16,13 @@ class DashXLog {
         }
     }
 
-    private var logLevel: LogLevel = .off
+    static private var logLevel: LogLevel = .off
 
-    func setLogLevel(to: Int) {
+    static func setLogLevel(to: Int) {
         self.logLevel = LogLevel(rawValue: to) ?? .off
     }
 
-    func d(tag: String, _ data: String) {
+    static func d(tag: String, _ data: String) {
         if logLevel.on() && logLevel <= .debug {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .debug, tag, data)
@@ -32,7 +32,7 @@ class DashXLog {
         }
     }
 
-    func i(tag: String, _ data: String) {
+    static func i(tag: String, _ data: String) {
         if logLevel.on() && logLevel <= .info {
             if #available(iOS 10.0, *) {
                 os_log("%@: %@", type: .info, tag, data)
@@ -42,5 +42,3 @@ class DashXLog {
         }
     }
 }
-
-let Logger = DashXLog()

@@ -46,7 +46,7 @@ class DashXClient {
         let jsonData = try? JSONEncoder().encode(request)
         let jsonString = String(data: jsonData!, encoding: .utf8)!
         
-        Logger.d(tag: #function, jsonString)
+        DashXLog.d(tag: #function, jsonString)
         
         AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
@@ -77,11 +77,11 @@ class DashXClient {
             anonymous_uid: self.anonymousUid
         )
         
-        Logger.d(tag: #function, "Calling Identify with \(identifyRequest)")
+        DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
         
         makeHttpRequest(uri: "identify", identifyRequest,
-            { response in Logger.d(tag: #function, "Sent identify with \(String(describing: response))") },
-            { error in Logger.d(tag: #function, "Encountered an error during identify(): \(error)") }
+            { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
+            { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
     }
     
@@ -91,15 +91,15 @@ class DashXClient {
         if let trackData = try? JSONSerialization.data(withJSONObject: withData) {
             trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
         } else {
-            Logger.d(tag: #function, "Encountered an error while encoding track data")
+            DashXLog.d(tag: #function, "Encountered an error while encoding track data")
             return
         }
         
-        Logger.d(tag: #function, "Calling track with \(trackRequest)")
+        DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
         
         makeHttpRequest(uri: "track", trackRequest,
-            { response in Logger.d(tag: #function, "Sent track with \(String(describing: response))") },
-            { error in Logger.d(tag: #function, "Encountered an error during track(): \(error)") }
+            { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
+            { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
     }
 }

@@ -6,7 +6,7 @@ class DashX: NSObject {
 
     @objc
     func setLogLevel(_ logLevel: Int) {
-        Logger.setLogLevel(to: logLevel)
+        DashXLog.setLogLevel(to: logLevel)
     }
 
     @objc
