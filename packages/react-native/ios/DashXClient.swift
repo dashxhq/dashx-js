@@ -43,12 +43,16 @@ class DashXClient {
             "X-Public-Key": publicKey ?? ""
         ]
         
-        let jsonData = try? JSONEncoder().encode(request)
-        let jsonString = String(data: jsonData!, encoding: .utf8)!
+        func customDataEncoder(data: Data, encoder: Encoder) throws {
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, String>
+            var container = encoder.singleValueContainer()
+            try container.encode(jsonObject)
+        }
         
-        DashXLog.d(tag: #function, jsonString)
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.dataEncodingStrategy = .custom(customDataEncoder)
         
-        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
+        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
                     case let .failure(error):
