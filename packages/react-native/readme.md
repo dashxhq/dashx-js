@@ -1,5 +1,13 @@
 # @dashx/react-native
 
+_DashX React Native SDK_
+
+<p>
+  <a href="/LICENSE">
+    <img src="https://badgen.net/badge/license/MIT/blue" alt="license"/>
+  </a>
+</p>
+
 ## Install
 
 ```sh
