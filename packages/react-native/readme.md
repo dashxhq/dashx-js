@@ -49,7 +49,7 @@ DashX.identify({
 For new user `identify()` accepts following properties
 
 |Name|Type|
-|:--:|:----------|
+|:---:|:--:|
 |**`firstName`**|`string`|
 |**`lastName`**|`string`|
 |**`email`**|`string`|
