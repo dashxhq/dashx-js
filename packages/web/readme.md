@@ -1,19 +1,27 @@
-# @dashx/react-native
+# @dashx/web
+
+_DashX JS SDK for the browser_
+
+<p>
+  <a href="/LICENSE">
+    <img src="https://badgen.net/badge/license/MIT/blue" alt="license"/>
+  </a>
+</p>
 
 ## Install
 
 ```sh
 # via npm
-$ npm install @dashx/react-native
+$ npm install @dashx/web
 
 # via yarn
-$ yarn add @dashx/react-native
+$ yarn add @dashx/web
 ```
 
 ## Usage
 
 ```javascript
-import DashX from '@dashx/react-native';
+import DashX from '@dashx/web';
 
 DashX.setup({ publicKey: 'your_public_key' });
 ```
@@ -36,6 +44,8 @@ DashX.identify({
   phone: '+1-234-567-8910' 
 });
 ```
+
+*Please note that `identify()` should not be called with `null` or `undefined`*
 
 ### Track Events
 

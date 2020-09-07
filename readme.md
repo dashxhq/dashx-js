@@ -1,3 +1,7 @@
 ## dashx-js
 
-- [react-native](packages/react-native/README.md)
+Click on a platform to know more:
+
+- [Web](packages/web/readme.md)
+- [React Native](packages/react-native/readme.md)
+- [Node](packages/node/readme.md)
