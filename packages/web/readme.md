@@ -23,21 +23,30 @@ $ yarn add @dashx/web
 ```javascript
 import DashX from '@dashx/web';
 
-DashX.setup({ publicKey: 'your_public_key' });
+const dashX = DashX({ publicKey: 'your_public_key' });
 ```
+
+`DashX` constructor accepts following properties
+
+|Name|Type|
+|:--:|:---|
+|**`publicKey`**|`string`|
+|**`baseUri`**|`string?`|
+
+By default the value of `baseUri` is `https://api.dashx.com/v1`
 
 ### Identify User
 
 - Existing user
 
 ```javascript
-DashX.identify('uid_of_user');
+dashX.identify('uid_of_user');
 ```
 
 - New user
 
 ```javascript
-DashX.identify({ 
+dashX.identify({ 
   firstName: 'John', 
   lastName: 'Doe', 
   email: 'john@example.com', 
@@ -45,10 +54,19 @@ DashX.identify({
 });
 ```
 
+For new user `identify()` accepts following properties
+
+|Name|Type|
+|:--:|:----------|
+|**`firstName`**|`string?`|
+|**`lastName`**|`string?`|
+|**`email`**|`string?`|
+|**`phone`**|`string?`|
+
 *Please note that `identify()` should not be called with `null` or `undefined`*
 
 ### Track Events
 
 ```javascript
-DashX.track('event_name', { hello: 'world' } /* Event data */);
+dashX.track('event_name', { hello: 'world' } /* Event data */);
 ```

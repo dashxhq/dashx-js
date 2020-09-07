@@ -18,6 +18,15 @@ import DashX from '@dashx/react-native';
 DashX.setup({ publicKey: 'your_public_key' });
 ```
 
+`DashX.setup` accepts following properties in json
+
+|Name|Type|
+|:--:|:---|
+|**`publicKey`**|`string`|
+|**`baseUri`**|`string?`|
+
+By default the value of `baseUri` is `https://api.dashx.com/v1`
+
 ### Identify User
 
 - Existing user
@@ -36,6 +45,16 @@ DashX.identify({
   phone: '+1-234-567-8910' 
 });
 ```
+
+For new user `identify()` accepts following properties
+
+|Name|Type|
+|:--:|:----------|
+|**`firstName`**|`string?`|
+|**`lastName`**|`string?`|
+|**`email`**|`string?`|
+|**`phone`**|`string?`|
+
 *Please note that `identify()` should not be called with `null` or `undefined`*
 
 ### Track Events

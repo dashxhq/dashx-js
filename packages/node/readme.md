@@ -21,13 +21,13 @@ $ yarn add @dashx/node
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient({
+const dashX = DashX.createClient({
   publicKey: process.env.DASHX_PUBLIC_KEY,
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
 
 // Start sending messages
-dashx.deliver('message-identifier', { to: 'john@example.com' }).then(_ => console.log('Mail Sent'));
+dashX.deliver('message-identifier', { to: 'john@example.com' }).then(_ => console.log('Mail Sent'));
 ```
 
 Can also be initialized with no parameters, `dashx-node` will look for these env variables `DASHX_PUBLIC_KEY` and `DASHX_PRIVATE_KEY`.
@@ -36,7 +36,7 @@ Can also be initialized with no parameters, `dashx-node` will look for these env
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient();
+const dashX = DashX.createClient();
 ```
 
 ## Examples
@@ -44,7 +44,7 @@ const dashx = DashX.createClient();
 #### Multiple recipients
 
 ```javascript
-dashx.deliver('message-identifier', {
+dashX.deliver('message-identifier', {
   to: 'John Doe <john@example.com>',
   cc: ['admin@example.com', 'sales@example.com>'],
 });
@@ -53,7 +53,7 @@ dashx.deliver('message-identifier', {
 #### Template variables
 
 ```javascript
-dashx.deliver('message-identifier', {
+dashX.deliver('message-identifier', {
   to: 'john@example.com',
   data: { name: 'John' },
 });
@@ -62,7 +62,7 @@ dashx.deliver('message-identifier', {
 #### Attachment support
 
 ```javascript
-dashx.deliver('message-identifier', {
+dashX.deliver('message-identifier', {
   to: 'jane@example.com',
   attachments: [
     {
@@ -75,10 +75,10 @@ dashx.deliver('message-identifier', {
 
 #### Use as `promise`
 
-`dashx.deliver` returns a promise so you can chain other tasks after successfully sending mail.
+`dashX.deliver` returns a promise so you can chain other tasks after successfully sending mail.
 
 ```javascript
-const promise = dashx.deliver('message-identifier', {
+const promise = dashX.deliver('message-identifier', {
   to: 'John Doe <john@example.com>',
   cc: ['admin@example.com', 'sales@example.com>'],
 });
@@ -96,7 +96,7 @@ promise
 ```javascript
 (async () => {
   try {
-    await dashx.deliver('message-identifier', { to: 'john@example.com' });
+    await dashX.deliver('message-identifier', { to: 'john@example.com' });
   } catch (error) {
     console.log(error);
   }
