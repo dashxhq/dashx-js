@@ -18,7 +18,7 @@ import DashX from '@dashx/react-native';
 DashX.setup({ publicKey: 'your_public_key' });
 ```
 
-`DashX.setup` accepts following properties in json
+`DashX.setup` accepts following properties:
 
 |Name|Type|
 |:---:|:--:|
@@ -46,7 +46,7 @@ DashX.identify({
 });
 ```
 
-For new user `identify()` accepts following properties
+For new user `identify()` accepts following properties:
 
 |Name|Type|
 |:---:|:--:|
