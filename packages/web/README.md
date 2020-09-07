@@ -1,6 +1,6 @@
-# @dashx/react-native
+# @dashx/web
 
-_DashX React Native SDK_
+_DashX JS SDK for the browser_
 
 <p>
   <a href="/LICENSE">
@@ -12,21 +12,21 @@ _DashX React Native SDK_
 
 ```sh
 # via npm
-$ npm install @dashx/react-native
+$ npm install @dashx/web
 
 # via yarn
-$ yarn add @dashx/react-native
+$ yarn add @dashx/web
 ```
 
 ## Usage
 
 ```javascript
-import DashX from '@dashx/react-native';
+import DashX from '@dashx/web';
 
-DashX.setup({ publicKey: 'your_public_key' });
+const dashx = DashX({ publicKey: 'your_public_key' });
 ```
 
-`DashX.setup` accepts following properties:
+`DashX` constructor accepts following properties:
 
 |Name|Type|
 |:---:|:--:|
@@ -40,13 +40,13 @@ By default the value of `baseUri` is `https://api.dashx.com/v1`
 - Existing user
 
 ```javascript
-DashX.identify('uid_of_user');
+dashx.identify('uid_of_user');
 ```
 
 - New user
 
 ```javascript
-DashX.identify({ 
+dashx.identify({ 
   firstName: 'John', 
   lastName: 'Doe', 
   email: 'john@example.com', 
@@ -68,5 +68,5 @@ For new user `identify()` accepts following properties:
 ### Track Events
 
 ```javascript
-DashX.track('event_name', { hello: 'world' } /* Event data */);
+dashx.track('event_name', { hello: 'world' } /* Event data */);
 ```
