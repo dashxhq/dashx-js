@@ -92,7 +92,7 @@ class DashXClient {
     func track(_ event: String, withData: NSDictionary?) {
         let trackRequest: TrackRequest
         
-        if let trackData = try? JSONSerialization.data(withJSONObject: withData) {
+        if let trackData = try? JSONSerialization.data(withJSONObject: withData ?? []) {
             trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
         } else {
             DashXLog.d(tag: #function, "Encountered an error while encoding track data")
