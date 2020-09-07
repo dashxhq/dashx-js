@@ -103,6 +103,15 @@ class DashXClient {
         })
     }
 
+    fun reset () {
+        val dashXSharedPreferences: SharedPreferences = getDashXSharedPreferences(reactApplicationContext!!.applicationContext)
+        this.uid = null
+        this.anonymousUid = UUID.randomUUID().toString()
+        dashXSharedPreferences.edit()
+            .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, this.anonymousUid)
+            .apply()
+    }
+
     fun track(event: String, data: ReadableMap?) {
         val trackRequest = try {
             TrackRequest(event, convertMapToJson(data), uid, anonymousUid)
