@@ -2,6 +2,6 @@
 
 Click on a platform to know more:
 
-- [Web](packages/web/readme.md)
-- [React Native](packages/react-native/readme.md)
-- [Node](packages/node/readme.md)
+- [Web](packages/web/README.md)
+- [React Native](packages/react-native/README.md)
+- [Node](packages/node/README.md)
