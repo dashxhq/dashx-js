@@ -6,9 +6,25 @@ class DashX: NSObject {
 
     @objc
     func setLogLevel(_ logLevel: Int) {
-        Logger.setLogLevel(to: logLevel)
+        DashXLog.setLogLevel(to: logLevel)
     }
 
     @objc
-    func setup() { }
+    func setup(_ options: NSDictionary?) {
+        dashXClient.setPublicKey(to: options?.value(forKey: "publicKey") as! String)
+        
+        if let baseUri = options?.value(forKey: "baseUri") {
+            dashXClient.setBaseUri(to: baseUri as! String)
+        }
+    }
+    
+    @objc(identify:options:)
+    func identify(_ uid: String?, _ options: NSDictionary?) {
+        try? dashXClient.identify(uid, withOptions: options)
+    }
+    
+    @objc(track:data:)
+    func track(_ event: String, _ data: NSDictionary?) {
+        dashXClient.track(event, withData: data)
+    }
 }
