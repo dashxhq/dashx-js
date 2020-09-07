@@ -79,6 +79,12 @@ class Client {
     return this.makeHttpRequest('identify', params)
   }
 
+  reset(): void {
+    this.uid = null
+    this.anonymousUid = uuid()
+    setItem('anonymousUid', this.anonymousUid)
+  }
+
   track(event: string, data?: Record<string, any>): Promise<Response> {
     const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 

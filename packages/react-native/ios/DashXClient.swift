@@ -89,6 +89,14 @@ class DashXClient {
         )
     }
     
+    func reset() {
+        let preferences = UserDefaults.standard
+
+        self.uid = nil
+        self.anonymousUid = UUID().uuidString
+        preferences.set(self.anonymousUid, forKey: Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID)
+    }
+    
     func track(_ event: String, withData: NSDictionary?) {
         let trackRequest: TrackRequest
         
