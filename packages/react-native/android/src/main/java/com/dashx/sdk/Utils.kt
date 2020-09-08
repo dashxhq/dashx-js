@@ -1,4 +1,5 @@
 @file:JvmName("Utils")
+
 package com.dashx.sdk
 
 
@@ -54,7 +55,7 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
     while (iterator.hasNext()) {
         val key = iterator.next()
 
-        if(blacklist.contains(key)) {
+        if (blacklist.contains(key)) {
             continue;
         }
 

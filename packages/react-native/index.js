@@ -7,7 +7,7 @@ const { identify, track } = DashX;
 
 // Handle overloads at JS, because Native modules doesn't allow that
 // https://github.com/facebook/react-native/issues/19116
-DashX.identify = options => {
+DashX.identify = (options) => {
   if (typeof options === 'string') {
     return identify(options, null); // options is a string ie. uid
   } else {
@@ -17,7 +17,7 @@ DashX.identify = options => {
 
 DashX.track = (event, data) => track(event, data || null);
 
-DashX.onMessageReceived = callback =>
+DashX.onMessageReceived = (callback) =>
   dashXEventEmitter.addListener('messageReceived', callback);
 
 export default DashX;
