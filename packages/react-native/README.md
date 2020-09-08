@@ -47,7 +47,7 @@ DashX.identify('uid_of_user');
 
 ```javascript
 DashX.identify({
-  firstName: 'John', 
+  firstName: 'John',
   lastName: 'Doe',
   email: 'john@example.com',
   phone: '+1-234-567-8910'
@@ -76,5 +76,5 @@ DashX.track('event_name', { hello: 'world' } /* Event data */);
 `reset()` clears out the information associated to user and hence should be called after a user logs out.
 
 ```javascript
-DashX.reset()
+DashX.reset();
 ```
