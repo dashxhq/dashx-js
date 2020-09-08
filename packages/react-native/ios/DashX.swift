@@ -23,6 +23,11 @@ class DashX: NSObject {
         try? dashXClient.identify(uid, withOptions: options)
     }
     
+    @objc
+    func reset() {
+        dashXClient.reset()
+    }
+    
     @objc(track:data:)
     func track(_ event: String, _ data: NSDictionary?) {
         dashXClient.track(event, withData: data)

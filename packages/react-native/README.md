@@ -46,11 +46,11 @@ DashX.identify('uid_of_user');
 - New user
 
 ```javascript
-DashX.identify({ 
-  firstName: 'John', 
-  lastName: 'Doe', 
-  email: 'john@example.com', 
-  phone: '+1-234-567-8910' 
+DashX.identify({
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1-234-567-8910'
 });
 ```
 
@@ -69,4 +69,12 @@ For new user `identify()` accepts following properties:
 
 ```javascript
 DashX.track('event_name', { hello: 'world' } /* Event data */);
+```
+
+### Reset User
+
+`reset()` clears out the information associated with a user. *Must* be called after a user logs out.
+
+```javascript
+DashX.reset();
 ```

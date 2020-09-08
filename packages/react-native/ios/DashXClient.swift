@@ -24,11 +24,11 @@ class DashXClient {
         self.publicKey = to
     }
 
-    private func generateAnonymousUid() {
+    private func generateAnonymousUid(withRegenerate: Bool = false) {
         let preferences = UserDefaults.standard
         let anonymousUidKey = Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID
 
-        if preferences.object(forKey: anonymousUidKey) != nil {
+        if !withRegenerate && preferences.object(forKey: anonymousUidKey) != nil {
             self.anonymousUid = preferences.string(forKey: anonymousUidKey) ?? nil
         } else {
             self.anonymousUid = UUID().uuidString
@@ -87,6 +87,11 @@ class DashXClient {
             { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
+    }
+    
+    func reset() {
+        self.uid = nil
+        self.generateAnonymousUid(withRegenerate: true)
     }
     
     func track(_ event: String, withData: NSDictionary?) {

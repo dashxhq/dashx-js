@@ -26,6 +26,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
+    fun reset() {
+        dashXClient.reset()
+    }
+
+    @ReactMethod
     fun track(event: String, data: ReadableMap?) {
         dashXClient.track(event, data)
     }
