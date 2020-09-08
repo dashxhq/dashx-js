@@ -11,12 +11,12 @@ struct TrackRequest: Encodable {
 }
 
 public enum JSONValue: Decodable, Encodable {
-    case string(String)
+    case bool(Bool)
     case int(Int)
     case double(Double)
-    case bool(Bool)
-    case object([String: JSONValue])
+    case string(String)
     case array([JSONValue])
+    case object([String: JSONValue])
     case none
     
     public init(from decoder: Decoder) throws {
