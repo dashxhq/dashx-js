@@ -73,7 +73,7 @@ dashx.track('event_name', { hello: 'world' } /* Event data */);
 
 ### Reset User
 
-`reset()` clears out the information associated to user and hence should be called after a user logs out.
+`reset()` clears out the information associated with a user. *Must* be called after a user logs out.
 
 ```javascript
 dashx.reset();
