@@ -39,10 +39,21 @@ class DashXClient {
     private func makeHttpRequest<T: Encodable>(
         uri: String, _ request: T, _ onSuccess: @escaping (Data?) -> Void, _ onError: @escaping (Error) -> Void
     ) {
+        if publicKey == nil {
+            DashXLog.d(tag: #function, "Public key not set. Aborting.")
+            return
+        }
+        
         let headers: HTTPHeaders = [
-            "X-Public-Key": publicKey ?? ""
+            "X-Public-Key": publicKey!
         ]
         
+        // For debugging
+        if let jsonData = try? JSONEncoder().encode(request),
+        let jsonString = String(data: jsonData, encoding: .utf8) {
+            DashXLog.d(tag: #function, jsonString)
+        }
+
         AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
@@ -90,8 +101,8 @@ class DashXClient {
         
         if withData == nil {
             trackData = nil
-        } else if JSONSerialization.isValidJSONObject(withData) {
-            trackData = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: withData))
+        } else if JSONSerialization.isValidJSONObject(withData!) {
+            trackData = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: withData!))
         } else {
             DashXLog.d(tag: #function, "Encountered an error while encoding track data")
             return

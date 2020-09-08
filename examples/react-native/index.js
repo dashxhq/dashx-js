@@ -16,6 +16,6 @@ DashX.setup({
 });
 
 DashX.identify({ firstName: 'John', lastName: 'Doe' });
-DashX.track('Hello World');
+DashX.track('Logged In', { plan: null, level: 'Beginner' });
 
 AppRegistry.registerComponent(appName, () => App);
