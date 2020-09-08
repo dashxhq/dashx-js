@@ -1,9 +1,12 @@
 package com.dashx.sdk
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private var dashXClient: DashXClient = DashXClient.instance!!
+    private var dashXClient: DashXClient = DashXClient.instance
 
     override fun getName(): String {
         return "DashX"

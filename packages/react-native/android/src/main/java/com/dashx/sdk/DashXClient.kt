@@ -11,7 +11,7 @@ import java.io.IOException
 import java.util.*
 
 
-class DashXClient {
+class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
 
     // Setup variables
@@ -103,7 +103,7 @@ class DashXClient {
         })
     }
 
-    fun reset () {
+    fun reset() {
         uid = null
         generateAnonymousUid(regenerate = true)
     }
@@ -143,13 +143,8 @@ class DashXClient {
     }
 
     companion object {
-        var instance: DashXClient? = null
-            get() {
-                if (field == null) {
-                    field = DashXClient()
-                }
-                return field
-            }
-            private set
+        val instance: DashXClient by lazy {
+            DashXClient()
+        }
     }
 }
