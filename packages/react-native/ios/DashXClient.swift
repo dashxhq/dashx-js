@@ -24,11 +24,11 @@ class DashXClient {
         self.publicKey = to
     }
 
-    private func generateAnonymousUid() {
+    private func generateAnonymousUid(withRegenerate: Bool = false) {
         let preferences = UserDefaults.standard
         let anonymousUidKey = Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID
 
-        if preferences.object(forKey: anonymousUidKey) != nil {
+        if !withRegenerate && preferences.object(forKey: anonymousUidKey) != nil {
             self.anonymousUid = preferences.string(forKey: anonymousUidKey) ?? nil
         } else {
             self.anonymousUid = UUID().uuidString
@@ -90,11 +90,8 @@ class DashXClient {
     }
     
     func reset() {
-        let preferences = UserDefaults.standard
-
         self.uid = nil
-        self.anonymousUid = UUID().uuidString
-        preferences.set(self.anonymousUid, forKey: Constants.USER_PREFERENCES_KEY_ANONYMOUS_UID)
+        self.generateAnonymousUid(withRegenerate: true)
     }
     
     func track(_ event: String, withData: NSDictionary?) {
