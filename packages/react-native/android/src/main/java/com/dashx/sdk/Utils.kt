@@ -1,10 +1,14 @@
 @file:JvmName("Utils")
-package com.dashx.sdk
 
+package com.dashx.sdk
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
@@ -54,7 +58,7 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
     while (iterator.hasNext()) {
         val key = iterator.next()
 
-        if(blacklist.contains(key)) {
+        if (blacklist.contains(key)) {
             continue;
         }
 

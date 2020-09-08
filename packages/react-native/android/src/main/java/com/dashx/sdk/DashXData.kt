@@ -1,5 +1,7 @@
 package com.dashx.sdk
 
+import com.google.gson.JsonObject
+
 data class IdentifyRequest(
     val first_name: String?,
     val last_name: String?,
