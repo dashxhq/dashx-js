@@ -36,10 +36,10 @@ class DashXClient {
         this.publicKey = publicKey
     }
 
-    fun generateAnonymousUid() {
+    fun generateAnonymousUid(regenerate: Boolean = false) {
         val dashXSharedPreferences: SharedPreferences = getDashXSharedPreferences(reactApplicationContext!!.applicationContext)
         val anonymousUid = dashXSharedPreferences.getString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, null)
-        if (anonymousUid != null) {
+        if (!regenerate && anonymousUid != null) {
             this.anonymousUid = anonymousUid
         } else {
             this.anonymousUid = UUID.randomUUID().toString()
@@ -104,12 +104,8 @@ class DashXClient {
     }
 
     fun reset () {
-        val dashXSharedPreferences: SharedPreferences = getDashXSharedPreferences(reactApplicationContext!!.applicationContext)
-        this.uid = null
-        this.anonymousUid = UUID.randomUUID().toString()
-        dashXSharedPreferences.edit()
-            .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, this.anonymousUid)
-            .apply()
+        uid = null
+        generateAnonymousUid(regenerate = true)
     }
 
     fun track(event: String, data: ReadableMap?) {

@@ -70,3 +70,11 @@ For new user `identify()` accepts following properties:
 ```javascript
 dashx.track('event_name', { hello: 'world' } /* Event data */);
 ```
+
+### Reset User
+
+`reset()` clears out the information associated to user and hence should be called after a user logs out.
+
+```
+dashx.reset()
+```
