@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "DashXReactNativeExampleExample-tvOS.app"
-               BlueprintName = "DashXReactNativeExampleExample-tvOS"
-               ReferencedContainer = "container:DashXReactNativeExampleExample.xcodeproj">
+               BuildableName = "DashXReactNativeExample-tvOS.app"
+               BlueprintName = "DashXReactNativeExample-tvOS"
+               ReferencedContainer = "container:DashXReactNativeExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "DashXReactNativeExampleExample-tvOSTests.xctest"
-               BlueprintName = "DashXReactNativeExampleExample-tvOSTests"
-               ReferencedContainer = "container:DashXReactNativeExampleExample.xcodeproj">
+               BuildableName = "DashXReactNativeExample-tvOSTests.xctest"
+               BlueprintName = "DashXReactNativeExample-tvOSTests"
+               ReferencedContainer = "container:DashXReactNativeExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "DashXReactNativeExampleExample-tvOS.app"
-            BlueprintName = "DashXReactNativeExampleExample-tvOS"
-            ReferencedContainer = "container:DashXReactNativeExampleExample.xcodeproj">
+            BuildableName = "DashXReactNativeExample-tvOS.app"
+            BlueprintName = "DashXReactNativeExample-tvOS"
+            ReferencedContainer = "container:DashXReactNativeExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "DashXReactNativeExampleExample-tvOS.app"
-            BlueprintName = "DashXReactNativeExampleExample-tvOS"
-            ReferencedContainer = "container:DashXReactNativeExampleExample.xcodeproj">
+            BuildableName = "DashXReactNativeExample-tvOS.app"
+            BlueprintName = "DashXReactNativeExample-tvOS"
+            ReferencedContainer = "container:DashXReactNativeExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

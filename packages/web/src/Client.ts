@@ -35,9 +35,9 @@ class Client {
     this.generateAnonymousUid()
   }
 
-  private generateAnonymousUid(): void {
+  private generateAnonymousUid(regenerate = false): void {
     const anonymousUid = getItem('anonymousUid')
-    if (anonymousUid) {
+    if (!regenerate && anonymousUid) {
       this.anonymousUid = anonymousUid
       return
     }
@@ -77,6 +77,11 @@ class Client {
     }
 
     return this.makeHttpRequest('identify', params)
+  }
+
+  reset(): void {
+    this.uid = null
+    this.generateAnonymousUid(true)
   }
 
   track(event: string, data?: Record<string, any>): Promise<Response> {

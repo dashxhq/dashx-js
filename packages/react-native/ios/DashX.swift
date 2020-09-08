@@ -1,0 +1,35 @@
+import Foundation
+
+@objc(DashX)
+class DashX: NSObject {
+    private var dashXClient = DashXClient.instance
+
+    @objc
+    func setLogLevel(_ logLevel: Int) {
+        DashXLog.setLogLevel(to: logLevel)
+    }
+
+    @objc
+    func setup(_ options: NSDictionary?) {
+        dashXClient.setPublicKey(to: options?.value(forKey: "publicKey") as! String)
+        
+        if let baseUri = options?.value(forKey: "baseUri") {
+            dashXClient.setBaseUri(to: baseUri as! String)
+        }
+    }
+    
+    @objc(identify:options:)
+    func identify(_ uid: String?, _ options: NSDictionary?) {
+        try? dashXClient.identify(uid, withOptions: options)
+    }
+    
+    @objc
+    func reset() {
+        dashXClient.reset()
+    }
+    
+    @objc(track:data:)
+    func track(_ event: String, _ data: NSDictionary?) {
+        dashXClient.track(event, withData: data)
+    }
+}

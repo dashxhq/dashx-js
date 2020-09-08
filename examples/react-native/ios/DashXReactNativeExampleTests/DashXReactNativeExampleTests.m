@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface DashXReactNativeExampleExampleTests : XCTestCase
+@interface DashXReactNativeExampleTests : XCTestCase
 
 @end
 
-@implementation DashXReactNativeExampleExampleTests
+@implementation DashXReactNativeExampleTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {
