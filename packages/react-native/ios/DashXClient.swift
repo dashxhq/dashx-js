@@ -43,16 +43,7 @@ class DashXClient {
             "X-Public-Key": publicKey ?? ""
         ]
         
-        func customDataEncoder(data: Data, encoder: Encoder) throws {
-            let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, String>
-            var container = encoder.singleValueContainer()
-            try container.encode(jsonObject)
-        }
-        
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.dataEncodingStrategy = .custom(customDataEncoder)
-        
-        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
+        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
                     case let .failure(error):
@@ -95,15 +86,19 @@ class DashXClient {
     }
     
     func track(_ event: String, withData: NSDictionary?) {
-        let trackRequest: TrackRequest
+        let trackData: JSONValue?
         
-        if let trackData = try? JSONSerialization.data(withJSONObject: withData ?? []) {
-            trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
+        if withData == nil {
+            trackData = nil
+        } else if JSONSerialization.isValidJSONObject(withData) {
+            trackData = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: withData))
         } else {
             DashXLog.d(tag: #function, "Encountered an error while encoding track data")
             return
         }
         
+        let trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
+
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
         
         makeHttpRequest(uri: "track", trackRequest,
