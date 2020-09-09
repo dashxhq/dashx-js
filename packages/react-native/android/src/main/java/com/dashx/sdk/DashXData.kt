@@ -17,17 +17,9 @@ data class TrackRequest(
     val anonymous_uid: String?
 )
 
-data class TrackResponse(
-    val success: Boolean
-)
-
 data class SubscribeRequest(
     val value: String,
     val kind: String,
     val uid: String?,
     val anonymous_uid: String?
-)
-
-data class SubscribeResponse(
-    val success: Boolean
 )

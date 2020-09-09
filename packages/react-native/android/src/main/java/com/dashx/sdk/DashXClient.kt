@@ -187,14 +187,9 @@ class DashXClient private constructor() {
                     return
                 }
 
-                val trackResponse: TrackResponse = gson.fromJson(response.body?.string(), TrackResponse::class.java)
+                val trackResponse = response.body?.string()
 
-                if (!trackResponse.success) {
-                    DashXLog.d(tag, "Encountered an error during track(): $trackResponse")
-                    return
-                }
-
-                DashXLog.d(tag, "Sent event: $trackRequest")
+                DashXLog.d(tag, "Sent event: $trackRequest, $trackResponse")
             }
         })
     }
@@ -231,14 +226,9 @@ class DashXClient private constructor() {
                     return
                 }
 
-                val subscribeResponse: SubscribeResponse = gson.fromJson(response.body?.string(), SubscribeResponse::class.java)
+                val subscribeResponse = response.body?.string()
 
-                if (!subscribeResponse.success) {
-                    DashXLog.d(tag, "Encountered an error during subscribe(): $subscribeResponse")
-                    return
-                }
-
-                DashXLog.d(tag, "Subscribed: $deviceToken")
+                DashXLog.d(tag, "Subscribed: $deviceToken, $subscribeResponse")
             }
         })
     }
