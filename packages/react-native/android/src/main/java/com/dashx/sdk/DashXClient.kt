@@ -9,15 +9,20 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
+import okhttp3.Response
 import java.io.IOException
-import java.util.*
+import java.util.HashMap
+import java.util.UUID
 
 
-class DashXClient {
+class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
 
     // Setup variables
@@ -145,7 +150,7 @@ class DashXClient {
         })
     }
 
-    fun reset () {
+    fun reset() {
         uid = null
         generateAnonymousUid(regenerate = true)
     }
@@ -224,13 +229,8 @@ class DashXClient {
     }
 
     companion object {
-        var instance: DashXClient? = null
-            get() {
-                if (field == null) {
-                    field = DashXClient()
-                }
-                return field
-            }
-            private set
+        val instance: DashXClient by lazy {
+            DashXClient()
+        }
     }
 }
