@@ -22,9 +22,8 @@ data class TrackResponse(
 )
 
 data class SubscribeRequest(
-    val device_token: String,
-    val device_name: String,
-    val device_kind: String,
+    val value: String,
+    val kind: String,
     val uid: String?,
     val anonymous_uid: String?
 )

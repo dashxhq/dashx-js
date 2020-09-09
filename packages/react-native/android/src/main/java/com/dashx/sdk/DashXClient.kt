@@ -1,7 +1,6 @@
 package com.dashx.sdk
 
 import android.content.SharedPreferences
-import android.os.Build
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
@@ -11,12 +10,14 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONException
 import okhttp3.Response
+import okhttp3.internal.http2.Header
+import org.json.JSONException
 import java.io.IOException
 import java.util.HashMap
 import java.util.UUID
@@ -33,6 +34,7 @@ class DashXClient private constructor() {
     private var anonymousUid: String? = null
     private var uid: String? = null
     private var deviceToken: String? = null
+    private var identityToken: String? = null
 
     private val httpClient = OkHttpClient()
     private val gson = Gson()
@@ -51,6 +53,11 @@ class DashXClient private constructor() {
 
     fun setDeviceToken(deviceToken: String) {
         this.deviceToken = deviceToken
+        subscribe()
+    }
+
+    fun setIdentityToken(identityToken: String) {
+        this.identityToken = identityToken
         subscribe()
     }
 
@@ -73,7 +80,7 @@ class DashXClient private constructor() {
         DashXLog.d(tag, "Data: " + remoteMessage.data)
 
         try {
-            eventProperties.putMap("data", convertToWritableMap(remoteMessage.data, Arrays.asList(dashXNotificationFilter)))
+            eventProperties.putMap("data", convertToWritableMap(remoteMessage.data, listOf(dashXNotificationFilter)))
         } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing notification data")
             e.printStackTrace()
@@ -96,10 +103,13 @@ class DashXClient private constructor() {
             ?.emit(eventName, params)
     }
 
-    private fun <T> makeHttpRequest(uri: String, body: T, callback: Callback) {
+    private fun <T> makeHttpRequest(uri: String, body: T, extraHeaders: Headers? = null, callback: Callback) {
+        val headerBuilder = Headers.Builder().add("X-Public-Key", publicKey!!)
+        extraHeaders?.let { it -> headerBuilder.addAll(it) }
+
         val request: Request = Request.Builder()
             .url("$baseURI/$uri")
-            .addHeader("X-Public-Key", publicKey!!)
+            .headers(headerBuilder.build())
             .post(gson.toJson(body).toString().toRequestBody(json))
             .build()
 
@@ -132,7 +142,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest("identify", identifyRequest, object : Callback {
+        makeHttpRequest(uri = "identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -164,7 +174,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest("track", trackRequest, object : Callback {
+        makeHttpRequest(uri = "track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
@@ -190,20 +200,25 @@ class DashXClient private constructor() {
     }
 
     private fun subscribe() {
-        val deviceName = Build.BRAND + " " + Build.MODEL
-        val deviceKind = "android"
+        if (deviceToken == null || identityToken == null) {
+            DashXLog.d(tag,
+                "Subscribe called with deviceToken: $deviceToken and identityToken: $identityToken")
+            return
+        }
+
+        val deviceKind = "ANDROID"
 
         val subscribeRequest = try {
-            deviceToken?.let { deviceToken ->
-                SubscribeRequest(deviceToken, deviceName, deviceKind, uid, anonymousUid)
-            }
+            SubscribeRequest(deviceToken!!, deviceKind, uid, anonymousUid)
         } catch (e: JSONException) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
         }
 
-        makeHttpRequest("subscribe", subscribeRequest, object : Callback {
+        val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
+
+        makeHttpRequest("subscribe", subscribeRequest, headers, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
                 e.printStackTrace()
@@ -219,7 +234,7 @@ class DashXClient private constructor() {
                 val subscribeResponse: SubscribeResponse = gson.fromJson(response.body?.string(), SubscribeResponse::class.java)
 
                 if (!subscribeResponse.success) {
-                    DashXLog.d(tag, "Encountered an error during track(): $subscribeResponse")
+                    DashXLog.d(tag, "Encountered an error during subscribe(): $subscribeResponse")
                     return
                 }
 

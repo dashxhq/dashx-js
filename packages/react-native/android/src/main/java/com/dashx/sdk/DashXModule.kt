@@ -38,6 +38,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         dashXClient.track(event, data)
     }
 
+    @ReactMethod
+    fun setIdentityToken(identityToken: String) {
+        dashXClient.setIdentityToken(identityToken)
+    }
+
     init {
         dashXClient.reactApplicationContext = reactContext
         dashXClient.generateAnonymousUid()
