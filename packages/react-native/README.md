@@ -85,7 +85,7 @@ DashX.setup({ publicKey: 'your_public_key' });
 
 `DashX.setup` accepts following properties:
 
-|Name|Type|Default Value|
+|Name|Type|Default value|
 |:---:|:--:|:---:|
 |**`publicKey`**|`string` _(Required)_ |`null`|
 |**`baseUri`**|`string`|`https://api.dashx.com/v1`|
@@ -97,7 +97,7 @@ DashX.setup({ publicKey: 'your_public_key' });
 - `Application Installed`
 - `Application Updated`
 - `Application Opened`
-- `Application Backgrounded` with `session_length` in data.
+- `Application Backgrounded` with `session_length` in milliseconds in data.
 - `Application Crashed` with `exception` in data.
 
 `trackScreenViews` when enabled will send this event whenever a screen/activity is viewed:
