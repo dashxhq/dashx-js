@@ -9,3 +9,8 @@ struct TrackRequest: Encodable {
     let anonymous_uid, uid: String?
     let data: Data?
 }
+
+struct SubscribeRequest: Encodable {
+    let value, kind: String
+    let anonymous_uid, uid: String?
+}

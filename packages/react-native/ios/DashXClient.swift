@@ -10,6 +10,8 @@ class DashXClient {
     private var anonymousUid: String?
     private var publicKey: String?
     private var uid: String?
+    private var deviceToken: String?
+    private var identityToken: String?
     private var baseUri: String = "https://api.dashx.com/v1"
 
     private init() {
@@ -22,6 +24,14 @@ class DashXClient {
     
     func setPublicKey(to: String) {
         self.publicKey = to
+    }
+    
+    func setDeviceToken(to: String) {
+        self.deviceToken = to
+    }
+    
+    func setIdentityToken(to: String) {
+        self.identityToken = to
     }
 
     private func generateAnonymousUid(withRegenerate: Bool = false) {
@@ -37,11 +47,18 @@ class DashXClient {
     }
     
     private func makeHttpRequest<T: Encodable>(
-        uri: String, _ request: T, _ onSuccess: @escaping (Data?) -> Void, _ onError: @escaping (Error) -> Void
+        uri: String,
+        _ request: T,
+        withHeaders: Dictionary<String, String> = [:],
+        _ onSuccess: @escaping (Data?) -> Void,
+        _ onError: @escaping (Error) -> Void
     ) {
-        let headers: HTTPHeaders = [
-            "X-Public-Key": publicKey ?? ""
-        ]
+        
+        let headerDictionary = extraHeaders.merging(
+            [ "X-Public-Key": publicKey ?? "" ]
+        ) { (current, _) in current }
+        
+        let headers = HTTPHeaders.init(headerDictionary)
         
         func customDataEncoder(data: Data, encoder: Encoder) throws {
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, String>
@@ -109,6 +126,26 @@ class DashXClient {
         makeHttpRequest(uri: "track", trackRequest,
             { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
+        )
+    }
+    
+    func subscribe() {
+        if deviceToken == nil && identityToken == nil {
+            return
+        }
+        
+        let deviceKind = "IOS"
+        let subscribeRequest = SubscribeRequest(
+            value: deviceToken!, kind:deviceKind, anonymous_uid: anonymousUid, uid: uid
+        )
+        
+        DashXLog.d(tag: #function, "Calling subscribe with \(subscribeRequest)")
+        
+        let headers = [ "X-Identity-Token": identityToken! ]
+        
+        makeHttpRequest(uri: "subscribe", subscribeRequest, withHeaders: headers,
+            { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") },
+            { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
     }
 }
