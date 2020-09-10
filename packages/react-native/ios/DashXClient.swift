@@ -130,7 +130,7 @@ class DashXClient {
     }
     
     func subscribe() {
-        if deviceToken == nil && identityToken == nil {
+        if deviceToken == nil || identityToken == nil {
             return
         }
         
