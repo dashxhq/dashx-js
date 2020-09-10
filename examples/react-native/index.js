@@ -16,6 +16,4 @@ DashX.setup({
   baseUri: 'http://api.dashx-staging.com/v1',
 });
 
-DashX.setIdentityToken(Config.DASHX_IDENTITY_TOKEN);
-
 AppRegistry.registerComponent(appName, () => App);
