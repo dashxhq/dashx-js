@@ -20,7 +20,7 @@ $ yarn add @dashx/react-native
 
 ### Setup for Android
 
-DashX requires Google Services installed in your app in order to Firebase to work.
+DashX requires Google Services installed in your app for Firebase to work.
 
 To install Google Services:
 
@@ -35,21 +35,41 @@ buildscript {
 }
 ```
 
-- And then add this line in your `/android/app/build.gradle`
+- Add this line in your `/android/app/build.gradle`
 
 ```gradle
 apply plugin: 'com.google.gms.google-services'
 ```
 
-- Add your Android app on Firebase Console.
+- Add your Android app on Firebase Console: `Project Overview > Add App > Android`
 
 - Download `google-services.json` from there.
 
-- Add `google-services.json` at the following location `/android/app/google-services.json`
+- Add `google-services.json` at the following location: `/android/app/google-services.json`
 
-### Setup for ios
+### Setup for iOS
 
-- Add your ios app on Firebase Console.
+- At the top of the file `/ios/{projectName}/AppDelegate.m` import Firebase:
+
+```objective-c
+#import <Firebase.h>
+```
+
+- In the same file, inside your `didFinishLaunchingWithOptions` add this:
+
+```objective-c
+if ([FIRApp defaultApp] == nil) {
+  [FIRApp configure];
+}
+```
+
+- In your `Podfile` add this:
+
+```ruby
+pod 'FirebaseInstanceID', :modular_headers => true
+```
+
+- Add your iOS app on Firebase Console: `Project Overview > Add App > iOS`
 
 - Download `GoogleService-Info.plist`
 
@@ -114,4 +134,21 @@ DashX.track('event_name', { hello: 'world' } /* Event data */);
 
 ```javascript
 DashX.reset();
+```
+
+### Set Identity Token
+
+In order to subcribe to push notifications you need to set identity token like so
+
+```javascript
+DashX.setIdentityToken('identity_token');
+```
+
+You can generate identity token by using `POST` `/v1/generate_token` which accepts
+
+```json
+{
+  "value": "uid_here",
+  "key": "dashx_private_key"
+}
 ```

@@ -26,6 +26,4 @@ DashX.track('Added Product to Cart', {
   coupon: null
 });
 
-DashX.setIdentityToken(Config.DASHX_IDENTITY_TOKEN);
-
 AppRegistry.registerComponent(appName, () => App);
