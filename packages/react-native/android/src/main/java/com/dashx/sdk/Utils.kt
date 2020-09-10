@@ -1,12 +1,16 @@
 @file:JvmName("Utils")
-package com.dashx.sdk
 
+package com.dashx.sdk
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
@@ -38,7 +42,8 @@ fun convertArrayToJson(readableArray: ReadableArray?): JsonArray {
     val jsonArray = JsonArray()
     for (i in 0 until readableArray!!.size()) {
         when (readableArray.getType(i)) {
-            ReadableType.Null -> {}
+            ReadableType.Null -> {
+            }
             ReadableType.Boolean -> jsonArray.add(readableArray.getBoolean(i))
             ReadableType.Number -> jsonArray.add(readableArray.getDouble(i))
             ReadableType.String -> jsonArray.add(readableArray.getString(i))
@@ -57,7 +62,7 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
     while (iterator.hasNext()) {
         val key = iterator.next()
 
-        if(blacklist.contains(key)) {
+        if (blacklist.contains(key)) {
             continue;
         }
 

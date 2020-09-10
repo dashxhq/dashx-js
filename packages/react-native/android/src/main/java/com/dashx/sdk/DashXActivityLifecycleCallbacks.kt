@@ -44,7 +44,17 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     companion object {
         private var dashXActivityLifecycleCallbacks: DashXActivityLifecycleCallbacks? = null
 
-        fun enable(context: Context) {
+        fun enableActivityLifecycleTracking(context: Context) {
+            if (dashXActivityLifecycleCallbacks != null) {
+                return
+            }
+
+            dashXActivityLifecycleCallbacks = DashXActivityLifecycleCallbacks()
+            val application = context as Application
+            application.registerActivityLifecycleCallbacks(dashXActivityLifecycleCallbacks)
+        }
+
+        fun enableScreenTracking(context: Context) {
             if (dashXActivityLifecycleCallbacks != null) {
                 return
             }

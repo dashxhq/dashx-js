@@ -6,7 +6,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private var dashXClient: DashXClient = DashXClient.instance!!
+    private var dashXClient: DashXClient = DashXClient.instance
 
     override fun getName(): String {
         return "DashX"
@@ -37,6 +37,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun identify(uid: String?, options: ReadableMap?) {
         dashXClient.identify(uid, options)
+    }
+
+    @ReactMethod
+    fun reset() {
+        dashXClient.reset()
     }
 
     @ReactMethod
