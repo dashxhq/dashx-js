@@ -98,11 +98,11 @@ DashX.setup({ publicKey: 'your_public_key' });
 - `Application Updated`
 - `Application Opened`
 - `Application Backgrounded` with `session_length` in milliseconds.
-- `Application Crashed` with `exception`.
+- `Application Crashed` with `exception`
 
 `trackScreenViews` when enabled will send this event whenever a screen/activity is viewed:
 
-- `Screen Viewed` with `activity_name`.
+- `Screen Viewed` with `activity_name`
 
 ### Identify User
 
