@@ -16,6 +16,13 @@ DashX.setup({
 });
 
 DashX.identify({ firstName: 'John', lastName: 'Doe' });
-DashX.track('Hello World');
+
+DashX.track('Added Product to Cart', {
+  productId: 101,
+  price: 14.99,
+  size: 'large',
+  isFeatured: true,
+  coupon: null
+});
 
 AppRegistry.registerComponent(appName, () => App);
