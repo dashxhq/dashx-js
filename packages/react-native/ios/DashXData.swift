@@ -60,3 +60,8 @@ public enum JSONValue: Decodable, Encodable {
         }
     }
 }
+
+struct SubscribeRequest: Encodable {
+    let value, kind: String
+    let anonymous_uid, uid: String?
+}

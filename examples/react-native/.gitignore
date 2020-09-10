@@ -14,3 +14,8 @@
 
 # CocoaPods
 /ios/Pods/
+
+# Firebase Settings
+#
+google-services.json
+GoogleService-Info.plist
