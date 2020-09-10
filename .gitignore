@@ -52,7 +52,3 @@ dist
 # Environment Variables
 #
 .env
-
-# Firebase Settings
-#
-google-services.json

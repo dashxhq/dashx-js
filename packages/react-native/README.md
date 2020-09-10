@@ -18,6 +18,43 @@ $ npm install @dashx/react-native
 $ yarn add @dashx/react-native
 ```
 
+### Setup for Android
+
+DashX requires Google Services installed in your app in order to Firebase to work.
+
+To install Google Services:
+
+- Add `google-services` plugin in your `/android/build.gradle`
+
+```gradle
+buildscript {
+  dependencies {
+    // ... other dependencies
+    classpath 'com.google.gms:google-services:4.3.3'
+  }
+}
+```
+
+- And then add this line in your `/android/app/build.gradle`
+
+```gradle
+apply plugin: 'com.google.gms.google-services'
+```
+
+- Add your Android app on Firebase Console.
+
+- Download `google-services.json` from there.
+
+- Add `google-services.json` at the following location `/android/app/google-services.json`
+
+### Setup for ios
+
+- Add your ios app on Firebase Console.
+
+- Download `GoogleService-Info.plist`
+
+- Add `GoogleService-Info.plist` using XCode by right clicking on project and select `Add Files`, select your downloaded file and make sure `Copy items if needed` is checked.
+
 ## Usage
 
 ```javascript
