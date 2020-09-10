@@ -69,13 +69,13 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
-<<<<<<< HEAD
     fun screen(screenName: String, data: ReadableMap?) {
         dashXClient.screen(screenName, data)
-=======
+    }
+
+    @ReactMethod
     fun setIdentityToken(identityToken: String) {
         dashXClient.setIdentityToken(identityToken)
->>>>>>> 8e412576930208c9036c9eb8aa37a61e6c0e5aab
     }
 
     init {
