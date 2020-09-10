@@ -49,6 +49,28 @@ apply plugin: 'com.google.gms.google-services'
 
 ### Setup for ios
 
+- Add these lines in your `/ios/{projectName}/AppDelegate.m`
+
+  - At the top of the file import Firebase:
+
+  ```objective-c
+  #import <Firebase.h>
+  ```
+
+  - And inside your `didFinishLaunchingWithOptions` add this:
+
+  ```objective-c
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
+  ```
+
+- In your pod file add this:
+
+```ruby
+pod 'FirebaseInstanceID', :modular_headers => true
+```
+
 - Add your ios app on Firebase Console.
 
 - Download `GoogleService-Info.plist`
@@ -114,4 +136,21 @@ DashX.track('event_name', { hello: 'world' } /* Event data */);
 
 ```javascript
 DashX.reset();
+```
+
+### Set Identity Token
+
+In order to subcribe to push notifications you need to set identity token like so
+
+```javascript
+DashX.setIdentityToken('your_public_key');
+```
+
+You can generate identity token by using `POST` `/v1/generate_token` which accepts
+
+```json
+{
+  "value": "uid_here",
+  "key": "dashx_private_key"
+}
 ```
