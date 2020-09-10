@@ -2,7 +2,7 @@ package com.dashx.sdk
 
 class DashXExceptionHandler(private val mainExceptionHandler: Thread.UncaughtExceptionHandler)
     : Thread.UncaughtExceptionHandler {
-    private val dashXClient: DashXClient? = DashXClient.instance
+    private val dashXClient: DashXClient = DashXClient.instance
 
     companion object {
         fun enable() {
@@ -17,7 +17,7 @@ class DashXExceptionHandler(private val mainExceptionHandler: Thread.UncaughtExc
     }
 
     override fun uncaughtException(thread: Thread?, exception: Throwable?) {
-        dashXClient?.trackAppCrashed(exception)
+        dashXClient.trackAppCrashed(exception)
         mainExceptionHandler.uncaughtException(thread, exception)
     }
 }

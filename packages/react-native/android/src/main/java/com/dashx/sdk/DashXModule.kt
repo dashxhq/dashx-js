@@ -22,11 +22,15 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         dashXClient.setPublicKey(options.getString("publicKey")!!)
 
         if (options.hasKey("trackAppExceptions") && options.getBoolean("trackAppExceptions")) {
-            DashXExceptionHandler.enable();
+            DashXExceptionHandler.enable()
         }
 
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
-            DashXActivityLifecycleCallbacks.enable(reactContext.applicationContext);
+            DashXActivityLifecycleCallbacks.enableActivityLifecycleTracking(reactContext.applicationContext)
+        }
+
+        if (options.hasKey("trackScreenViews") && options.getBoolean("trackScreenViews")) {
+            DashXActivityLifecycleCallbacks.enableScreenTracking(reactContext.applicationContext)
         }
 
         if (options.hasKey("baseUri")) {

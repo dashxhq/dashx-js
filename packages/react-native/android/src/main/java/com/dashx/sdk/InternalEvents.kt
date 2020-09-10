@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.text.format.DateUtils
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReadableMap
 import kotlin.math.roundToInt
 
 fun DashXClient.trackAppStarted() {
@@ -48,4 +49,11 @@ fun DashXClient.trackAppCrashed(exception: Throwable?) {
     val eventProperties = Arguments.createMap()
     eventProperties.putString("exception", message)
     this.track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
+}
+
+fun DashXClient.screen(activityName: String, properties: ReadableMap) {
+    val data = Arguments.createMap()
+    data.putString("name", activityName)
+    data.putMap("properties", properties)
+    track(INTERNAL_EVENT_APP_SCREEN_CHANGED, data)
 }
