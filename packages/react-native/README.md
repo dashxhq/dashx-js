@@ -49,21 +49,19 @@ apply plugin: 'com.google.gms.google-services'
 
 ### Setup for ios
 
-- Add these lines in your `/ios/{projectName}/AppDelegate.m`
+- At the top of the file `/ios/{projectName}/AppDelegate.m` import Firebase:
 
-  - At the top of the file import Firebase:
+```objective-c
+#import <Firebase.h>
+```
 
-  ```objective-c
-  #import <Firebase.h>
-  ```
+- In the same file, inside your `didFinishLaunchingWithOptions` add this:
 
-  - And inside your `didFinishLaunchingWithOptions` add this:
-
-  ```objective-c
-  if ([FIRApp defaultApp] == nil) {
-    [FIRApp configure];
-  }
-  ```
+```objective-c
+if ([FIRApp defaultApp] == nil) {
+  [FIRApp configure];
+}
+```
 
 - In your pod file add this:
 
