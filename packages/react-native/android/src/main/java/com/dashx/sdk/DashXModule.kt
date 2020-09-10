@@ -24,11 +24,8 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     fun setup(options: ReadableMap) {
         dashXClient.setPublicKey(options.getString("publicKey")!!)
 
-        if (options.hasKey("trackAppExceptions") && options.getBoolean("trackAppExceptions")) {
-            DashXExceptionHandler.enable()
-        }
-
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
+            DashXExceptionHandler.enable()
             DashXActivityLifecycleCallbacks.enableActivityLifecycleTracking(reactContext.applicationContext)
         }
 
@@ -37,7 +34,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         }
 
         if (options.hasKey("baseUri")) {
-            options.getString("baseUri")?.let { it ->  dashXClient.setBaseURI(it) }
+            options.getString("baseUri")?.let { it -> dashXClient.setBaseURI(it) }
         }
 
         FirebaseInstanceId.getInstance().instanceId

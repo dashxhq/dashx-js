@@ -15,7 +15,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
 
-fun Context.getPackageInfo(): PackageInfo = this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_META_DATA)
+fun getPackageInfo(context: Context): PackageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
 fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
 fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
 

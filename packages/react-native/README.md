@@ -85,12 +85,24 @@ DashX.setup({ publicKey: 'your_public_key' });
 
 `DashX.setup` accepts following properties:
 
-|Name|Type|
-|:---:|:--:|
-|**`publicKey`**|`string` _(Required)_ |
-|**`baseUri`**|`string`|
+|Name|Type|Default Value|
+|:---:|:--:|:---:|
+|**`publicKey`**|`string` _(Required)_ |`null`|
+|**`baseUri`**|`string`|`https://api.dashx.com/v1`|
+|**`trackAppLifecycleEvents`**|`boolean`|`false`|
+|**`trackScreenViews`**|`boolean`|`false`|
 
-By default the value of `baseUri` is `https://api.dashx.com/v1`
+`trackAppLifecycleEvents` when enabled will automatically track these events:
+
+- `Application Installed`
+- `Application Updated`
+- `Application Opened`
+- `Application Backgrounded` with `session_length` in data.
+- `Application Crashed` with `exception` in data.
+
+`trackScreenViews` when enabled will send this event whenever a screen/activity is viewed.
+
+- `Screen Viewed` with `activity_name` in data.
 
 ### Identify User
 

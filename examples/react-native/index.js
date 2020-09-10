@@ -15,7 +15,7 @@ DashX.setup({
   publicKey: Config.DASHX_PUBLIC_KEY,
   baseUri: 'http://api.dashx-staging.com/v1',
   trackAppLifecycleEvents: true,
-  trackAppExceptions: true
+  trackScreenViews: true
 });
 
 DashX.identify({ firstName: 'John', lastName: 'Doe' });
