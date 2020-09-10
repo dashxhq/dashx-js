@@ -1,5 +1,5 @@
 import Foundation
-import Firebase
+import FirebaseInstanceID
 
 @objc(DashX)
 class DashX: NSObject {
@@ -20,10 +20,10 @@ class DashX: NSObject {
         
         InstanceID.instanceID().instanceID { (result, error) in
             if let error = error {
-                DashXLog.d("Error fetching remote instance ID: \(error)")
+                DashXLog.d(tag: #function, "Error fetching remote instance ID: \(error)")
             } else if let result = result {
-                DashXLog.d("Firebase initialised with: \(result.token)")
-                dashXClient.setDeviceToken(to: result.token)
+                DashXLog.d(tag:  #function, "Firebase initialised with: \(result.token)")
+                self.dashXClient.setDeviceToken(to: result.token)
             }
         }
     }

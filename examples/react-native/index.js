@@ -16,6 +16,16 @@ DashX.setup({
   baseUri: 'http://api.dashx-staging.com/v1',
 });
 
+DashX.identify({ firstName: 'John', lastName: 'Doe' });
+
+DashX.track('Added Product to Cart', {
+  productId: 101,
+  price: 14.99,
+  size: 'large',
+  isFeatured: true,
+  coupon: null
+});
+
 DashX.setIdentityToken(Config.DASHX_IDENTITY_TOKEN);
 
 AppRegistry.registerComponent(appName, () => App);
