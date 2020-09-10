@@ -21,7 +21,7 @@ fun getDashXSharedPreferences(context: Context): SharedPreferences = context.get
 
 @Throws(JSONException::class)
 fun convertMapToJson(readableMap: ReadableMap?): JsonObject? {
-    val iterator = readableMap?.keySetIterator() ?: return null;
+    val iterator = readableMap?.keySetIterator() ?: return null
     val jsonObject = JsonObject()
     while (iterator.hasNextKey()) {
         val key = iterator.nextKey()

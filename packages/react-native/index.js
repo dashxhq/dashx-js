@@ -1,6 +1,7 @@
-import { NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 
 const { DashX } = NativeModules;
+const dashXEventEmitter = new NativeEventEmitter(DashX);
 
 const { identify, track } = DashX;
 
@@ -15,5 +16,8 @@ DashX.identify = (options) => {
 };
 
 DashX.track = (event, data) => track(event, data || null);
+
+DashX.onMessageReceived = (callback) =>
+  dashXEventEmitter.addListener('messageReceived', callback);
 
 export default DashX;
