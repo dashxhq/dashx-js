@@ -6,9 +6,10 @@ platform :ios, '10.0'
 target 'DashXReactNativeExample' do
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
+  pod 'Firebase'
+  pod 'Firebase/Messaging'
 
-  pod 'DashX', :path => '../node_modules/@dashx/react-native'
+  use_react_native!(:path => config["reactNativePath"])
 
   target 'DashXReactNativeExampleTests' do
     inherit! :complete
