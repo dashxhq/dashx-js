@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReadableMap
 import kotlin.math.roundToInt
 
 fun DashXClient.trackAppStarted() {
-    val context = this.reactApplicationContext?.applicationContext ?: return
+    val context = reactApplicationContext?.applicationContext ?: return
 
     val packageInfo = context.getPackageInfo()
     val currentBuild = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -25,10 +25,10 @@ fun DashXClient.trackAppStarted() {
 
     when {
         getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE ->
-            this.track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
+            track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
         getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) < currentBuild ->
-            this.track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
-        else -> this.track(INTERNAL_EVENT_APP_OPENED, eventProperties)
+            track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
+        else -> track(INTERNAL_EVENT_APP_OPENED, eventProperties)
     }
 
     val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
@@ -41,14 +41,14 @@ fun DashXClient.trackAppSession(elapsedTime: Double) {
     val elapsedTimeRounded = ((elapsedTime / 1000) * 10.0).roundToInt() / 10.0
     val eventProperties = Arguments.createMap()
     eventProperties.putString("session_length", DateUtils.formatElapsedTime(elapsedTimeRounded.toLong()))
-    this.track(INTERNAL_EVENT_APP_BACKGROUNDED, eventProperties)
+    track(INTERNAL_EVENT_APP_BACKGROUNDED, eventProperties)
 }
 
 fun DashXClient.trackAppCrashed(exception: Throwable?) {
     val message = exception?.message
     val eventProperties = Arguments.createMap()
     eventProperties.putString("exception", message)
-    this.track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
+    track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
 }
 
 fun DashXClient.screen(activityName: String, properties: ReadableMap) {
