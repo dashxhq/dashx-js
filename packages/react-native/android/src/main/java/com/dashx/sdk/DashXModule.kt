@@ -34,7 +34,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         }
 
         if (options.hasKey("baseUri")) {
-            dashXClient.setBaseURI(options.getString("baseUri")!!)
+            options.getString("baseUri")?.let { it ->  dashXClient.setBaseURI(it) }
         }
     }
 
@@ -51,6 +51,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun track(event: String, data: ReadableMap?) {
         dashXClient.track(event, data)
+    }
+
+    @ReactMethod
+    fun screen(screenName: String, data: ReadableMap?) {
+        dashXClient.screen(screenName, data)
     }
 
     init {

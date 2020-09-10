@@ -51,9 +51,9 @@ fun DashXClient.trackAppCrashed(exception: Throwable?) {
     track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
 }
 
-fun DashXClient.screen(activityName: String, properties: ReadableMap) {
+fun DashXClient.screen(activityName: String, properties: ReadableMap?) {
     val data = Arguments.createMap()
     data.putString("name", activityName)
-    data.putMap("properties", properties)
+    properties?.let { it -> data.putMap("properties", it) }
     track(INTERNAL_EVENT_APP_SCREEN_CHANGED, data)
 }
