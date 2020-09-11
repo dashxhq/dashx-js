@@ -206,22 +206,30 @@ class DashXClient private constructor() {
             packageInfo.versionCode.toLong()
         }
 
+        fun saveBuildAndVersion() {
+            val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
+            editor.putString(SHARED_PREFERENCES_KEY_VERSION, packageInfo.versionName)
+            editor.putLong(SHARED_PREFERENCES_KEY_BUILD, currentBuild)
+            editor.apply()
+        }
+
         val eventProperties = Arguments.createMap()
         eventProperties.putString("version", packageInfo.versionName)
         eventProperties.putString("build", currentBuild.toString())
 
         when {
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE
-                -> track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
+            -> {
+                track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
+                saveBuildAndVersion()
+            }
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) < currentBuild
-                -> track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
+            -> {
+                track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
+                saveBuildAndVersion()
+            }
             else -> track(INTERNAL_EVENT_APP_OPENED, eventProperties)
         }
-
-        val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
-        editor.putString(SHARED_PREFERENCES_KEY_VERSION, packageInfo.versionName)
-        editor.putLong(SHARED_PREFERENCES_KEY_BUILD, currentBuild)
-        editor.apply()
     }
 
     fun trackAppSession(elapsedTime: Double) {

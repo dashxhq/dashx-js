@@ -102,7 +102,7 @@ DashX.setup({ publicKey: 'your_public_key' });
 
 `trackScreenViews` when enabled will send this event whenever a screen/activity is viewed:
 
-- `Screen Viewed` with `screen_name`
+- `Screen Viewed` with `name` set to the screen name.
 
 ### Identify User
 
