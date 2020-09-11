@@ -238,9 +238,9 @@ class DashXClient private constructor() {
         track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
     }
 
-    fun screen(activityName: String, properties: ReadableMap?) {
+    fun screen(screenName: String, properties: ReadableMap?) {
         val data = Arguments.createMap()
-        data.putString("name", activityName)
+        data.putString("screen_name", screenName)
         properties?.let { it -> data.putMap("properties", it) }
         track(INTERNAL_EVENT_APP_SCREEN_VIEWED, data)
     }
