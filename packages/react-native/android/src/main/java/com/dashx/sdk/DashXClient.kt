@@ -240,7 +240,7 @@ class DashXClient private constructor() {
 
     fun screen(screenName: String, properties: ReadableMap?) {
         val data = Arguments.createMap()
-        data.putString("screen_name", screenName)
+        data.putString("name", screenName)
         properties?.let { it -> data.putMap("properties", it) }
         track(INTERNAL_EVENT_APP_SCREEN_VIEWED, data)
     }
