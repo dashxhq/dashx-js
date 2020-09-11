@@ -1,6 +1,8 @@
 package com.dashx.sdk
 
 import android.content.SharedPreferences
+import android.os.Build
+import android.text.format.DateUtils
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
@@ -16,11 +18,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.internal.http2.Header
 import org.json.JSONException
 import java.io.IOException
 import java.util.HashMap
 import java.util.UUID
+import kotlin.math.roundToInt
 
 
 class DashXClient private constructor() {
@@ -192,6 +194,63 @@ class DashXClient private constructor() {
                 DashXLog.d(tag, "Sent event: $trackRequest, $trackResponse")
             }
         })
+    }
+
+    fun trackAppStarted() {
+        val context = reactApplicationContext?.applicationContext ?: return
+
+        val packageInfo = getPackageInfo(context)
+        val currentBuild = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+
+        fun saveBuildAndVersion() {
+            val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
+            editor.putString(SHARED_PREFERENCES_KEY_VERSION, packageInfo.versionName)
+            editor.putLong(SHARED_PREFERENCES_KEY_BUILD, currentBuild)
+            editor.apply()
+        }
+
+        val eventProperties = Arguments.createMap()
+        eventProperties.putString("version", packageInfo.versionName)
+        eventProperties.putString("build", currentBuild.toString())
+
+        when {
+            getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE
+            -> {
+                track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
+                saveBuildAndVersion()
+            }
+            getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) < currentBuild
+            -> {
+                track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
+                saveBuildAndVersion()
+            }
+            else -> track(INTERNAL_EVENT_APP_OPENED, eventProperties)
+        }
+    }
+
+    fun trackAppSession(elapsedTime: Double) {
+        val elapsedTimeRounded = ((elapsedTime / 1000) * 10.0).roundToInt() / 10.0
+        val eventProperties = Arguments.createMap()
+        eventProperties.putString("session_length", DateUtils.formatElapsedTime(elapsedTimeRounded.toLong()))
+        track(INTERNAL_EVENT_APP_BACKGROUNDED, eventProperties)
+    }
+
+    fun trackAppCrashed(exception: Throwable?) {
+        val message = exception?.message
+        val eventProperties = Arguments.createMap()
+        eventProperties.putString("exception", message)
+        track(INTERNAL_EVENT_APP_CRASHED, eventProperties)
+    }
+
+    fun screen(screenName: String, properties: ReadableMap?) {
+        val data = Arguments.createMap()
+        data.putString("name", screenName)
+        properties?.let { it -> data.merge(it) }
+        track(INTERNAL_EVENT_APP_SCREEN_VIEWED, data)
     }
 
     private fun subscribe() {

@@ -23,7 +23,19 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setup(options: ReadableMap) {
         dashXClient.setPublicKey(options.getString("publicKey")!!)
-        if (options.hasKey("baseUri")) dashXClient.setBaseURI(options.getString("baseUri")!!)
+
+        if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
+            DashXExceptionHandler.enable()
+            DashXActivityLifecycleCallbacks.enableActivityLifecycleTracking(reactContext.applicationContext)
+        }
+
+        if (options.hasKey("trackScreenViews") && options.getBoolean("trackScreenViews")) {
+            DashXActivityLifecycleCallbacks.enableScreenTracking(reactContext.applicationContext)
+        }
+
+        if (options.hasKey("baseUri")) {
+            options.getString("baseUri")?.let { it -> dashXClient.setBaseURI(it) }
+        }
 
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
@@ -51,6 +63,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun track(event: String, data: ReadableMap?) {
         dashXClient.track(event, data)
+    }
+
+    @ReactMethod
+    fun screen(screenName: String, data: ReadableMap?) {
+        dashXClient.screen(screenName, data)
     }
 
     @ReactMethod
