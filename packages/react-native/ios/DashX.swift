@@ -18,6 +18,14 @@ class DashX: NSObject {
             dashXClient.setBaseUri(to: baseUri as! String)
         }
         
+        if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as? Bool {
+            DashXApplicationLifecycleCallbacks.instance.enable()
+        }
+        
+        if let trackScreenViews = options?.value(forKey: trackScreenViews), trackScreenViews as? Bool {
+            UIViewController.swizzle()
+        }
+
         InstanceID.instanceID().instanceID { (result, error) in
             if let error = error {
                 DashXLog.d(tag: #function, "Error fetching remote instance ID: \(error)")
@@ -45,6 +53,11 @@ class DashX: NSObject {
     
     @objc(track:data:)
     func track(_ event: String, _ data: NSDictionary?) {
+        dashXClient.track(event, withData: data)
+    }
+    
+    @objc(screen:data:)
+    func screen(_ screenName: String, _ data: NSDictionary?) {
         dashXClient.track(event, withData: data)
     }
 }
