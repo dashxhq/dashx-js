@@ -18,11 +18,11 @@ class DashX: NSObject {
             dashXClient.setBaseUri(to: baseUri as! String)
         }
         
-        if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as? Bool {
+        if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as! Bool {
             DashXApplicationLifecycleCallbacks.instance.enable()
         }
         
-        if let trackScreenViews = options?.value(forKey: trackScreenViews), trackScreenViews as? Bool {
+        if let trackScreenViews = options?.value(forKey: "trackScreenViews"), trackScreenViews as! Bool {
             UIViewController.swizzle()
         }
 
@@ -58,6 +58,6 @@ class DashX: NSObject {
     
     @objc(screen:data:)
     func screen(_ screenName: String, _ data: NSDictionary?) {
-        dashXClient.track(event, withData: data)
+        dashXClient.screen(screenName, withData: data)
     }
 }

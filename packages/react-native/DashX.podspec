@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
   s.dependency "React"
   s.dependency "Alamofire", "~> 5.2"
   s.dependency "FirebaseInstanceID"
+  s.dependency "Firebase/Messaging"
   # ...
   # s.dependency "..."
 end
