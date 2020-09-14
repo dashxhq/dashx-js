@@ -233,9 +233,9 @@ class DashXClient private constructor() {
     }
 
     fun trackAppSession(elapsedTime: Double) {
-        val elapsedTimeRounded = ((elapsedTime / 1000) * 10.0).roundToInt() / 10.0
+        val elapsedTimeRounded = elapsedTime / 1000
         val eventProperties = Arguments.createMap()
-        eventProperties.putString("session_length", DateUtils.formatElapsedTime(elapsedTimeRounded.toLong()))
+        eventProperties.putString("session_length", elapsedTimeRounded.toString())
         track(INTERNAL_EVENT_APP_BACKGROUNDED, eventProperties)
     }
 
