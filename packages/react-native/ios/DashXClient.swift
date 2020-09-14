@@ -149,4 +149,10 @@ class DashXClient {
             { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
     }
+    
+    func screen(_ screenName: String, withData: NSDictionary?) {
+        let properties = withData as? Dictionary<String, Any>
+        
+       track(Constants.INTERNAL_EVENT_APP_SCREEN_VIEWED, withData: properties?.merging([ "name": screenName], uniquingKeysWith: { (_, new) in new }) as NSDictionary?)
+    }
 }

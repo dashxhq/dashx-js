@@ -5,6 +5,7 @@ PODS:
   - CocoaLibEvent (1.0.0)
   - DashX (1.0.0):
     - Alamofire (~> 5.2)
+    - Firebase/Messaging
     - FirebaseInstanceID
     - React
   - DoubleConversion (1.1.6)
@@ -16,6 +17,11 @@ PODS:
     - React-Core (= 0.63.2)
     - React-jsi (= 0.63.2)
     - ReactCommon/turbomodule/core (= 0.63.2)
+  - Firebase/CoreOnly (6.32.0):
+    - FirebaseCore (= 6.10.2)
+  - Firebase/Messaging (6.32.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 4.6.2)
   - FirebaseCore (6.10.2):
     - FirebaseCoreDiagnostics (~> 1.6)
     - GoogleUtilities/Environment (~> 6.7)
@@ -35,6 +41,14 @@ PODS:
     - FirebaseInstallations (~> 1.6)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
+  - FirebaseMessaging (4.6.2):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstanceID (~> 4.6)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/Reachability (~> 6.7)
+    - GoogleUtilities/UserDefaults (~> 6.7)
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - Flipper (0.41.5):
     - Flipper-Folly (~> 2.2)
     - Flipper-RSocket (~> 1.1)
@@ -93,10 +107,21 @@ PODS:
   - glog (0.3.5)
   - GoogleDataTransport (7.3.0):
     - nanopb (~> 1.30906.0)
+  - GoogleUtilities/AppDelegateSwizzler (6.7.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
   - GoogleUtilities/Environment (6.7.2):
     - PromisesObjC (~> 1.2)
   - GoogleUtilities/Logger (6.7.2):
     - GoogleUtilities/Environment
+  - GoogleUtilities/Network (6.7.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (6.7.2)"
+  - GoogleUtilities/Reachability (6.7.2):
+    - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
   - nanopb (1.30906.0):
@@ -108,6 +133,7 @@ PODS:
     - OpenSSL-Universal/Static (= 1.0.2.19)
   - OpenSSL-Universal/Static (1.0.2.19)
   - PromisesObjC (1.2.10)
+  - Protobuf (3.13.0)
   - RCTRequired (0.63.2)
   - RCTTypeSafety (0.63.2):
     - FBLazyVector (= 0.63.2)
@@ -400,10 +426,12 @@ SPEC REPOS:
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
+    - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseInstallations
     - FirebaseInstanceID
+    - FirebaseMessaging
     - Flipper
     - Flipper-DoubleConversion
     - Flipper-Folly
@@ -416,6 +444,7 @@ SPEC REPOS:
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
+    - Protobuf
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -481,14 +510,16 @@ SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
-  DashX: 991210a0b7bad34a5b7538f9303d029d7032db20
+  DashX: a44fc4702abc8ef10a4a4858abe137ea4a7389c9
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 3ef4a7f62e7db01092f9d517d2ebc0d0677c4a37
   FBReactNativeSpec: dc7fa9088f0f2a998503a352b0554d69a4391c5a
+  Firebase: afa030f17f5421810f379a42b0e5d3302d27eb26
   FirebaseCore: 1d697bb944bf2af5fc248f1a66e165c9dd88bf97
   FirebaseCoreDiagnostics: 7415bfb3883b3500c5a95c42b6ba66baae78f600
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FirebaseInstanceID: 84f5f5762f1bee94ca2254f693bbf5aec6666504
+  FirebaseMessaging: 82d75b3770a78bbce470769a6980429608b4c407
   Flipper: 33585e2d9810fe5528346be33bcf71b37bb7ae13
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: c12092ea368353b58e992843a990a3225d4533c3
@@ -503,6 +534,7 @@ SPEC CHECKSUMS:
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
+  Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   RCTRequired: f13f25e7b12f925f1f6a6a8c69d929a03c0129fe
   RCTTypeSafety: 44982c5c8e43ff4141eb519a8ddc88059acd1f3a
   React: e1c65dd41cb9db13b99f24608e47dd595f28ca9a

@@ -196,7 +196,7 @@ class DashXClient private constructor() {
         })
     }
 
-    fun trackAppStarted() {
+    fun trackAppStarted(fromBackground: Boolean = false) {
         val context = reactApplicationContext?.applicationContext ?: return
 
         val packageInfo = getPackageInfo(context)
@@ -206,9 +206,8 @@ class DashXClient private constructor() {
             packageInfo.versionCode.toLong()
         }
 
-        fun saveBuildAndVersion() {
+        fun saveBuildInPreferences() {
             val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
-            editor.putString(SHARED_PREFERENCES_KEY_VERSION, packageInfo.versionName)
             editor.putLong(SHARED_PREFERENCES_KEY_BUILD, currentBuild)
             editor.apply()
         }
@@ -216,26 +215,27 @@ class DashXClient private constructor() {
         val eventProperties = Arguments.createMap()
         eventProperties.putString("version", packageInfo.versionName)
         eventProperties.putString("build", currentBuild.toString())
+        if (fromBackground) eventProperties.putBoolean("from_background", true)
 
         when {
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE
             -> {
                 track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
-                saveBuildAndVersion()
+                saveBuildInPreferences()
             }
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) < currentBuild
             -> {
                 track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
-                saveBuildAndVersion()
+                saveBuildInPreferences()
             }
             else -> track(INTERNAL_EVENT_APP_OPENED, eventProperties)
         }
     }
 
     fun trackAppSession(elapsedTime: Double) {
-        val elapsedTimeRounded = ((elapsedTime / 1000) * 10.0).roundToInt() / 10.0
+        val elapsedTimeRounded = elapsedTime / 1000
         val eventProperties = Arguments.createMap()
-        eventProperties.putString("session_length", DateUtils.formatElapsedTime(elapsedTimeRounded.toLong()))
+        eventProperties.putString("session_length", elapsedTimeRounded.toString())
         track(INTERNAL_EVENT_APP_BACKGROUNDED, eventProperties)
     }
 
