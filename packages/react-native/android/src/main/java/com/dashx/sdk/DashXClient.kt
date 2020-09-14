@@ -196,7 +196,7 @@ class DashXClient private constructor() {
         })
     }
 
-    fun trackAppStarted() {
+    fun trackAppStarted(fromBackground: Boolean = false) {
         val context = reactApplicationContext?.applicationContext ?: return
 
         val packageInfo = getPackageInfo(context)
@@ -216,6 +216,7 @@ class DashXClient private constructor() {
         val eventProperties = Arguments.createMap()
         eventProperties.putString("version", packageInfo.versionName)
         eventProperties.putString("build", currentBuild.toString())
+        if (fromBackground) eventProperties.putBoolean("from_background", true)
 
         when {
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE

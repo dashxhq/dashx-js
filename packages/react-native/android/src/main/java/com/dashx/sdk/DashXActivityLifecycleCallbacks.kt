@@ -29,6 +29,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         }
 
         startSession = System.currentTimeMillis().toDouble()
+        dashXClient.trackAppStarted(fromBackground = true)
     }
 
     override fun onActivityStarted(activity: Activity?) {
