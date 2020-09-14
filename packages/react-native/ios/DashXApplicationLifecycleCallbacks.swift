@@ -29,13 +29,8 @@ class DashXApplicationLifecycleCallbacks: NSObject {
     @objc
     func appBackgrounded() {
         let sessionLength = Date.timeIntervalSinceReferenceDate - startSession!
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .positional
-        formatter.allowedUnits = [ .minute, .second ]
-        formatter.zeroFormattingBehavior = [ .pad ]
         
-        let formattedSessionLength = formatter.string(from: sessionLength)
-        dashXClient.track(Constants.INTERNAL_EVENT_APP_BACKGROUNDED, withData: [ "session_length": formattedSessionLength ])
+        dashXClient.track(Constants.INTERNAL_EVENT_APP_BACKGROUNDED, withData: [ "session_length": sessionLength ])
     }
     
     @objc
