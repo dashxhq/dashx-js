@@ -4,7 +4,7 @@ import Foundation
 class DashXApplicationLifecycleCallbacks: NSObject {
     static let instance = DashXApplicationLifecycleCallbacks()
     let dashXClient = DashXClient.instance
-    var startSession: Float? = nil
+    var startSession: Double? = nil
     
     func enable() {
         let notificationCenter = NotificationCenter.default
@@ -20,34 +20,52 @@ class DashXApplicationLifecycleCallbacks: NSObject {
         appOpened()
     }
     
+    func getAppBuildInfo() -> Dictionary<String, Any> {
+        let currentRelease = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let currentBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        return [ "version": currentRelease, "build": currentBuild ]
+    }
+    
     @objc
     func appBackgrounded() {
-        dashXClient.track(Constants.INTERNAL_EVENT_APP_BACKGROUNDED, withData: [:])
+        let sessionLength = Date.timeIntervalSinceReferenceDate - startSession!
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .positional
+        formatter.allowedUnits = [ .minute, .second ]
+        formatter.zeroFormattingBehavior = [ .pad ]
+        
+        let formattedSessionLength = formatter.string(from: sessionLength)
+        dashXClient.track(Constants.INTERNAL_EVENT_APP_BACKGROUNDED, withData: [ "session_length": formattedSessionLength ])
     }
     
     @objc
     func appOpened() {
+        startSession = Date.timeIntervalSinceReferenceDate
         let defaults = UserDefaults.standard
-        let appVersionKey = Constants.USER_PREFERENCES_KEY_VERSION
+        let appVersionKey = Constants.USER_PREFERENCES_KEY_BUILD
+        let appBuildInfo = getAppBuildInfo()
+        let previousBuild = defaults.string(forKey: appVersionKey)
+        let currentBuild = appBuildInfo["build"] as! String
         
-        let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let previousVersion = defaults.string(forKey: appVersionKey)
-        
-        if previousVersion == nil {
-            dashXClient.track(Constants.INTERNAL_EVENT_APP_INSTALLED, withData: [:])
-            defaults.set(currentVersion, forKey: appVersionKey)
+        if previousBuild == nil {
+            dashXClient.track(Constants.INTERNAL_EVENT_APP_INSTALLED, withData: appBuildInfo as NSDictionary)
+            defaults.set(currentBuild, forKey: appVersionKey)
             defaults.synchronize()
-        } else if previousVersion == currentVersion {
-            dashXClient.track(Constants.INTERNAL_EVENT_APP_OPENED, withData: [:])
+        } else if previousBuild == currentBuild {
+            dashXClient.track(Constants.INTERNAL_EVENT_APP_OPENED, withData: appBuildInfo as NSDictionary)
         } else {
-            dashXClient.track(Constants.INTERNAL_EVENT_APP_UPDATED, withData: [:])
-            defaults.set(currentVersion, forKey: appVersionKey)
+            dashXClient.track(Constants.INTERNAL_EVENT_APP_UPDATED, withData: appBuildInfo as NSDictionary)
+            defaults.set(currentBuild, forKey: appVersionKey)
             defaults.synchronize()
         }
     }
     
     @objc
     func appResumed() {
-        dashXClient.track(Constants.INTERNAL_EVENT_APP_OPENED, withData: [:])
+        startSession = Date.timeIntervalSinceReferenceDate
+        let properties = getAppBuildInfo().merging([ "from_background": true ])
+            { (current, _) in current }
+        
+        dashXClient.track(Constants.INTERNAL_EVENT_APP_OPENED, withData: properties as NSDictionary)
     }
 }
