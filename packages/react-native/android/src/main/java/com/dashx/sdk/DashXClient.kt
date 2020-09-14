@@ -206,9 +206,8 @@ class DashXClient private constructor() {
             packageInfo.versionCode.toLong()
         }
 
-        fun saveBuildAndVersion() {
+        fun saveBuildInPreferences() {
             val editor: SharedPreferences.Editor = getDashXSharedPreferences(context).edit()
-            editor.putString(SHARED_PREFERENCES_KEY_VERSION, packageInfo.versionName)
             editor.putLong(SHARED_PREFERENCES_KEY_BUILD, currentBuild)
             editor.apply()
         }
@@ -222,12 +221,12 @@ class DashXClient private constructor() {
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) == Long.MIN_VALUE
             -> {
                 track(INTERNAL_EVENT_APP_INSTALLED, eventProperties)
-                saveBuildAndVersion()
+                saveBuildInPreferences()
             }
             getDashXSharedPreferences(context).getLong(SHARED_PREFERENCES_KEY_BUILD, Long.MIN_VALUE) < currentBuild
             -> {
                 track(INTERNAL_EVENT_APP_UPDATED, eventProperties)
-                saveBuildAndVersion()
+                saveBuildInPreferences()
             }
             else -> track(INTERNAL_EVENT_APP_OPENED, eventProperties)
         }
