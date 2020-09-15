@@ -26,8 +26,8 @@ const dashx = DashX.createClient({
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
 
-// Start sending messages
-dashx.deliver('message-identifier', { to: 'john@example.com' }).then(_ => console.log('Mail Sent'));
+dashx.deliver({ to: ['john@example.com'], body: 'Hello World!' })
+  .then(_ => console.log('Mail Sent'));
 ```
 
 Can also be initialized with no parameters, `dashx-node` will look for these env variables `DASHX_PUBLIC_KEY` and `DASHX_PRIVATE_KEY`.
@@ -39,37 +39,12 @@ const DashX = require('@dashx/node');
 const dashx = DashX.createClient();
 ```
 
-## Examples
-
-#### Multiple recipients
+### Deliver
 
 ```javascript
-dashx.deliver('message-identifier', {
-  to: 'John Doe <john@example.com>',
-  cc: ['admin@example.com', 'sales@example.com>'],
-});
-```
-
-#### Template variables
-
-```javascript
-dashx.deliver('message-identifier', {
-  to: 'john@example.com',
-  data: { name: 'John' },
-});
-```
-
-#### Attachment support
-
-```javascript
-dashx.deliver('message-identifier', {
-  to: 'jane@example.com',
-  attachments: [
-    {
-      file: '/path/to/handbook.pdf',
-      name: 'Handbook',
-    },
-  ],
+dashx.deliver({
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com>'],
+  body: 'Hello World!'
 });
 ```
 
@@ -78,9 +53,8 @@ dashx.deliver('message-identifier', {
 `dashx.deliver` returns a promise so you can chain other tasks after successfully sending mail.
 
 ```javascript
-const promise = dashx.deliver('message-identifier', {
-  to: 'John Doe <john@example.com>',
-  cc: ['admin@example.com', 'sales@example.com>'],
+const promise = dashx.deliver({
+  to: ['John Doe <john@example.com>'],
 });
 
 promise
