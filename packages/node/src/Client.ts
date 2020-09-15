@@ -27,6 +27,7 @@ class Client {
   private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
     return http(`/${uri}`, {
       method: 'POST',
+      prefixUrl: this.baseUri,
       headers: {
         'User-Agent': 'dashx-node',
         'X-Public-Key': this.publicKey,
