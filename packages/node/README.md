@@ -26,7 +26,7 @@ const dashx = DashX.createClient({
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
 
-dashx.deliver({ to: ['john@example.com'], body: 'Hello World!' })
+dashx.deliver({ to: 'john@example.com', body: 'Hello World!' })
   .then(_ => console.log('Mail Sent'));
 ```
 
@@ -40,6 +40,15 @@ const dashx = DashX.createClient();
 ```
 
 ### Deliver
+
+```javascript
+dashx.deliver({
+  to: 'John Doe <john@example.com>',
+  body: 'Hello World!'
+});
+```
+
+`deliver` can accept multiple recipients like so:
 
 ```javascript
 dashx.deliver({

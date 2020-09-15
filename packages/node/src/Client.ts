@@ -2,7 +2,7 @@ import http from 'got'
 import type { Response } from 'got'
 
 type Parcel = {
-  to: string[],
+  to: string[] | string,
   body: string,
   data: Record<string, any>
 }
@@ -26,6 +26,7 @@ class Client {
 
   private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
     return http(`/${uri}`, {
+      json: body,
       method: 'POST',
       prefixUrl: this.baseUri,
       headers: {
@@ -34,8 +35,8 @@ class Client {
         'X-Private-Key': this.privateKey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
-    }).then((response) => response.json())
+      responseType: 'json'
+    })
   }
 
   deliver(parcel: Parcel): Promise<Response> {
