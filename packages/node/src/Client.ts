@@ -1,10 +1,18 @@
 import http from 'got'
+import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 type Parcel = {
   to: string[] | string,
   body: string,
   data: Record<string, any>
+}
+
+type IdentifyParams = {
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  phone?: string
 }
 
 class Client {
@@ -41,6 +49,33 @@ class Client {
 
   deliver(parcel: Parcel): Promise<Response> {
     return this.makeHttpRequest('/deliver', parcel)
+  }
+
+  identify(uid: string, options?: IdentifyParams) : Promise<Response>
+  identify(options?: IdentifyParams) : Promise<Response>
+  identify(
+    uid: string | IdentifyParams = {}, options: IdentifyParams = {} as IdentifyParams
+  ): Promise<Response> {
+    let params
+
+    if (typeof uid === 'string') {
+      const { firstName, lastName, ...others } = options
+      params = { uid, first_name: firstName, last_name: lastName, ...others }
+    } else {
+      const { firstName, lastName, ...others } = uid
+      params = {
+        anonymous_uid: uuid(),
+        first_name: firstName,
+        last_name: lastName,
+        ...others
+      }
+    }
+
+    return this.makeHttpRequest('identify', params)
+  }
+
+  track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
+    return this.makeHttpRequest('track', { event, uid, data })
   }
 }
 

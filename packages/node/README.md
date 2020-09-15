@@ -57,31 +57,45 @@ dashx.deliver({
 });
 ```
 
-#### Use as `promise`
+### Identify
 
-`dashx.deliver` returns a promise so you can chain other tasks after successfully sending mail.
+- Existing User
 
 ```javascript
-const promise = dashx.deliver({
-  to: ['John Doe <john@example.com>'],
+dashx.identify('uid_of_user', {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1-234-567-8910'
 });
-
-promise
-  .then(() => {
-    console.log('Mail sent successfully');
-    doSomething();
-  })
-  .catch(e => console.log('Something went wrong', e));
 ```
 
-#### Use with `async/await`
+This will override details of an existing user for the provided `uid`.
+
+- New User
 
 ```javascript
-(async () => {
-  try {
-    await dashx.deliver('message-identifier', { to: 'john@example.com' });
-  } catch (error) {
-    console.log(error);
-  }
-})();
+DashX.identify({
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1-234-567-8910'
+});
+```
+
+This will create a new user with the above details.
+
+Options can include the following keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`firstName`**|`string`|
+|**`lastName`**|`string`|
+|**`email`**|`string`|
+|**`phone`**|`string`|
+
+### Track Events
+
+```javascript
+DashX.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
 ```
