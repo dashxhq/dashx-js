@@ -1,37 +1,18 @@
-import fs from 'fs'
 import http from 'got'
+import uuid from 'uuid-random'
 import type { Response } from 'got'
 
-type Attachment = {
-  file: string | Buffer,
-  name: string
-}
-
 type Parcel = {
-  to: string,
-  attachments: Attachment[],
-  cc: string[],
+  to: string[] | string,
+  body: string,
   data: Record<string, any>
 }
 
-const readAttachment = (attachment: Attachment) => new Promise((resolve, reject) => {
-  fs.readFile(attachment.file, (err, data) => {
-    if (err) reject(err)
-    resolve({
-      content: Buffer.from(data).toString('base64'),
-      name: attachment.name
-    })
-  })
-})
-
-const processAttachments = (parcel: Parcel) => {
-  if (!parcel.attachments) {
-    return Promise.resolve(parcel)
-  }
-
-  return Promise.all(
-    parcel.attachments.map(readAttachment)
-  ).then((processedAttachments) => ({ ...parcel, attachments: processedAttachments }),)
+type IdentifyParams = {
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  phone?: string
 }
 
 class Client {
@@ -51,8 +32,10 @@ class Client {
     this.privateKey = privateKey
   }
 
-  deliver(messageIdentifier: string, parcel: Parcel): Promise<void | Response<string>> {
-    return processAttachments(parcel).then((finalParcel) => http.post('/deliveries', {
+  private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
+    return http(`/${uri}`, {
+      json: body,
+      method: 'POST',
       prefixUrl: this.baseUri,
       headers: {
         'User-Agent': 'dashx-node',
@@ -60,11 +43,39 @@ class Client {
         'X-Private-Key': this.privateKey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        message_identifier: messageIdentifier,
-        ...finalParcel
-      })
-    }))
+      responseType: 'json'
+    })
+  }
+
+  deliver(parcel: Parcel): Promise<Response> {
+    return this.makeHttpRequest('/deliver', parcel)
+  }
+
+  identify(uid: string, options?: IdentifyParams) : Promise<Response>
+  identify(options?: IdentifyParams) : Promise<Response>
+  identify(
+    uid: string | IdentifyParams = {}, options: IdentifyParams = {} as IdentifyParams
+  ): Promise<Response> {
+    let params
+
+    if (typeof uid === 'string') {
+      const { firstName, lastName, ...others } = options
+      params = { uid, first_name: firstName, last_name: lastName, ...others }
+    } else {
+      const { firstName, lastName, ...others } = uid
+      params = {
+        anonymous_uid: uuid(),
+        first_name: firstName,
+        last_name: lastName,
+        ...others
+      }
+    }
+
+    return this.makeHttpRequest('identify', params)
+  }
+
+  track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
+    return this.makeHttpRequest('track', { event, uid, data })
   }
 }
 

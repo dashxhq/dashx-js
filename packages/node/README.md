@@ -21,13 +21,13 @@ $ yarn add @dashx/node
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient({
+const dx = DashX.createClient({
   publicKey: process.env.DASHX_PUBLIC_KEY,
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
 
-// Start sending messages
-dashx.deliver('message-identifier', { to: 'john@example.com' }).then(_ => console.log('Mail Sent'));
+dx.deliver({ to: 'john@example.com', body: 'Hello World!' })
+  .then(_ => console.log('Mail Sent'));
 ```
 
 Can also be initialized with no parameters, `dashx-node` will look for these env variables `DASHX_PUBLIC_KEY` and `DASHX_PRIVATE_KEY`.
@@ -36,69 +36,66 @@ Can also be initialized with no parameters, `dashx-node` will look for these env
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient();
+const dx = DashX.createClient();
 ```
 
-## Examples
-
-#### Multiple recipients
+### Deliver
 
 ```javascript
-dashx.deliver('message-identifier', {
+dx.deliver({
   to: 'John Doe <john@example.com>',
-  cc: ['admin@example.com', 'sales@example.com>'],
+  body: 'Hello World!'
 });
 ```
 
-#### Template variables
+`deliver` can accept multiple recipients like so:
 
 ```javascript
-dashx.deliver('message-identifier', {
-  to: 'john@example.com',
-  data: { name: 'John' },
+dx.deliver({
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com>'],
+  body: 'Hello World!'
 });
 ```
 
-#### Attachment support
+### Identify
 
-```javascript
-dashx.deliver('message-identifier', {
-  to: 'jane@example.com',
-  attachments: [
-    {
-      file: '/path/to/handbook.pdf',
-      name: 'Handbook',
-    },
-  ],
+You can use `identify` to update user info associated with the provided `uid`
+
+```js
+dx.identify('uid_of_user', {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1-234-567-8910'
 });
 ```
 
-#### Use as `promise`
+##### For Anonymous User
 
-`dashx.deliver` returns a promise so you can chain other tasks after successfully sending mail.
+When you don't know the `uid` of a user, you can still use `identify` to add user info like so:
 
-```javascript
-const promise = dashx.deliver('message-identifier', {
-  to: 'John Doe <john@example.com>',
-  cc: ['admin@example.com', 'sales@example.com>'],
+```js
+dx.identify({
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
+  phone: '+1-234-567-8910'
 });
-
-promise
-  .then(() => {
-    console.log('Mail sent successfully');
-    doSomething();
-  })
-  .catch(e => console.log('Something went wrong', e));
 ```
 
-#### Use with `async/await`
+`identify` will automatically append a pseudo-random `anonymous_uid` in this case.
+
+User info can include the following keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`firstName`**|`string`|
+|**`lastName`**|`string`|
+|**`email`**|`string`|
+|**`phone`**|`string`|
+
+### Track Events
 
 ```javascript
-(async () => {
-  try {
-    await dashx.deliver('message-identifier', { to: 'john@example.com' });
-  } catch (error) {
-    console.log(error);
-  }
-})();
+dx.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
 ```
