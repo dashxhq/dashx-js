@@ -85,7 +85,7 @@ dx.identify({
 
 `identify` will automatically append a pseudo-random `anonymous_uid` in this case.
 
-Options can include the following keys:
+User info can include the following keys:
 
 |Name|Type|
 |:---:|:--:|
