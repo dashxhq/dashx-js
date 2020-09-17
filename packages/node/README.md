@@ -21,12 +21,12 @@ $ yarn add @dashx/node
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient({
+const dx = DashX.createClient({
   publicKey: process.env.DASHX_PUBLIC_KEY,
   privateKey: process.env.DASHX_PRIVATE_KEY,
 });
 
-dashx.deliver({ to: 'john@example.com', body: 'Hello World!' })
+dx.deliver({ to: 'john@example.com', body: 'Hello World!' })
   .then(_ => console.log('Mail Sent'));
 ```
 
@@ -36,13 +36,13 @@ Can also be initialized with no parameters, `dashx-node` will look for these env
 const DashX = require('@dashx/node');
 
 // Initialize DashX SDK
-const dashx = DashX.createClient();
+const dx = DashX.createClient();
 ```
 
 ### Deliver
 
 ```javascript
-dashx.deliver({
+dx.deliver({
   to: 'John Doe <john@example.com>',
   body: 'Hello World!'
 });
@@ -51,7 +51,7 @@ dashx.deliver({
 `deliver` can accept multiple recipients like so:
 
 ```javascript
-dashx.deliver({
+dx.deliver({
   to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com>'],
   body: 'Hello World!'
 });
@@ -59,10 +59,10 @@ dashx.deliver({
 
 ### Identify
 
-- Existing User
+You can use `identify` to update user info associated with the provided `uid`
 
-```javascript
-dashx.identify('uid_of_user', {
+```js
+dx.identify('uid_of_user', {
   firstName: 'John',
   lastName: 'Doe',
   email: 'john@example.com',
@@ -70,12 +70,12 @@ dashx.identify('uid_of_user', {
 });
 ```
 
-This will override details of an existing user for the provided `uid`.
+##### For Anonymous User
 
-- New User
+When you don't know the `uid` of a user, you can still use `identify` to add user info like so:
 
-```javascript
-DashX.identify({
+```js
+dx.identify({
   firstName: 'John',
   lastName: 'Doe',
   email: 'john@example.com',
@@ -83,7 +83,7 @@ DashX.identify({
 });
 ```
 
-This will create a new user with the above details.
+`identify` will automatically append a pseudo-random `anonymous_uid` in this case.
 
 Options can include the following keys:
 
@@ -97,5 +97,5 @@ Options can include the following keys:
 ### Track Events
 
 ```javascript
-DashX.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
+dx.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
 ```
