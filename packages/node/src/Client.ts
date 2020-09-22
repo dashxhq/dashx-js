@@ -77,7 +77,7 @@ class Client {
 
   generateIdentityToken(uid: string): string {
     if (!this.privateKey) {
-      throw new Error('Private key not set.')
+      throw new Error('Private key not set')
     }
 
     const nonce = crypto.randomBytes(12)
