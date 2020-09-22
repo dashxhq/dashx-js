@@ -10,6 +10,29 @@ struct TrackRequest: Encodable {
     let data: JSONValue?
 }
 
+struct SubscribeRequest: Encodable {
+    let value, kind: String
+    let anonymous_uid, uid: String?
+}
+
+struct FirebaseRemoteMessage: Decodable {
+    let aps: APS
+    
+    struct APS: Decodable {
+        let alert: Alert
+        
+        struct Alert: Decodable {
+            let title: String
+            let body: String
+        }
+    }
+    
+    init(decoding userInfo: [AnyHashable : Any]) throws {
+        let data = try JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted)
+        self = try JSONDecoder().decode(FirebaseRemoteMessage.self, from: data)
+    }
+}
+
 public enum JSONValue: Decodable, Encodable {
     case bool(Bool)
     case int(Int)
@@ -59,9 +82,4 @@ public enum JSONValue: Decodable, Encodable {
             try container.encodeNil()
         }
     }
-}
-
-struct SubscribeRequest: Encodable {
-    let value, kind: String
-    let anonymous_uid, uid: String?
 }

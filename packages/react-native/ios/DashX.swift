@@ -2,7 +2,7 @@ import Foundation
 import FirebaseInstanceID
 
 @objc(DashX)
-class DashX: NSObject {
+class DashX: RCTEventEmitter {
     private var dashXClient = DashXClient.instance
     
     override init() {
