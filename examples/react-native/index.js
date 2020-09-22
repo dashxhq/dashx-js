@@ -12,7 +12,7 @@ import DashX from '@dashx/react-native';
 DashX.setLogLevel(0);
 
 DashX.setup({
-  publicKey: Config.DASHX_PUBLIC_KEY,
+  publicKey: 'FKSLzpLhn3dL6XixRQEtkLv7',
   baseUri: 'http://api.dashx-staging.com/v1',
   trackAppLifecycleEvents: true,
   trackScreenViews: true
@@ -27,5 +27,7 @@ DashX.track('Added Product to Cart', {
   isFeatured: true,
   coupon: null
 });
+
+DashX.setIdentityToken('');
 
 AppRegistry.registerComponent(appName, () => App);

@@ -31,10 +31,22 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
-  
+
+  [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
+        UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+  [[UNUserNotificationCenter currentNotificationCenter]
+      requestAuthorizationWithOptions:authOptions
+        completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        }];
+
+  [application registerForRemoteNotifications];
+
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+
+  [FIRMessaging messaging].delegate = self;
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge

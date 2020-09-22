@@ -4,15 +4,44 @@ import FirebaseInstanceID
 @objc(DashX)
 class DashX: NSObject {
     private var dashXClient = DashXClient.instance
+    
+    override init() {
+        super.init()
+        DashXEventEmitter.instance.registerEventEmitter(eventEmitter: self)
+    }
 
     @objc
     func setLogLevel(_ logLevel: Int) {
         DashXLog.setLogLevel(to: logLevel)
     }
+    
+    override func supportedEvents() -> [String] {
+       return ["messageReceived"]
+    }
+    
+    @objc
+    func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+        var properties: Dictionary<String, Dictionary<String, Any>> = [ "notification": [:] ]
+        
+        DashXLog.d(tag: #function, "Received APN: \(userInfo)")
+        
+        guard let remoteMessage = try? FirebaseRemoteMessage(decoding: userInfo) else {
+            DashXLog.d(tag: #function, "Non firebase notification received: \(userInfo)")
+            return
+        }
+        
+        properties["notification"]?["title"] = remoteMessage.aps.alert.title
+        properties["notification"]?["body"] = remoteMessage.aps.alert.body
+        
+        DashXEventEmitter.instance.dispatch(name: "messageReceived", body: properties)
+    }
 
     @objc
     func setup(_ options: NSDictionary?) {
         dashXClient.setPublicKey(to: options?.value(forKey: "publicKey") as! String)
+        
+        
+        DashXAppDelegate.swizzleDidReceiveRemoteNotification()
         
         if let baseUri = options?.value(forKey: "baseUri") {
             dashXClient.setBaseUri(to: baseUri as! String)
