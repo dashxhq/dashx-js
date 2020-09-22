@@ -58,9 +58,21 @@ apply plugin: 'com.google.gms.google-services'
 - In the same file, inside your `didFinishLaunchingWithOptions` add this:
 
 ```objective-c
+[UNUserNotificationCenter currentNotificationCenter].delegate = self;
+UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
+    UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+[[UNUserNotificationCenter currentNotificationCenter]
+    requestAuthorizationWithOptions:authOptions
+    completionHandler:^(BOOL granted, NSError * _Nullable error) {
+    }];
+
+[application registerForRemoteNotifications];
+
 if ([FIRApp defaultApp] == nil) {
   [FIRApp configure];
 }
+
+[FIRMessaging messaging].delegate = self;
 ```
 
 - In your `Podfile` add this:
