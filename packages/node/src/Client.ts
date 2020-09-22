@@ -84,10 +84,11 @@ class Client {
     const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(this.privateKey), nonce, {
       authTagLength: 16
     })
-
     const encrypted = Buffer.concat([ cipher.update(uid), cipher.final() ])
+    const encryptedToken = Buffer.concat([ nonce, encrypted, cipher.getAuthTag() ])
 
-    return nonce.toString('hex') + encrypted.toString('hex') + cipher.getAuthTag().toString('hex')
+    // Base64.urlsafe_encode64
+    return encryptedToken.toString('base64').replace(/\+/g, '-').replace(/\//g, '_')
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
