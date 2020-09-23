@@ -12,15 +12,7 @@ class DashXAppDelegate: NSObject {
                 DashX.self.handleMessage(_:didReceiveRemoteNotification:)
             )
 
-            guard let swizzledMethod = class_getInstanceMethod(DashX.self, swizzledSelector) else {
-                return
-            }
-
-            if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
-                method_exchangeImplementations(originalMethod, swizzledMethod)
-            } else {
-                class_addMethod(appDelegateClass, swizzledSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
-            }
+            try? swizzler(appDelegateClass!, DashX.self, originalSelector, swizzledSelector)
         }
     }
 }
