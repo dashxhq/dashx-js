@@ -59,14 +59,17 @@ class DashXClient {
         ) { (current, _) in current }
 
         let headers = HTTPHeaders.init(headerDictionary)
+        
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
 
         // For debugging
-        if let jsonData = try? JSONEncoder().encode(request),
+        if let jsonData = try? jsonEncoder.encode(request),
         let jsonString = String(data: jsonData, encoding: .utf8) {
             DashXLog.d(tag: #function, jsonString)
         }
 
-        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
+        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
                     case let .failure(error):
