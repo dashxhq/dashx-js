@@ -2,14 +2,15 @@ package com.dashx.sdk
 
 import android.content.SharedPreferences
 import android.os.Build
-import android.text.format.DateUtils
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
@@ -22,7 +23,6 @@ import org.json.JSONException
 import java.io.IOException
 import java.util.HashMap
 import java.util.UUID
-import kotlin.math.roundToInt
 
 
 class DashXClient private constructor() {
@@ -39,7 +39,6 @@ class DashXClient private constructor() {
     private var identityToken: String? = null
 
     private val httpClient = OkHttpClient()
-    private val gson = Gson()
     private val json = "application/json; charset=utf-8".toMediaType()
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
@@ -108,6 +107,10 @@ class DashXClient private constructor() {
     private fun <T> makeHttpRequest(uri: String, body: T, extraHeaders: Headers? = null, callback: Callback) {
         val headerBuilder = Headers.Builder().add("X-Public-Key", publicKey!!)
         extraHeaders?.let { it -> headerBuilder.addAll(it) }
+
+        val gson = GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create()
 
         val request: Request = Request.Builder()
             .url("$baseURI/$uri")
