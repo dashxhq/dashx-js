@@ -2,6 +2,8 @@ import http from 'got'
 import uuid from 'uuid-random'
 import type { Response } from 'got'
 
+import { snakeCaseKeys } from './utils'
+
 type Parcel = {
   to: string[] | string,
   body: string,
@@ -34,7 +36,7 @@ class Client {
 
   private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
     return http(`/${uri}`, {
-      json: body,
+      json: snakeCaseKeys(body),
       method: 'POST',
       prefixUrl: this.baseUri,
       headers: {
@@ -59,15 +61,11 @@ class Client {
     let params
 
     if (typeof uid === 'string') {
-      const { firstName, lastName, ...others } = options
-      params = { uid, first_name: firstName, last_name: lastName, ...others }
+      params = { uid, ...options }
     } else {
-      const { firstName, lastName, ...others } = uid
       params = {
-        anonymous_uid: uuid(),
-        first_name: firstName,
-        last_name: lastName,
-        ...others
+        anonymousUid: uuid(),
+        ...options
       }
     }
 

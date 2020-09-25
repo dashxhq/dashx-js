@@ -1,12 +1,12 @@
 import Foundation
 
 struct IdentifyRequest: Encodable {
-    let first_name, last_name, email, phone, anonymous_uid: String?
+    let firstName, lastName, email, phone, anonymousUid: String?
 }
 
 struct TrackRequest: Encodable {
     let event: String
-    let anonymous_uid, uid: String?
+    let anonymousUid, uid: String?
     let data: JSONValue?
 }
 
@@ -63,5 +63,5 @@ public enum JSONValue: Decodable, Encodable {
 
 struct SubscribeRequest: Encodable {
     let value, kind: String
-    let anonymous_uid, uid: String?
+    let anonymousUid, uid: String?
 }
