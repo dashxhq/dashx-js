@@ -1,32 +1,32 @@
 import Foundation
 
 struct IdentifyRequest: Encodable {
-    let first_name, last_name, email, phone, anonymous_uid: String?
+    let firstName, lastName, email, phone, anonymousUid: String?
 }
 
 struct TrackRequest: Encodable {
     let event: String
-    let anonymous_uid, uid: String?
+    let anonymousUid, uid: String?
     let data: JSONValue?
 }
 
 struct SubscribeRequest: Encodable {
     let value, kind: String
-    let anonymous_uid, uid: String?
+    let anonymousUid, uid: String?
 }
 
 struct FirebaseRemoteMessage: Decodable {
     let aps: APS
-    
+
     struct APS: Decodable {
         let alert: Alert
-        
+
         struct Alert: Decodable {
             let title: String
             let body: String
         }
     }
-    
+
     init(decoding userInfo: [AnyHashable : Any]) throws {
         let data = try JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted)
         self = try JSONDecoder().decode(FirebaseRemoteMessage.self, from: data)
@@ -41,7 +41,7 @@ public enum JSONValue: Decodable, Encodable {
     case array([JSONValue])
     case object([String: JSONValue])
     case none
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let value = try? container.decode(Bool.self) {
@@ -62,7 +62,7 @@ public enum JSONValue: Decodable, Encodable {
             throw DecodingError.typeMismatch(JSONValue.self, DecodingError.Context(codingPath: container.codingPath, debugDescription: "Unknown value"))
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {

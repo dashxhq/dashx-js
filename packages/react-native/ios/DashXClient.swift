@@ -59,14 +59,17 @@ class DashXClient {
         ) { (current, _) in current }
 
         let headers = HTTPHeaders.init(headerDictionary)
+        
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
 
         // For debugging
-        if let jsonData = try? JSONEncoder().encode(request),
+        if let jsonData = try? jsonEncoder.encode(request),
         let jsonString = String(data: jsonData, encoding: .utf8) {
             DashXLog.d(tag: #function, jsonString)
         }
 
-        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers).validate().responseJSON { response in switch response.result {
+        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
                     case let .failure(error):
@@ -88,11 +91,11 @@ class DashXClient {
         let optionsDictionary = withOptions as? Dictionary<String, String>
 
         let identifyRequest = IdentifyRequest(
-            first_name: optionsDictionary?["firstName"],
-            last_name: optionsDictionary?["lastName"],
+            firstName: optionsDictionary?["firstName"],
+            lastName: optionsDictionary?["lastName"],
             email: optionsDictionary?["email"],
             phone: optionsDictionary?["phone"],
-            anonymous_uid: self.anonymousUid
+            anonymousUid: self.anonymousUid
         )
 
         DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
@@ -120,7 +123,7 @@ class DashXClient {
             return
         }
 
-        let trackRequest = TrackRequest(event: event, anonymous_uid: self.anonymousUid, uid: self.uid, data: trackData)
+        let trackRequest = TrackRequest(event: event, anonymousUid: self.anonymousUid, uid: self.uid, data: trackData)
 
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
 
@@ -137,7 +140,7 @@ class DashXClient {
 
         let deviceKind = "IOS"
         let subscribeRequest = SubscribeRequest(
-            value: deviceToken!, kind:deviceKind, anonymous_uid: anonymousUid, uid: uid
+            value: deviceToken!, kind:deviceKind, anonymousUid: anonymousUid, uid: uid
         )
 
         DashXLog.d(tag: #function, "Calling subscribe with \(subscribeRequest)")
