@@ -35,7 +35,7 @@ class Client {
   }
 
   private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
-    return http(`/${uri}`, {
+    return http(uri, {
       json: snakeCaseKeys(body),
       method: 'POST',
       prefixUrl: this.baseUri,
@@ -50,7 +50,7 @@ class Client {
   }
 
   deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest('/deliver', parcel)
+    return this.makeHttpRequest('deliver', parcel)
   }
 
   identify(uid: string, options?: IdentifyParams) : Promise<Response>
