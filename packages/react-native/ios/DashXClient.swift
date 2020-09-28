@@ -158,4 +158,35 @@ class DashXClient {
         
        track(Constants.INTERNAL_EVENT_APP_SCREEN_VIEWED, withData: properties?.merging([ "name": screenName], uniquingKeysWith: { (_, new) in new }) as NSDictionary?)
     }
+    
+    func content(_ contentType: String, withOptions: NSDictionary) {
+        var filterByVal: JSONValue?
+        var orderByVal: JSONValue?
+        
+        let optionsDictionary = withOptions as? Dictionary<String, Any>
+        
+        if let filterBy = optionsDictionary?["filter"], JSONSerialization.isValidJSONObject(filterBy) {
+            filterByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: filterBy))
+        }
+        
+        if let orderBy = optionsDictionary?["order"], JSONSerialization.isValidJSONObject(orderBy) {
+            orderByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: orderBy))
+        }
+        
+        let contentRequest = ContentRequest(
+            contentType: contentType,
+            returnType: optionsDictionary?["returnType"] as! String,
+            limit: optionsDictionary?["limit"] as? Int,
+            page: optionsDictionary?["page"] as? Int,
+            filter: filterByVal,
+            order: orderByVal
+        )
+
+        DashXLog.d(tag: #function, "Calling subscribe with \(contentRequest)")
+
+        makeHttpRequest(uri: "/content", contentRequest,
+            { response in DashXLog.d(tag: #function, "Called content with \(String(describing: response))") },
+            { error in DashXLog.d(tag: #function, "Encountered an error during content(): \(error)") }
+        )
+    }
 }

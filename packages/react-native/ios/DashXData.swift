@@ -10,6 +10,17 @@ struct TrackRequest: Encodable {
     let data: JSONValue?
 }
 
+struct SubscribeRequest: Encodable {
+    let value, kind: String
+    let anonymousUid, uid: String?
+}
+
+struct ContentRequest: Encodable {
+    let contentType, returnType: String
+    let limit, page: Int?
+    let filter, order: JSONValue?
+}
+
 public enum JSONValue: Decodable, Encodable {
     case bool(Bool)
     case int(Int)
@@ -59,9 +70,4 @@ public enum JSONValue: Decodable, Encodable {
             try container.encodeNil()
         }
     }
-}
-
-struct SubscribeRequest: Encodable {
-    let value, kind: String
-    let anonymousUid, uid: String?
 }
