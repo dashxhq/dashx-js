@@ -26,7 +26,7 @@ data class SubscribeRequest(
 
 data class ContentRequest(
     val contentType: String,
-    val returnType: String?,
+    val returnType: String,
     val filter: JsonObject?,
     val order: JsonObject?,
     val limit: Int?,
