@@ -163,21 +163,21 @@ class DashXClient {
         var filterByVal: JSONValue?
         var orderByVal: JSONValue?
         
-        let optionsDictionary = withOptions as? Dictionary<String, Any>
+        let optionsDictionary = withOptions as! Dictionary<String, Any>
         
-        if let filterBy = optionsDictionary?["filter"], JSONSerialization.isValidJSONObject(filterBy) {
+        if let filterBy = optionsDictionary["filter"], JSONSerialization.isValidJSONObject(filterBy) {
             filterByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: filterBy))
         }
         
-        if let orderBy = optionsDictionary?["order"], JSONSerialization.isValidJSONObject(orderBy) {
+        if let orderBy = optionsDictionary["order"], JSONSerialization.isValidJSONObject(orderBy) {
             orderByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: orderBy))
         }
         
         let contentRequest = ContentRequest(
             contentType: contentType,
-            returnType: optionsDictionary?["returnType"] as! String,
-            limit: optionsDictionary?["limit"] as? Int,
-            page: optionsDictionary?["page"] as? Int,
+            returnType: optionsDictionary["returnType"] as! String,
+            limit: optionsDictionary["limit"] as? Int,
+            page: optionsDictionary["page"] as? Int,
             filter: filterByVal,
             order: orderByVal
         )
