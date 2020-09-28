@@ -16,7 +16,8 @@ struct SubscribeRequest: Encodable {
 }
 
 struct ContentRequest: Encodable {
-    let contentType, returnType: String
+    let contentType: String
+    let returnType: String?
     let limit, page: Int?
     let filter, order: JSONValue?
 }

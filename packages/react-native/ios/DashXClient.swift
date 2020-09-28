@@ -175,7 +175,7 @@ class DashXClient {
         
         let contentRequest = ContentRequest(
             contentType: contentType,
-            returnType: optionsDictionary["returnType"] as! String,
+            returnType: optionsDictionary["returnType"] as? String,
             limit: optionsDictionary["limit"] as? Int,
             page: optionsDictionary["page"] as? Int,
             filter: filterByVal,
