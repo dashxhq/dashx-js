@@ -2,7 +2,9 @@ import http from 'got'
 import uuid from 'uuid-random'
 import type { Response } from 'got'
 
+import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { snakeCaseKeys } from './utils'
+import type { ContentOptions } from './ContentOptionsBuilder'
 
 type Parcel = {
   to: string[] | string,
@@ -74,6 +76,18 @@ class Client {
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
     return this.makeHttpRequest('/track', { event, uid, data })
+  }
+
+  content(
+    contentType: string, options?: ContentOptions
+  ): ContentOptionsBuilder | Promise<Response> {
+    if (options) {
+      return this.makeHttpRequest('content', { ...options, contentType })
+    }
+
+    return new ContentOptionsBuilder(
+      (wrappedOptions) => this.makeHttpRequest('content', { ...wrappedOptions, contentType })
+    )
   }
 }
 
