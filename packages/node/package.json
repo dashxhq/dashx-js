@@ -3,8 +3,10 @@
   "title": "dashx-node",
   "version": "0.1.0",
   "description": "DashX SDK for Node",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdx build --tsconfig tsconfig.json",
     "start": "tsdx watch --tsconfig tsconfig.json --verbose --noClean"

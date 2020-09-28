@@ -3,7 +3,8 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import type { ContentOptions } from 'ContentOptionsBuilder'
+import { snakeCaseKeys } from './utils'
+import type { ContentOptions } from './ContentOptionsBuilder'
 
 type Parcel = {
   to: string[] | string,
@@ -36,8 +37,8 @@ class Client {
   }
 
   private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
-    return http(`/${uri}`, {
-      json: body,
+    return http(uri, {
+      json: snakeCaseKeys(body),
       method: 'POST',
       prefixUrl: this.baseUri,
       headers: {
@@ -62,35 +63,30 @@ class Client {
     let params
 
     if (typeof uid === 'string') {
-      const { firstName, lastName, ...others } = options
-      params = { uid, first_name: firstName, last_name: lastName, ...others }
+      params = { uid, ...options }
     } else {
-      const { firstName, lastName, ...others } = uid
       params = {
-        anonymous_uid: uuid(),
-        first_name: firstName,
-        last_name: lastName,
-        ...others
+        anonymousUid: uuid(),
+        ...options
       }
     }
 
-    return this.makeHttpRequest('identify', params)
+    return this.makeHttpRequest('/identify', params)
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.makeHttpRequest('track', { event, uid, data })
+    return this.makeHttpRequest('/track', { event, uid, data })
   }
 
-  content(page: string, options?: ContentOptions) {
-    const defaultOptions: Partial<ContentOptions> = { returnType: 'all' }
-
-    if(options) {
-      return this.makeHttpRequest('content', options)
+  content(
+    contentType: string, options?: ContentOptions
+  ): ContentOptionsBuilder | Promise<Response> {
+    if (options) {
+      return this.makeHttpRequest('content', { ...options, contentType })
     }
 
     return new ContentOptionsBuilder(
-      defaultOptions,
-      (wrappedOptions) => this.makeHttpRequest('content', wrappedOptions)
+      (wrappedOptions) => this.makeHttpRequest('content', { ...wrappedOptions, contentType })
     )
   }
 }

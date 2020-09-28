@@ -1,25 +1,23 @@
 import type { Response } from 'got'
 
-/* Optional Parameters? */
 export type ContentOptions = {
-  page: string,
-  contentType: string,
   returnType?: 'all' | 'one',
-  filter: Record<string, boolean | string | number>,
-  order: Record<string, 'ASC' | 'DESC'>,
-  limit: number
+  filter?: Record<string, boolean | string | number>,
+  order?: Record<string, 'ASC' | 'DESC'>,
+  limit?: number,
+  page?: number
 }
 
 class ContentOptionsBuilder {
-  private options: Partial<ContentOptions>
-  private unwrapper: (options: ContentOptions) => Promise<Response>
+  private options: ContentOptions
+
+  private callback: (options: ContentOptions) => Promise<Response>
 
   constructor(
-    defaultOptions: Partial<ContentOptions>,
-    unwrapper: (options: ContentOptions) => Promise<Response>
+    callback: (options: ContentOptions) => Promise<Response>
   ) {
-    this.unwrapper = unwrapper
-    this.options = defaultOptions
+    this.options = {}
+    this.callback = callback
   }
 
   limit(by: ContentOptions['limit']) {
@@ -39,12 +37,12 @@ class ContentOptionsBuilder {
 
   all(withOptions: ContentOptions) {
     this.options = { ...withOptions, returnType: 'all' }
-    return this.unwrapper(this.options as ContentOptions)
+    return this.callback(this.options)
   }
 
   one(withOptions: ContentOptions) {
     this.options = { ...withOptions, returnType: 'one' }
-    return this.unwrapper(this.options as ContentOptions)
+    return this.callback(this.options)
   }
 }
 
