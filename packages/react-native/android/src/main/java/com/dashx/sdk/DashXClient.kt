@@ -259,7 +259,7 @@ class DashXClient private constructor() {
         val contentRequest = try {
             ContentRequest(
                 contentType,
-                options.getString("returnType"),
+                options.getStringIfPresent("returnType"),
                 convertMapToJson(options.getMapIfPresent("filter")),
                 convertMapToJson(options.getMapIfPresent("order")),
                 options.getIntIfPresent("limit"),
