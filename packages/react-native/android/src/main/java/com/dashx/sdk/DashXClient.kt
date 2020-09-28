@@ -112,7 +112,7 @@ class DashXClient private constructor() {
             .create()
 
         val request: Request = Request.Builder()
-            .url("$baseURI/$uri")
+            .url(baseURI + uri)
             .headers(headerBuilder.build())
             .post(gson.toJson(body).toString().toRequestBody(json))
             .build()
@@ -146,7 +146,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "identify", body = identifyRequest, callback = object : Callback {
+        makeHttpRequest(uri = "/identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -178,7 +178,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "track", body = trackRequest, callback = object : Callback {
+        makeHttpRequest(uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
@@ -274,7 +274,7 @@ class DashXClient private constructor() {
 
         val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
 
-        makeHttpRequest("subscribe", subscribeRequest, headers, object : Callback {
+        makeHttpRequest("/subscribe", subscribeRequest, headers, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
                 e.printStackTrace()
