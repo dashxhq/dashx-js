@@ -69,7 +69,7 @@ class DashXClient {
             DashXLog.d(tag: #function, jsonString)
         }
 
-        AF.request("\(baseUri)/\(uri)", method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
+        AF.request(baseUri + uri, method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
                     case .success:
                         onSuccess(response.data)
                     case let .failure(error):
@@ -100,7 +100,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
 
-        makeHttpRequest(uri: "identify", identifyRequest,
+        makeHttpRequest(uri: "/identify", identifyRequest,
             { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
@@ -127,7 +127,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
 
-        makeHttpRequest(uri: "track", trackRequest,
+        makeHttpRequest(uri: "/track", trackRequest,
             { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
@@ -147,7 +147,7 @@ class DashXClient {
 
         let headers = [ "X-Identity-Token": identityToken! ]
 
-        makeHttpRequest(uri: "subscribe", subscribeRequest, withHeaders: headers,
+        makeHttpRequest(uri: "/subscribe", subscribeRequest, withHeaders: headers,
             { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
