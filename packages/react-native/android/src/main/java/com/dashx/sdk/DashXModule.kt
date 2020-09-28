@@ -71,6 +71,11 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     }
 
     @ReactMethod
+    fun content(contentType: String, options: ReadableMap) {
+        dashXClient.content(contentType, options)
+    }
+
+    @ReactMethod
     fun setIdentityToken(identityToken: String) {
         dashXClient.setIdentityToken(identityToken)
     }

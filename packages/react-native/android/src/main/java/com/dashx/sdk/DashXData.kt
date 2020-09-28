@@ -1,5 +1,6 @@
 package com.dashx.sdk
 
+import androidx.annotation.IntegerRes
 import com.google.gson.JsonObject
 
 data class IdentifyRequest(
@@ -22,4 +23,13 @@ data class SubscribeRequest(
     val kind: String,
     val uid: String?,
     val anonymousUid: String?
+)
+
+data class ContentRequest(
+    val contentType: String,
+    val returnType: String?,
+    val filter: JsonObject?,
+    val order: JsonObject?,
+    val limit: Int?,
+    val page: Int?
 )

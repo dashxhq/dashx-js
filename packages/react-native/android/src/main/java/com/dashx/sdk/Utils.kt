@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
+import java.util.HashMap
 
 fun getPackageInfo(context: Context): PackageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
 fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
@@ -75,4 +76,20 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
         }
     }
     return writableMap
+}
+
+fun ReadableMap.getMapIfPresent(key: String): ReadableMap? {
+    return if (this.hasKey(key)) this.getMap(key) else null
+}
+
+fun ReadableMap.getIntIfPresent(key: String): Int? {
+    return if (this.hasKey(key)) this.getInt(key) else null
+}
+
+fun ReadableMap.getStringIfPresent(key: String): String? {
+    return if (this.hasKey(key)) this.getString(key) else null
+}
+
+fun ReadableMap.getBooleanIfPresent(key: String): Boolean? {
+    return if (this.hasKey(key)) this.getBoolean(key) else null
 }
