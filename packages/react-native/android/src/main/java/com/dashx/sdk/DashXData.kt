@@ -23,3 +23,12 @@ data class SubscribeRequest(
     val uid: String?,
     val anonymousUid: String?
 )
+
+data class ContentRequest(
+    val contentType: String,
+    val returnType: String?,
+    val filter: JsonObject?,
+    val order: JsonObject?,
+    val limit: Int?,
+    val page: Int?
+)
