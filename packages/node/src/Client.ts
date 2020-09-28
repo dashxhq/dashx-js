@@ -50,7 +50,7 @@ class Client {
   }
 
   deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest('deliver', parcel)
+    return this.makeHttpRequest('/deliver', parcel)
   }
 
   identify(uid: string, options?: IdentifyParams) : Promise<Response>
@@ -69,11 +69,11 @@ class Client {
       }
     }
 
-    return this.makeHttpRequest('identify', params)
+    return this.makeHttpRequest('/identify', params)
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.makeHttpRequest('track', { event, uid, data })
+    return this.makeHttpRequest('/track', { event, uid, data })
   }
 }
 
