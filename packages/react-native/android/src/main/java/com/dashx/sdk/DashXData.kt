@@ -1,6 +1,5 @@
 package com.dashx.sdk
 
-import androidx.annotation.IntegerRes
 import com.google.gson.JsonObject
 
 data class IdentifyRequest(

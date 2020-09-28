@@ -14,7 +14,6 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
-import java.util.HashMap
 
 fun getPackageInfo(context: Context): PackageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
 fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
