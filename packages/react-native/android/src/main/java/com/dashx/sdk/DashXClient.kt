@@ -8,15 +8,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONException
 import java.io.IOException
@@ -27,9 +21,7 @@ import java.util.UUID
 class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
 
-    // Setup variables
-    private var baseURI: String = "https://api.dashx.com/v1"
-    private var publicKey: String? = null
+    private var httpClientBuilder: HttpClient.Builder = HttpClient.Builder().setBaseUri("https://api.dashx.com/v1")
 
     // Account variables
     private var anonymousUid: String? = null
@@ -37,18 +29,16 @@ class DashXClient private constructor() {
     private var deviceToken: String? = null
     private var identityToken: String? = null
 
-    private val httpClient = OkHttpClient()
-    private val json = "application/json; charset=utf-8".toMediaType()
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
     var reactApplicationContext: ReactApplicationContext? = null
 
     fun setBaseURI(baseURI: String) {
-        this.baseURI = baseURI
+        httpClientBuilder.setBaseUri(baseURI)
     }
 
     fun setPublicKey(publicKey: String) {
-        this.publicKey = publicKey
+        httpClientBuilder.setPublicKey(publicKey)
     }
 
     fun setDeviceToken(deviceToken: String) {
@@ -103,23 +93,6 @@ class DashXClient private constructor() {
             ?.emit(eventName, params)
     }
 
-    private fun <T> makeHttpRequest(uri: String, body: T, extraHeaders: Headers? = null, callback: Callback) {
-        val headerBuilder = Headers.Builder().add("X-Public-Key", publicKey!!)
-        extraHeaders?.let { it -> headerBuilder.addAll(it) }
-
-        val gson = GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create()
-
-        val request: Request = Request.Builder()
-            .url(baseURI + uri)
-            .headers(headerBuilder.build())
-            .post(gson.toJson(body).toString().toRequestBody(json))
-            .build()
-
-        httpClient.newCall(request).enqueue(callback)
-    }
-
     fun identify(uid: String?, options: ReadableMap?) {
         if (uid != null) {
             this.uid = uid
@@ -146,7 +119,8 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "/identify", body = identifyRequest, callback = object : Callback {
+        httpClientBuilder.build().makeRequest(
+            uri = "/identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -178,7 +152,8 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "/track", body = trackRequest, callback = object : Callback {
+        httpClientBuilder.build().makeRequest(
+            uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
@@ -271,7 +246,8 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "/content", body = contentRequest, callback = object : Callback {
+        httpClientBuilder.forceCache().build().makeRequest(
+            uri = "/content", body = contentRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -308,7 +284,8 @@ class DashXClient private constructor() {
 
         val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
 
-        makeHttpRequest("/subscribe", subscribeRequest, headers, object : Callback {
+        httpClientBuilder.setExtraHeaders(headers).build().makeRequest(
+            "/subscribe", subscribeRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
                 e.printStackTrace()
