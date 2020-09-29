@@ -60,4 +60,9 @@ class DashX: NSObject {
     func screen(_ screenName: String, _ data: NSDictionary?) {
         dashXClient.screen(screenName, withData: data)
     }
+    
+    @objc(content:options:)
+    func content(_ contentType: String, _ options: NSDictionary) {
+        dashXClient.content(contentType, withOptions: options)
+    }
 }

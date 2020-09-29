@@ -82,7 +82,7 @@ class Client {
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<Response> {
     if (options) {
-      return this.makeHttpRequest('content', { ...options, contentType })
+      return this.makeHttpRequest('/content', { ...options, contentType })
     }
 
     return new ContentOptionsBuilder(

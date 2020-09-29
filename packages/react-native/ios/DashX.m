@@ -7,4 +7,5 @@ RCT_EXTERN_METHOD(identify:(NSString *)uid options:(NSDictionary *)options)
 RCT_EXTERN_METHOD(setIdentityToken:(NSString *)identityToken)
 RCT_EXTERN_METHOD(reset)
 RCT_EXTERN_METHOD(track:(NSString *)event data:(NSDictionary *)data)
+RCT_EXTERN_METHOD(content:(NSString *)contentType options:(NSDictionary *)options)
 @end

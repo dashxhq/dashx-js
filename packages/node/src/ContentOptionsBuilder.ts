@@ -36,12 +36,12 @@ class ContentOptionsBuilder {
   }
 
   all(withOptions: ContentOptions) {
-    this.options = { ...withOptions, returnType: 'all' }
+    this.options = { ...this.options, ...withOptions, returnType: 'all' }
     return this.callback(this.options)
   }
 
   one(withOptions: ContentOptions) {
-    this.options = { ...withOptions, returnType: 'one' }
+    this.options = { ...this.options, ...withOptions, returnType: 'one' }
     return this.callback(this.options)
   }
 }
