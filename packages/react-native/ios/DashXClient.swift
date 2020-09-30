@@ -11,6 +11,7 @@ class DashXClient {
     private var uid: String?
     private var deviceToken: String?
     private var identityToken: String?
+    private var contentCacheTimeout: Int?
 
     private init() {
         generateAnonymousUid()
@@ -22,6 +23,10 @@ class DashXClient {
 
     func setPublicKey(to: String) {
         httpClient.withPublicKey(to)
+    }
+    
+    func setContentCacheTimeout(to: Int?) {
+        self.contentCacheTimeout = to
     }
 
     func setDeviceToken(to: String) {
@@ -66,7 +71,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
 
-        httpClient.makeRequest(uri: "/identify", identifyRequest,
+        httpClient.create().makeRequest(uri: "/identify", identifyRequest,
             { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
@@ -93,7 +98,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
 
-        httpClient.makeRequest(uri: "/track", trackRequest,
+        httpClient.create().makeRequest(uri: "/track", trackRequest,
             { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
@@ -113,7 +118,7 @@ class DashXClient {
 
         let headers = [ "X-Identity-Token": identityToken! ]
 
-        httpClient.withHeaders(headers).makeRequest(uri: "/subscribe", subscribeRequest,
+        httpClient.create().withHeaders(headers).makeRequest(uri: "/subscribe", subscribeRequest,
             { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
@@ -139,6 +144,8 @@ class DashXClient {
             orderByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: orderBy))
         }
         
+        let cacheTimeout = withOptions["cache"] as? Int ?? contentCacheTimeout
+        
         let contentRequest = ContentRequest(
             contentType: contentType,
             returnType: optionsDictionary["returnType"] as? String,
@@ -150,7 +157,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling subscribe with \(contentRequest)")
 
-        httpClient.withForcedCache().makeRequest(uri: "/content", contentRequest,
+        httpClient.create().withCache(timeout: cacheTimeout).makeRequest(uri: "/content", contentRequest,
             { response in DashXLog.d(tag: #function, "Called content with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during content(): \(error)") }
         )

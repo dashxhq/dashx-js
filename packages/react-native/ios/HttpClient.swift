@@ -6,9 +6,16 @@ class HttpClient {
     private var baseUri: String?
     private var publicKey: String?
     private var headers: Dictionary<String, String> = [:]
-    private var cacher = ResponseCacher(behavior: .doNotCache)
+    private var cacheTimeout: Int?
     
-    private init() {}
+    private init(_ baseUri: String? = nil, _ publicKey: String? = nil) {
+        self.baseUri = baseUri
+        self.publicKey = publicKey
+    }
+    
+    func create() -> HttpClient {
+        return HttpClient(self.baseUri, self.publicKey)
+    }
 
     func withBaseUri(_ baseUri: String) -> HttpClient {
         self.baseUri = baseUri
@@ -20,8 +27,8 @@ class HttpClient {
         return self
     }
     
-    func withForcedCache() -> HttpClient {
-        self.cacher = ResponseCacher(behavior: .cache)
+    func withCache(timeout: Int?) -> HttpClient {
+        self.cacheTimeout = timeout
         return self
     }
     
@@ -57,8 +64,11 @@ class HttpClient {
             parameters: requestBody,
             encoder: JSONParameterEncoder(encoder: jsonEncoder),
             headers: headers
-        )
-            .cacheResponse(using: cacher)
+        ) { request in
+            if let timeout = self.cacheTimeout {
+                request.addValue("private, must-revalidate, max-age=\(String(describing: timeout))", forHTTPHeaderField: "Cache-Control")
+            }
+        }
             .validate()
             .responseJSON { response in switch response.result {
                     case .success:
