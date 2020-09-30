@@ -65,7 +65,7 @@ class HttpClient private constructor(
             this.extraHeaders = extraHeaders
         }
 
-        fun build(): HttpClient {
+        fun client(): HttpClient {
             return HttpClient(
                 cacheControl = cacheControl,
                 baseUri = baseUri!!,

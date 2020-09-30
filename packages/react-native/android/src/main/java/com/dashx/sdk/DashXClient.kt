@@ -124,7 +124,7 @@ class DashXClient private constructor() {
             return
         }
 
-        httpClientBuilder.create().build().makeRequest(
+        httpClientBuilder.create().client().makeRequest(
             uri = "/identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
@@ -157,7 +157,7 @@ class DashXClient private constructor() {
             return
         }
 
-        httpClientBuilder.create().build().makeRequest(
+        httpClientBuilder.create().client().makeRequest(
             uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
@@ -253,7 +253,7 @@ class DashXClient private constructor() {
 
         val cacheTimeout = options.getIntIfPresent("cache") ?: contentCacheTimeout
 
-        httpClientBuilder.create().setCacheTimeout(cacheTimeout).build().makeRequest(
+        httpClientBuilder.create().setCacheTimeout(cacheTimeout).client().makeRequest(
             uri = "/content", body = contentRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
@@ -291,7 +291,7 @@ class DashXClient private constructor() {
 
         val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
 
-        httpClientBuilder.create().setExtraHeaders(headers).build().makeRequest(
+        httpClientBuilder.create().setExtraHeaders(headers).client().makeRequest(
             "/subscribe", subscribeRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
