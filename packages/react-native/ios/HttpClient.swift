@@ -7,6 +7,7 @@ class HttpClient {
     private var publicKey: String?
     private var headers: Dictionary<String, String> = [:]
     private var cacheTimeout: Int?
+    private var retryLimit: Int = Constants.DEFAULT_RETRY_LIMIT
     
     private init(_ baseUri: String? = nil, _ publicKey: String? = nil) {
         self.baseUri = baseUri
@@ -29,6 +30,11 @@ class HttpClient {
     
     func withCache(timeout: Int?) -> HttpClient {
         self.cacheTimeout = timeout
+        return self
+    }
+    
+    func withRetryLimit(of: Int) -> HttpClient {
+        self.retryLimit = of
         return self
     }
     
@@ -58,12 +64,15 @@ class HttpClient {
             DashXLog.d(tag: #function, jsonString)
         }
         
+        let dashXRequestInterceptor = DashXRequestInterceptor(retryLimit)
+        
         AF.request(
             baseUri! + uri,
             method: .post,
             parameters: requestBody,
             encoder: JSONParameterEncoder(encoder: jsonEncoder),
-            headers: headers
+            headers: headers,
+            interceptor: dashXRequestInterceptor
         ) { request in
             if let timeout = self.cacheTimeout {
                 request.addValue("private, must-revalidate, max-age=\(String(describing: timeout))", forHTTPHeaderField: "Cache-Control")
