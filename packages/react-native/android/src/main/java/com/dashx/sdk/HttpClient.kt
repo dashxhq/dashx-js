@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.concurrent.TimeUnit
 
 class HttpClient private constructor(
     private val cacheControl: CacheControl,
@@ -36,11 +37,13 @@ class HttpClient private constructor(
         OkHttpClient().newCall(request).enqueue(callback)
     }
 
-    class Builder {
-        private lateinit var publicKey: String
-        private lateinit var baseUri: String
+    class Builder(private var baseUri: String? = null, private var publicKey: String? = null) {
         private var cacheControl: CacheControl = CacheControl.FORCE_NETWORK
         private var extraHeaders: Headers? = null
+
+        fun create(): Builder {
+            return Builder(this.baseUri, this.publicKey)
+        }
 
         fun setBaseUri(baseUri: String) = apply {
             this.baseUri = baseUri
@@ -50,8 +53,12 @@ class HttpClient private constructor(
             this.publicKey = publicKey
         }
 
-        fun forceCache() = apply {
-            this.cacheControl = CacheControl.FORCE_CACHE
+        fun setCacheTimeout(timeout: Int?) = apply {
+            timeout?.let {
+                this.cacheControl = CacheControl.Builder()
+                    .maxAge(it, TimeUnit.SECONDS)
+                    .build()
+            }
         }
 
         fun setExtraHeaders(extraHeaders: Headers) = apply {
@@ -61,8 +68,8 @@ class HttpClient private constructor(
         fun build(): HttpClient {
             return HttpClient(
                 cacheControl = cacheControl,
-                baseUri = baseUri,
-                publicKey = publicKey,
+                baseUri = baseUri!!,
+                publicKey = publicKey!!,
                 extraHeaders = extraHeaders
             )
         }

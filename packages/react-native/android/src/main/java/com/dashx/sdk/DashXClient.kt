@@ -22,6 +22,7 @@ class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
 
     private var httpClientBuilder: HttpClient.Builder = HttpClient.Builder().setBaseUri("https://api.dashx.com/v1")
+    private var contentCacheTimeout: Int? = null
 
     // Account variables
     private var anonymousUid: String? = null
@@ -32,6 +33,10 @@ class DashXClient private constructor() {
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
     var reactApplicationContext: ReactApplicationContext? = null
+
+    fun setContentCacheTimeout(contentCacheTimeout: Int) {
+        this.contentCacheTimeout = contentCacheTimeout
+    }
 
     fun setBaseURI(baseURI: String) {
         httpClientBuilder.setBaseUri(baseURI)
@@ -119,7 +124,7 @@ class DashXClient private constructor() {
             return
         }
 
-        httpClientBuilder.build().makeRequest(
+        httpClientBuilder.create().build().makeRequest(
             uri = "/identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
@@ -152,7 +157,7 @@ class DashXClient private constructor() {
             return
         }
 
-        httpClientBuilder.build().makeRequest(
+        httpClientBuilder.create().build().makeRequest(
             uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
@@ -246,7 +251,9 @@ class DashXClient private constructor() {
             return
         }
 
-        httpClientBuilder.forceCache().build().makeRequest(
+        val cacheTimeout = options.getIntIfPresent("cache") ?: contentCacheTimeout
+
+        httpClientBuilder.create().setCacheTimeout(cacheTimeout).build().makeRequest(
             uri = "/content", body = contentRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
@@ -284,7 +291,7 @@ class DashXClient private constructor() {
 
         val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
 
-        httpClientBuilder.setExtraHeaders(headers).build().makeRequest(
+        httpClientBuilder.create().setExtraHeaders(headers).build().makeRequest(
             "/subscribe", subscribeRequest, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
