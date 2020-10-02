@@ -8,7 +8,7 @@ class HttpClient {
     private var headers: Dictionary<String, String> = [:]
     private var cacheTimeout: Int?
     
-    private init(_ baseUri: String? = nil, _ publicKey: String? = nil) {
+    init(_ baseUri: String? = nil, _ publicKey: String? = nil) {
         self.baseUri = baseUri
         self.publicKey = publicKey
     }
@@ -17,13 +17,13 @@ class HttpClient {
         return HttpClient(self.baseUri, self.publicKey)
     }
 
-    func withBaseUri(_ baseUri: String) -> HttpClient {
-        self.baseUri = baseUri
+    func setBaseUri(to: String) -> HttpClient {
+        self.baseUri = to
         return self
     }
     
-    func withPublicKey(_ publicKey: String) -> HttpClient {
-        self.publicKey = publicKey
+    func setPublicKey(to: String) -> HttpClient {
+        self.publicKey = to
         return self
     }
     
