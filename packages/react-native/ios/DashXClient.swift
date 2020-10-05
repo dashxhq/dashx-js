@@ -4,9 +4,8 @@ enum DashXClientError: Error {
     case noArgsInIdentify
 }
 
-class DashXClient {
+class DashXClient: HttpClient {
     static let instance = DashXClient()
-    private var httpClient = HttpClient.shared.withBaseUri("https://api.dashx.com/v1")
     private var anonymousUid: String?
     private var uid: String?
     private var deviceToken: String?
@@ -14,15 +13,8 @@ class DashXClient {
     private var contentCacheTimeout: Int?
 
     private init() {
+        super.init("https://api.dashx.com/v1")
         generateAnonymousUid()
-    }
-
-    func setBaseUri(to: String) {
-        httpClient.withBaseUri(to)
-    }
-
-    func setPublicKey(to: String) {
-        httpClient.withPublicKey(to)
     }
     
     func setContentCacheTimeout(to: Int?) {
@@ -71,7 +63,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
 
-        httpClient.create().makeRequest(uri: "/identify", identifyRequest,
+        self.create().makeRequest(uri: "/identify", identifyRequest,
             { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
@@ -98,7 +90,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
 
-        httpClient.create().makeRequest(uri: "/track", trackRequest,
+        self.create().makeRequest(uri: "/track", trackRequest,
             { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
@@ -118,7 +110,7 @@ class DashXClient {
 
         let headers = [ "X-Identity-Token": identityToken! ]
 
-        httpClient.create().withHeaders(headers).makeRequest(uri: "/subscribe", subscribeRequest,
+        self.create().withHeaders(headers).makeRequest(uri: "/subscribe", subscribeRequest,
             { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
@@ -157,7 +149,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling subscribe with \(contentRequest)")
 
-        httpClient.create().withCache(timeout: cacheTimeout).makeRequest(uri: "/content", contentRequest,
+        self.create().withCache(timeout: cacheTimeout).makeRequest(uri: "/content", contentRequest,
             { response in DashXLog.d(tag: #function, "Called content with \(String(describing: response))") },
             { error in DashXLog.d(tag: #function, "Encountered an error during content(): \(error)") }
         )
