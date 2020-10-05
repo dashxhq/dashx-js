@@ -1,7 +1,9 @@
 package com.dashx.sdk
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.BatteryManager
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -13,15 +15,19 @@ class DashXRequestInterceptor(
     private val exponentialBackoffBase: Double = 2.0,
     private val retryLimit: Int = 3
 ) : Interceptor {
+    val context = DashXClient.instance.reactApplicationContext
+
     private fun shouldRetry(request: Request, response: Response): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
         val retryableStatusCodes = listOf<Int>(408, 500, 502, 503, 504)
-        if (retryableStatusCodes.contains(response.code)) return true
-        if (request.method == "POST") return true
-        return false
+
+        return (networkInfo.isConnected && !networkInfo.isRoaming)
+            || request.method == "POST"
+            || retryableStatusCodes.contains(response.code)
     }
 
     private fun getTimeDelay(retryCount: Int): Long {
-        val context = DashXClient.instance.reactApplicationContext
         val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
             context?.registerReceiver(null, ifilter)
         }
