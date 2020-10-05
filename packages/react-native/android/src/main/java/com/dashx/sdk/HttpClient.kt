@@ -58,6 +58,10 @@ open class HttpClient() {
             .post(gson.toJson(body).toString().toRequestBody(json))
             .build()
 
-        OkHttpClient().newCall(request).enqueue(callback)
+        OkHttpClient.Builder()
+            .addInterceptor(DashXRequestInterceptor())
+            .build()
+            .newCall(request)
+            .enqueue(callback)
     }
 }
