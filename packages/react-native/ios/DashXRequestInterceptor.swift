@@ -2,9 +2,9 @@ import Foundation
 import Alamofire
 
 class DashXRequestInterceptor: RequestInterceptor {
-    let retryLimit: Int
-    let exponentialBackoffScale: Double = 0.5
-    let exponentialBackoffBase: Int = 2
+    private let retryLimit: Int
+    private let exponentialBackoffScale: Double = 0.5
+    private let exponentialBackoffBase: Int = 2
     
     init(_ retryLimit: Int) {
         self.retryLimit = retryLimit
