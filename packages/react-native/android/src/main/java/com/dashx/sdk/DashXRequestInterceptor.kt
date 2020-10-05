@@ -39,7 +39,7 @@ class DashXRequestInterceptor(
         var response = chain.proceed(request)
         var retryCount = 0
 
-        while (shouldRetry(request, response) && retryLimit > retryCount) {
+        while (retryLimit > retryCount && shouldRetry(request, response)) {
             Thread.sleep(getTimeDelay(retryCount))
             retryCount++
             response = chain.proceed(request)
