@@ -10,7 +10,7 @@ class DashXRequestInterceptor: RequestInterceptor {
         self.retryLimit = retryLimit
     }
     
-    func getTimeDelay(for retryCount: Int) -> TimeInterval {
+    private func getTimeDelay(for retryCount: Int) -> TimeInterval {
         var batteryState: UIDevice.BatteryState { UIDevice.current.batteryState }
         switch batteryState {
         case .charging:
@@ -20,7 +20,17 @@ class DashXRequestInterceptor: RequestInterceptor {
         }
     }
     
-    func checkMethod(_ request: Request) -> Bool {
+    private func checkStatusCode(_ request: Request) -> Bool {
+        let retryableStatusCodes = [408, 500, 502, 503, 504]
+        if let statusCode = request.response?.statusCode,
+            retryableStatusCodes.contains(statusCode) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func checkMethod(_ request: Request) -> Bool {
         if let httpMethod = request.request?.method,
             httpMethod == .post {
             return true
@@ -31,7 +41,8 @@ class DashXRequestInterceptor: RequestInterceptor {
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         if request.retryCount < retryLimit,
-            checkMethod(request) {
+            checkMethod(request),
+            checkStatusCode(request) {
             let timeDelay = getTimeDelay(for: request.retryCount)
             completion(.retryWithDelay(timeDelay))
         } else {
