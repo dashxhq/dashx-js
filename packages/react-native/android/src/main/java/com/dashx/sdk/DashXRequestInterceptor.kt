@@ -43,9 +43,9 @@ class DashXRequestInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         var response = chain.proceed(request)
-        var retryCount = 0
+        var retryCount = 1
 
-        while (retryLimit > retryCount && shouldRetry(request, response)) {
+        while (retryLimit >= retryCount && shouldRetry(request, response)) {
             Thread.sleep(getTimeDelay(retryCount))
             retryCount++
             response = chain.proceed(request)
