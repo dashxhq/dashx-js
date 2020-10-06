@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 open class HttpClient() {
@@ -51,11 +52,14 @@ open class HttpClient() {
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create()
 
+        val requestBody = gson.toJsonTree(body)
+        requestBody.asJsonObject.addProperty("request_id", UUID.randomUUID().toString())
+
         val request: Request = Request.Builder()
             .cacheControl(cacheControl ?: CacheControl.FORCE_NETWORK)
             .url(baseUri + uri)
             .headers(headerBuilder.build())
-            .post(gson.toJson(body).toString().toRequestBody(json))
+            .post(gson.toJson(requestBody).toRequestBody(json))
             .build()
 
         OkHttpClient.Builder()

@@ -23,8 +23,8 @@ class DashXRequestInterceptor(
         val retryableStatusCodes = listOf<Int>(408, 500, 502, 503, 504)
 
         return (networkInfo.isConnected && !networkInfo.isRoaming)
-            || request.method == "POST"
-            || retryableStatusCodes.contains(response.code)
+            && request.method == "POST"
+            && retryableStatusCodes.contains(response.code)
     }
 
     private fun getTimeDelay(retryCount: Int): Long {
