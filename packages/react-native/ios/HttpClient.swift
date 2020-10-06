@@ -7,7 +7,6 @@ class HttpClient {
     private var publicKey: String?
     private var headers: Dictionary<String, String> = [:]
     private var cacheTimeout: Int?
-    private var retryLimit: Int = Constants.DEFAULT_RETRY_LIMIT
     
     init(_ baseUri: String? = nil, _ publicKey: String? = nil) {
         self.baseUri = baseUri
@@ -32,12 +31,7 @@ class HttpClient {
         self.cacheTimeout = timeout
         return self
     }
-    
-    func withRetryLimit(of: Int) -> HttpClient {
-        self.retryLimit = of
-        return self
-    }
-    
+        
     func withHeaders(_ headers: Dictionary<String, String>) -> HttpClient {
         self.headers = headers
         return self
@@ -64,7 +58,7 @@ class HttpClient {
             DashXLog.d(tag: #function, jsonString)
         }
         
-        let dashXRequestInterceptor = DashXRequestInterceptor(retryLimit)
+        let dashXRequestInterceptor = DashXRequestInterceptor()
         
         AF.request(
             baseUri! + uri,
