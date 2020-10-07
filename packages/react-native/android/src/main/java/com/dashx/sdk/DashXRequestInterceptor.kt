@@ -11,9 +11,10 @@ import okhttp3.Response
 import kotlin.math.pow
 
 class DashXRequestInterceptor(
-    private val exponentialBackoffScale: Double = 0.5,
+    private val exponentialBackoffScale: Double = .5,
     private val exponentialBackoffBase: Double = 2.0,
-    private val retryLimit: Int = 3
+    private val retryLimit: Int = 3,
+    private val jitterFactor: Double = .1
 ) : Interceptor {
     val context = DashXClient.instance.reactApplicationContext
 
@@ -28,15 +29,17 @@ class DashXRequestInterceptor(
     }
 
     private fun getTimeDelay(retryCount: Int): Long {
-        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
-            context?.registerReceiver(null, ifilter)
+        val randomFactor = 1 + (1 - Math.random() * 2) * jitterFactor
+
+        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { it ->
+            context?.registerReceiver(null, it)
         }
         val extraStatus = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
 
         return if (extraStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
-            (exponentialBackoffBase.pow(retryCount) * exponentialBackoffScale).toLong()
+            ((exponentialBackoffBase.pow(retryCount) * exponentialBackoffScale) * randomFactor).toLong()
         } else {
-            (exponentialBackoffBase.pow(retryCount + 1) * exponentialBackoffScale).toLong()
+            ((exponentialBackoffBase.pow(retryCount + 1) * exponentialBackoffScale) * randomFactor).toLong()
         }
     }
 
