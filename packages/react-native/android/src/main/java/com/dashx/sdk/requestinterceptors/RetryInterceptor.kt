@@ -1,16 +1,17 @@
-package com.dashx.sdk
+package com.dashx.sdk.requestinterceptors
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.BatteryManager
+import com.dashx.sdk.DashXClient
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import kotlin.math.pow
 
-class DashXRequestInterceptor(
+class RetryInterceptor(
     private val exponentialBackoffScale: Double = 0.5,
     private val exponentialBackoffBase: Double = 2.0,
     private val retryLimit: Int = 3
