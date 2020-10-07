@@ -1,5 +1,6 @@
 package com.dashx.sdk
 
+import com.dashx.sdk.requestinterceptors.RetryInterceptor
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import okhttp3.CacheControl
@@ -9,6 +10,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.sql.Timestamp
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -17,6 +19,8 @@ open class HttpClient() {
     private lateinit var publicKey: String
     private var cacheControl: CacheControl? = null
     private var extraHeaders: Headers? = null
+    private var requestQueueLimit: Int = 5
+    private val requestQueue: PriorityQueue<DashXRequest> = PriorityQueue(requestQueueLimit)
 
     fun create(): HttpClient {
         return HttpClient().setBaseUri(baseUri).setPublicKey(publicKey)
@@ -36,6 +40,15 @@ open class HttpClient() {
                 .maxAge(it, TimeUnit.SECONDS)
                 .build()
         }
+    }
+
+    fun addToQueue(uri: String, body: Any, callback: Callback) {
+        if (requestQueue.size >= requestQueueLimit) {
+            requestQueue.toTypedArray().forEach { makeRequest(it.uri, it.body, it.callback) }
+            return
+        }
+
+        requestQueue.add(DashXRequest(Timestamp(System.currentTimeMillis()).time, uri, body, callback))
     }
 
     fun setExtraHeaders(extraHeaders: Headers) = apply {
@@ -63,7 +76,7 @@ open class HttpClient() {
             .build()
 
         OkHttpClient.Builder()
-            .addInterceptor(DashXRequestInterceptor())
+            .addInterceptor(RetryInterceptor())
             .build()
             .newCall(request)
             .enqueue(callback)

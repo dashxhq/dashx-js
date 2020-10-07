@@ -147,7 +147,7 @@ class DashXClient private constructor(): HttpClient() {
             return
         }
 
-        create().makeRequest(
+        create().addToQueue(
             uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
