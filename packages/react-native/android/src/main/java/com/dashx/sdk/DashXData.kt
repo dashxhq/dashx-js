@@ -1,6 +1,8 @@
 package com.dashx.sdk
 
 import com.google.gson.JsonObject
+import okhttp3.Callback
+import java.sql.Timestamp
 
 data class IdentifyRequest(
     val firstName: String?,
@@ -32,3 +34,14 @@ data class ContentRequest(
     val limit: Int?,
     val page: Int?
 )
+
+data class DashXRequest(
+    val timestamp: Long,
+    val uri: String,
+    val body: Any,
+    val callback: Callback
+): Comparable<DashXRequest> {
+    override fun compareTo(other: DashXRequest): Int {
+        return (other.timestamp - this.timestamp).toInt()
+    }
+}
