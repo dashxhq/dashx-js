@@ -9,14 +9,14 @@ class DashX: RCTEventEmitter {
         super.init()
         DashXEventEmitter.instance.registerEventEmitter(eventEmitter: self)
     }
-
+    
     @objc
     func setLogLevel(_ logLevel: Int) {
         DashXLog.setLogLevel(to: logLevel)
     }
     
     override func supportedEvents() -> [String] {
-       return ["messageReceived"]
+        return ["messageReceived"]
     }
     
     @objc
@@ -35,7 +35,7 @@ class DashX: RCTEventEmitter {
         
         DashXEventEmitter.instance.dispatch(name: "messageReceived", body: properties)
     }
-
+    
     @objc
     func setup(_ options: NSDictionary?) {
         dashXClient.setPublicKey(to: options?.value(forKey: "publicKey") as! String)
@@ -54,7 +54,7 @@ class DashX: RCTEventEmitter {
         if let trackScreenViews = options?.value(forKey: "trackScreenViews"), trackScreenViews as! Bool {
             UIViewController.swizzle()
         }
-
+        
         InstanceID.instanceID().instanceID { (result, error) in
             if let error = error {
                 DashXLog.d(tag: #function, "Error fetching remote instance ID: \(error)")
@@ -88,5 +88,10 @@ class DashX: RCTEventEmitter {
     @objc(screen:data:)
     func screen(_ screenName: String, _ data: NSDictionary?) {
         dashXClient.screen(screenName, withData: data)
+    }
+    
+    @objc(content:options:)
+    func content(_ contentType: String, _ options: NSDictionary) {
+        dashXClient.content(contentType, withOptions: options)
     }
 }

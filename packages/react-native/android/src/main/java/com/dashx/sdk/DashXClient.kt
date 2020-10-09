@@ -112,7 +112,7 @@ class DashXClient private constructor() {
             .create()
 
         val request: Request = Request.Builder()
-            .url("$baseURI/$uri")
+            .url(baseURI + uri)
             .headers(headerBuilder.build())
             .post(gson.toJson(body).toString().toRequestBody(json))
             .build()
@@ -146,7 +146,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "identify", body = identifyRequest, callback = object : Callback {
+        makeHttpRequest(uri = "/identify", body = identifyRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not identify with: $uid $options")
                 e.printStackTrace()
@@ -178,7 +178,7 @@ class DashXClient private constructor() {
             return
         }
 
-        makeHttpRequest(uri = "track", body = trackRequest, callback = object : Callback {
+        makeHttpRequest(uri = "/track", body = trackRequest, callback = object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not track: $event $data")
                 e.printStackTrace()
@@ -255,6 +255,40 @@ class DashXClient private constructor() {
         track(INTERNAL_EVENT_APP_SCREEN_VIEWED, data)
     }
 
+    fun content(contentType: String, options: ReadableMap) {
+        val contentRequest = try {
+            ContentRequest(
+                contentType,
+                options.getStringIfPresent("returnType"),
+                convertMapToJson(options.getMapIfPresent("filter")),
+                convertMapToJson(options.getMapIfPresent("order")),
+                options.getIntIfPresent("limit"),
+                options.getIntIfPresent("page")
+            )
+        } catch (e: Exception) {
+            DashXLog.d(tag, "Encountered an error while parsing data")
+            e.printStackTrace()
+            return
+        }
+
+        makeHttpRequest(uri = "/content", body = contentRequest, callback = object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                DashXLog.d(tag, "Could not identify with: $uid $options")
+                e.printStackTrace()
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    DashXLog.d(tag, "Encountered an error during content(): " + response.body?.string())
+                    return
+                }
+
+                DashXLog.d(tag, "Sent content: $contentRequest")
+            }
+        })
+    }
+
     private fun subscribe() {
         if (deviceToken == null || identityToken == null) {
             DashXLog.d(tag,
@@ -274,7 +308,7 @@ class DashXClient private constructor() {
 
         val headers = Headers.Builder().add("X-Identity-Token", identityToken!!).build()
 
-        makeHttpRequest("subscribe", subscribeRequest, headers, object : Callback {
+        makeHttpRequest("/subscribe", subscribeRequest, headers, object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 DashXLog.d(tag, "Could not subscribe: $deviceToken")
                 e.printStackTrace()

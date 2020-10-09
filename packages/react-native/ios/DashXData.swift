@@ -15,6 +15,13 @@ struct SubscribeRequest: Encodable {
     let anonymousUid, uid: String?
 }
 
+struct ContentRequest: Encodable {
+    let contentType: String
+    let returnType: String?
+    let limit, page: Int?
+    let filter, order: JSONValue?
+}
+
 struct FirebaseRemoteMessage: Decodable {
     let aps: APS
 

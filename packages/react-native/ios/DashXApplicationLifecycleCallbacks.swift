@@ -12,7 +12,7 @@ class DashXApplicationLifecycleCallbacks: NSObject {
         notificationCenter.addObserver(self, selector: #selector(appBackgrounded), name: UIApplication.willResignActiveNotification, object: nil)
         
         notificationCenter.addObserver(self, selector: #selector(appResumed), name: UIApplication.willEnterForegroundNotification, object: nil)
-                        
+        
         NSSetUncaughtExceptionHandler { exception in
             DashXClient.instance.track(Constants.INTERNAL_EVENT_APP_CRASHED, withData: [ "exception" : exception.reason ])
         }
@@ -59,7 +59,7 @@ class DashXApplicationLifecycleCallbacks: NSObject {
     func appResumed() {
         startSession = Date.timeIntervalSinceReferenceDate
         let properties = getAppBuildInfo().merging([ "from_background": true ])
-            { (current, _) in current }
+        { (current, _) in current }
         
         dashXClient.track(Constants.INTERNAL_EVENT_APP_OPENED, withData: properties as NSDictionary)
     }

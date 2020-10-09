@@ -76,3 +76,19 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
     }
     return writableMap
 }
+
+fun ReadableMap.getMapIfPresent(key: String): ReadableMap? {
+    return if (this.hasKey(key)) this.getMap(key) else null
+}
+
+fun ReadableMap.getIntIfPresent(key: String): Int? {
+    return if (this.hasKey(key)) this.getInt(key) else null
+}
+
+fun ReadableMap.getStringIfPresent(key: String): String? {
+    return if (this.hasKey(key)) this.getString(key) else null
+}
+
+fun ReadableMap.getBooleanIfPresent(key: String): Boolean? {
+    return if (this.hasKey(key)) this.getBoolean(key) else null
+}

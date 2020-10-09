@@ -4,7 +4,7 @@ let swizzler: (AnyClass, AnyClass, Selector, Selector) -> () = { mainClass, swiz
     guard let swizzledMethod = class_getInstanceMethod(swizzledClass, swizzledSelector) else {
         return
     }
-
+    
     if let originalMethod = class_getInstanceMethod(mainClass, originalSelector)  {
         method_exchangeImplementations(originalMethod, swizzledMethod)
     } else {
