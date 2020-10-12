@@ -62,7 +62,11 @@ class DashXClient extends HttpClient {
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.create().makeRequest('/track', { event, uid, data })
+    return this.create().addToQueue('/track', { event, uid, data })
+  }
+
+  flushRequestQueue(): Promise<Response>[] {
+    return this.flushRequestQueue()
   }
 
   content(

@@ -16,6 +16,10 @@ class HttpClient {
 
   private baseUri: string
 
+  private requestQueue: { uri: string, body: any }[]
+
+  private requestQueueLimit: number
+
   constructor(baseUri: string, publicKey?: string, privateKey?: string) {
     this.getCache = (cacheTimeout: number) => new Keyv(
       `sqlite://${os.tmpdir}/dashx-response-cache`, { ttl: cacheTimeout }
@@ -23,6 +27,8 @@ class HttpClient {
     this.baseUri = baseUri
     this.publicKey = publicKey
     this.privateKey = privateKey
+    this.requestQueue = []
+    this.requestQueueLimit = 5
   }
 
   create(): HttpClient {
@@ -34,7 +40,20 @@ class HttpClient {
     return this
   }
 
-  makeRequest<T>(uri: string, body: T): Promise<Response> {
+  flushRequestQueue(): Promise<Response>[] {
+    return this.requestQueue.map((request) => this.makeRequest(request.uri, request.body))
+  }
+
+  addToQueue(uri: string, body: any): Promise<any> {
+    if (this.requestQueue.length > this.requestQueueLimit) {
+      this.flushRequestQueue()
+    }
+
+    this.requestQueue.push({ uri, body })
+    return Promise.resolve(body)
+  }
+
+  makeRequest(uri: string, body: any): Promise<Response> {
     return http(uri, {
       json: snakeCaseKeys(body),
       method: 'POST',
