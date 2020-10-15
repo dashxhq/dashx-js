@@ -34,7 +34,7 @@ struct FirebaseRemoteMessage: Decodable {
         }
     }
 
-    init(decoding userInfo: [AnyHashable : Any]) throws {
+    init(decoding userInfo: [AnyHashable: Any]) throws {
         let data = try JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted)
         self = try JSONDecoder().decode(FirebaseRemoteMessage.self, from: data)
     }
