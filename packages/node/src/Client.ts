@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import http from 'got'
 import uuid from 'uuid-random'
 import type { Response } from 'got'
@@ -72,6 +73,22 @@ class Client {
     }
 
     return this.makeHttpRequest('/identify', params)
+  }
+
+  generateIdentityToken(uid: string): string {
+    if (!this.privateKey) {
+      throw new Error('Private key not set')
+    }
+
+    const nonce = crypto.randomBytes(12)
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(this.privateKey), nonce, {
+      authTagLength: 16
+    })
+    const encrypted = Buffer.concat([ cipher.update(uid), cipher.final() ])
+    const encryptedToken = Buffer.concat([ nonce, encrypted, cipher.getAuthTag() ])
+
+    // Base64.urlsafe_encode64
+    return encryptedToken.toString('base64').replace(/\+/g, '-').replace(/\//g, '_')
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
