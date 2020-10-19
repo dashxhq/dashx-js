@@ -1,14 +1,18 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
+import ContentOptionsBuilder from './ContentOptionsBuilder'
 import generateContext from './context'
 import { getItem, setItem } from './storage'
 import type { Context } from './context'
+import type { ContentOptions } from './ContentOptionsBuilder'
 
 type ClientParams = {
   publicKey: string,
   baseUri?: string
 }
+
+type Method = 'GET' | 'POST'
 
 type IdentifyParams = Record<string, string | number> & {
   firstName?: string,
@@ -46,14 +50,17 @@ class Client {
     setItem('anonymousUid', this.anonymousUid)
   }
 
-  private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
-    return fetch(`${this.baseUri}/${uri}`, {
-      method: 'POST',
+  private async makeHttpRequest(uri: string, { body, method = 'POST' }: { body: any, method?: Method}): Promise<Response> {
+    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${new URLSearchParams(body).toString()}` : `${this.baseUri}/${uri}`
+    const response = await fetch(requestUri, {
+      method,
       headers: {
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify(body)
-    }).then((response) => response.json())
+      body: method === 'GET' ? undefined : JSON.stringify(body)
+    })
+
+    return response.json()
   }
 
   identify(uid: string) : void
@@ -69,14 +76,14 @@ class Client {
     }
 
     const { firstName, lastName, ...others } = options
-    const params = {
+    const body = {
       anonymous_uid: this.anonymousUid,
       first_name: firstName,
       last_name: lastName,
       ...others
     }
 
-    return this.makeHttpRequest('identify', params)
+    return this.makeHttpRequest('identify', { body })
   }
 
   reset(): void {
@@ -85,9 +92,27 @@ class Client {
   }
 
   track(event: string, data?: Record<string, any>): Promise<Response> {
-    const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
+    const body = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 
-    return this.makeHttpRequest('track', params)
+    return this.makeHttpRequest('track', { body })
+  }
+
+  content(
+    contentType: string, options?: ContentOptions
+  ): ContentOptionsBuilder | Promise<Response> {
+    if (options) {
+      return this.makeHttpRequest(
+        'content',
+        { body: { ...options, contentType }, method: 'GET' }
+      )
+    }
+
+    return new ContentOptionsBuilder(
+      (wrappedOptions) => this.makeHttpRequest(
+        'content',
+        { body: { ...wrappedOptions, contentType }, method: 'GET' }
+      )
+    )
   }
 }
 
