@@ -4,6 +4,7 @@ import uuid from 'uuid-random'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import generateContext from './context'
 import { getItem, setItem } from './storage'
+import { snakeCaseKeys } from './utils'
 import type { Context } from './context'
 import type { ContentOptions } from './ContentOptionsBuilder'
 
@@ -50,14 +51,17 @@ class Client {
     setItem('anonymousUid', this.anonymousUid)
   }
 
-  private async makeHttpRequest(uri: string, { body, method = 'POST' }: { body: any, method?: Method}): Promise<Response> {
-    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${new URLSearchParams(body).toString()}` : `${this.baseUri}/${uri}`
+  private async makeHttpRequest(uri: string, { params, method = 'POST' }: { params: any, method?: Method}): Promise<Response> {
+    const requestParams = snakeCaseKeys(params)
+
+    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${new URLSearchParams(requestParams).toString()}` : `${this.baseUri}/${uri}`
+
     const response = await fetch(requestUri, {
       method,
       headers: {
         'X-Public-Key': this.publicKey
       },
-      body: method === 'GET' ? undefined : JSON.stringify(body)
+      body: method === 'GET' ? undefined : JSON.stringify(requestParams)
     })
 
     return response.json()
@@ -71,19 +75,15 @@ class Client {
       return undefined
     }
 
-    if (!options) {
-      throw new Error('Cannot be called with undefined or null, either pass uid: string or options: object')
-    }
-
     const { firstName, lastName, ...others } = options
-    const body = {
+    const params = {
       anonymous_uid: this.anonymousUid,
       first_name: firstName,
       last_name: lastName,
       ...others
     }
 
-    return this.makeHttpRequest('identify', { body })
+    return this.makeHttpRequest('identify', { params })
   }
 
   reset(): void {
@@ -92,9 +92,9 @@ class Client {
   }
 
   track(event: string, data?: Record<string, any>): Promise<Response> {
-    const body = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
+    const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 
-    return this.makeHttpRequest('track', { body })
+    return this.makeHttpRequest('track', { params })
   }
 
   content(
@@ -103,14 +103,14 @@ class Client {
     if (options) {
       return this.makeHttpRequest(
         'content',
-        { body: { ...options, contentType }, method: 'GET' }
+        { params: { ...options, contentType }, method: 'GET' }
       )
     }
 
     return new ContentOptionsBuilder(
       (wrappedOptions) => this.makeHttpRequest(
         'content',
-        { body: { ...wrappedOptions, contentType }, method: 'GET' }
+        { params: { ...wrappedOptions, contentType }, method: 'GET' }
       )
     )
   }
