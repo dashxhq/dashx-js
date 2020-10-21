@@ -59,9 +59,10 @@ class Client {
     const response = await fetch(requestUri, {
       method,
       headers: {
+        'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey
       },
-      body: method === 'GET' ? undefined : JSON.stringify(requestParams)
+      body: JSON.stringify(requestParams)
     })
 
     return response.json()
