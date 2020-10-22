@@ -44,6 +44,10 @@ class ContentOptionsBuilder {
     this.options = { ...this.options, ...withOptions, returnType: 'one' }
     return this.callback(this.options)
   }
+
+  post(withParams: any) {
+    return this.callback(withParams)
+  }
 }
 
 export default ContentOptionsBuilder
