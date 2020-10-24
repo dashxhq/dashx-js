@@ -33,12 +33,12 @@ static void InitializeFlipper(UIApplication *application) {
 #endif
 
   [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-    UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
-        UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+  UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
+    UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
   [[UNUserNotificationCenter currentNotificationCenter]
-      requestAuthorizationWithOptions:authOptions
-        completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        }];
+    requestAuthorizationWithOptions:authOptions
+    completionHandler:^(BOOL granted, NSError * _Nullable error) {
+  }];
 
   [application registerForRemoteNotifications];
 
