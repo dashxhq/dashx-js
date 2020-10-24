@@ -49,7 +49,7 @@ class DashXClient {
     private func makeHttpRequest<T: Encodable>(
         uri: String,
         _ request: T,
-        withHeaders: Dictionary<String, String> = [:],
+        withHeaders: [String: String] = [:],
         _ onSuccess: @escaping (Data?) -> Void,
         _ onError: @escaping (Error) -> Void
     ) {
@@ -59,21 +59,21 @@ class DashXClient {
         ) { (current, _) in current }
 
         let headers = HTTPHeaders.init(headerDictionary)
-        
+
         let jsonEncoder = JSONEncoder()
         jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
 
         // For debugging
         if let jsonData = try? jsonEncoder.encode(request),
-        let jsonString = String(data: jsonData, encoding: .utf8) {
+            let jsonString = String(data: jsonData, encoding: .utf8) {
             DashXLog.d(tag: #function, jsonString)
         }
 
         AF.request(baseUri + uri, method: .post, parameters: request, encoder: JSONParameterEncoder(encoder: jsonEncoder), headers: headers).validate().responseJSON { response in switch response.result {
-                    case .success:
-                        onSuccess(response.data)
-                    case let .failure(error):
-                        onError(error)
+        case .success:
+            onSuccess(response.data)
+        case let .failure(error):
+            onError(error)
             }
         }
     }
@@ -88,7 +88,7 @@ class DashXClient {
             throw DashXClientError.noArgsInIdentify
         }
 
-        let optionsDictionary = withOptions as? Dictionary<String, String>
+        let optionsDictionary = withOptions as? [String: String]
 
         let identifyRequest = IdentifyRequest(
             firstName: optionsDictionary?["firstName"],
@@ -100,9 +100,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling Identify with \(identifyRequest)")
 
-        makeHttpRequest(uri: "/identify", identifyRequest,
-            { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") },
-            { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
+        makeHttpRequest(uri: "/identify", identifyRequest, { response in DashXLog.d(tag: #function, "Sent identify with \(String(describing: response))") }, { error in DashXLog.d(tag: #function, "Encountered an error during identify(): \(error)") }
         )
     }
 
@@ -127,9 +125,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling track with \(trackRequest)")
 
-        makeHttpRequest(uri: "/track", trackRequest,
-            { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") },
-            { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
+        makeHttpRequest(uri: "/track", trackRequest, { response in DashXLog.d(tag: #function, "Sent track with \(String(describing: response))") }, { error in DashXLog.d(tag: #function, "Encountered an error during track(): \(error)") }
         )
     }
 
@@ -140,39 +136,37 @@ class DashXClient {
 
         let deviceKind = "IOS"
         let subscribeRequest = SubscribeRequest(
-            value: deviceToken!, kind:deviceKind, anonymousUid: anonymousUid, uid: uid
+            value: deviceToken!, kind: deviceKind, anonymousUid: anonymousUid, uid: uid
         )
 
         DashXLog.d(tag: #function, "Calling subscribe with \(subscribeRequest)")
 
         let headers = [ "X-Identity-Token": identityToken! ]
 
-        makeHttpRequest(uri: "/subscribe", subscribeRequest, withHeaders: headers,
-            { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") },
-            { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
+        makeHttpRequest(uri: "/subscribe", subscribeRequest, withHeaders: headers, { response in DashXLog.d(tag: #function, "Subscribed with \(String(describing: response))") }, { error in DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)") }
         )
     }
-    
+
     func screen(_ screenName: String, withData: NSDictionary?) {
-        let properties = withData as? Dictionary<String, Any>
-        
-       track(Constants.INTERNAL_EVENT_APP_SCREEN_VIEWED, withData: properties?.merging([ "name": screenName], uniquingKeysWith: { (_, new) in new }) as NSDictionary?)
+        let properties = withData as? [String: Any]
+
+        track(Constants.INTERNAL_EVENT_APP_SCREEN_VIEWED, withData: properties?.merging([ "name": screenName], uniquingKeysWith: { (_, new) in new }) as NSDictionary?)
     }
-    
+
     func content(_ contentType: String, withOptions: NSDictionary) {
         var filterByVal: JSONValue?
         var orderByVal: JSONValue?
-        
-        let optionsDictionary = withOptions as! Dictionary<String, Any>
-        
+
+        let optionsDictionary = withOptions as! [String: Any]
+
         if let filterBy = optionsDictionary["filter"], JSONSerialization.isValidJSONObject(filterBy) {
             filterByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: filterBy))
         }
-        
+
         if let orderBy = optionsDictionary["order"], JSONSerialization.isValidJSONObject(orderBy) {
             orderByVal = try? JSONDecoder().decode(JSONValue.self, from: JSONSerialization.data(withJSONObject: orderBy))
         }
-        
+
         let contentRequest = ContentRequest(
             contentType: contentType,
             returnType: optionsDictionary["returnType"] as? String,
@@ -184,9 +178,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling subscribe with \(contentRequest)")
 
-        makeHttpRequest(uri: "/content", contentRequest,
-            { response in DashXLog.d(tag: #function, "Called content with \(String(describing: response))") },
-            { error in DashXLog.d(tag: #function, "Encountered an error during content(): \(error)") }
+        makeHttpRequest(uri: "/content", contentRequest, { response in DashXLog.d(tag: #function, "Called content with \(String(describing: response))") }, { error in DashXLog.d(tag: #function, "Encountered an error during content(): \(error)") }
         )
     }
 }
