@@ -1,9 +1,13 @@
 export type ContentOptions = {
-  returnType?: 'all' | 'one',
+  exclude?: string[],
+  fields?: string[],
   filter?: Record<string, boolean | string | number>,
-  order?: Record<string, 'ASC' | 'DESC'>,
+  include?: string[],
   limit?: number,
-  page?: number
+  page?: number,
+  order?: Record<string, 'ASC' | 'DESC'>,
+  preview?: boolean,
+  returnType?: 'all' | 'one'
 }
 
 class ContentOptionsBuilder {
@@ -25,6 +29,26 @@ class ContentOptionsBuilder {
 
   filter(by: ContentOptions['filter']): ContentOptionsBuilder {
     this.options.filter = by
+    return this
+  }
+
+  preview(): ContentOptionsBuilder {
+    this.options.preview = true
+    return this
+  }
+
+  include(...fields: string[]): ContentOptionsBuilder {
+    this.options.include = fields
+    return this
+  }
+
+  exclude(...fields: string[]): ContentOptionsBuilder {
+    this.options.exclude = fields
+    return this
+  }
+
+  fields(...names: string[]): ContentOptionsBuilder {
+    this.options.fields = names
     return this
   }
 
