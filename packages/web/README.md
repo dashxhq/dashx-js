@@ -23,7 +23,7 @@ $ yarn add @dashx/web
 ```javascript
 import DashX from '@dashx/web';
 
-const dashx = DashX({ publicKey: 'your_public_key' });
+const dx = DashX({ publicKey: 'your_public_key' });
 ```
 
 `DashX` constructor accepts following properties:
@@ -40,13 +40,13 @@ By default the value of `baseUri` is `https://api.dashx.com/v1`
 - Existing user
 
 ```javascript
-dashx.identify('uid_of_user');
+dx.identify('uid_of_user');
 ```
 
 - New user
 
 ```javascript
-dashx.identify({
+dx.identify({
   firstName: 'John',
   lastName: 'Doe',
   email: 'john@example.com',
@@ -65,10 +65,57 @@ For new user `identify()` accepts following properties:
 
 *Please note that `identify()` should not be called with `null` or `undefined`*
 
+### Content
+
+```javascript
+dx.content('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
+  .then(data => console.log(data));
+```
+
+Content Options can include following properties:
+
+|Name|Type|Example|
+|:--:|:--:|:-----:|
+|**`returnType`**|`all | one`||
+|**`filter`**|`object`|`{ name_eq: 'John' }`|
+|**`order`**|`object`|`{ created_at: 'DESC' }`|
+|**`limit`**|`number`||
+|**`page`**|`number`||
+
+For example, to get latest contacts with name 'John' you can do:
+
+```javascript
+dx.content('contacts', {
+  returnType: 'all',
+  filter: {
+    name_eq: 'John'
+  },
+  order: {
+    created_at: 'DESC'
+  },
+  limit: 10
+});
+```
+
+##### Using chainable api
+
+The above code can also be written as:
+
+```javascript
+dx.content('contacts')
+  .filter({ name_eq: 'John' })
+  .order({ created_at: 'DESC' })
+  .limit(10)
+  .all() /* returnType */
+```
+
+This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
+Hence `.all()` or `.one()` should be used at the end of chain.
+
 ### Track Events
 
 ```javascript
-dashx.track('event_name', { hello: 'world' } /* Event data */);
+dx.track('event_name', { hello: 'world' } /* Event data */);
 ```
 
 ### Reset User
@@ -76,5 +123,5 @@ dashx.track('event_name', { hello: 'world' } /* Event data */);
 `reset()` clears out the information associated with a user. *Must* be called after a user logs out.
 
 ```javascript
-dashx.reset();
+dx.reset();
 ```
