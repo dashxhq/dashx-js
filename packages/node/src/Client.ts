@@ -1,11 +1,14 @@
 import crypto from 'crypto'
 import http from 'got'
+import qs from 'qs'
 import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { snakeCaseKeys } from './utils'
 import type { ContentOptions } from './ContentOptionsBuilder'
+
+type Method = 'GET' | 'POST'
 
 type Parcel = {
   to: string[] | string,
@@ -37,11 +40,13 @@ class Client {
     this.privateKey = privateKey
   }
 
-  private makeHttpRequest<T>(uri: string, body: T): Promise<Response> {
-    return http(uri, {
-      json: snakeCaseKeys(body),
-      method: 'POST',
-      prefixUrl: this.baseUri,
+  private makeHttpRequest(uri: string, { method = 'POST', params }: { method?: Method, params: any }): Promise<Response> {
+    const requestParams = snakeCaseKeys(params)
+    const requestUri = method === 'GET' ? `${this.baseUri + uri}?${qs.stringify(requestParams)}` : this.baseUri + uri
+
+    return http(requestUri, {
+      json: method === 'POST' ? requestParams : undefined,
+      method,
       headers: {
         'User-Agent': 'dashx-node',
         'X-Public-Key': this.publicKey,
@@ -53,7 +58,7 @@ class Client {
   }
 
   deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest('/deliver', parcel)
+    return this.makeHttpRequest('/deliver', { params: parcel })
   }
 
   identify(uid: string, options?: IdentifyParams) : Promise<Response>
@@ -72,7 +77,7 @@ class Client {
       }
     }
 
-    return this.makeHttpRequest('/identify', params)
+    return this.makeHttpRequest('/identify', { params })
   }
 
   generateIdentityToken(uid: string): string {
@@ -92,18 +97,18 @@ class Client {
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.makeHttpRequest('/track', { event, uid, data })
+    return this.makeHttpRequest('/track', { params: { event, uid, data } })
   }
 
   content(
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<Response> {
     if (options) {
-      return this.makeHttpRequest('/content', { ...options, contentType })
+      return this.makeHttpRequest('/content', { params: { ...options, contentType }, method: 'GET' })
     }
 
     return new ContentOptionsBuilder(
-      (wrappedOptions) => this.makeHttpRequest('content', { ...wrappedOptions, contentType })
+      (wrappedOptions) => this.makeHttpRequest('/content', { params: { ...wrappedOptions, contentType }, method: 'GET' })
     )
   }
 }
