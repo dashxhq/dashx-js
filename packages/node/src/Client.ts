@@ -55,6 +55,7 @@ class Client {
       },
       responseType: 'json'
     })
+      .json()
   }
 
   deliver(parcel: Parcel): Promise<Response> {
