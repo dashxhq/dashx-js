@@ -53,8 +53,9 @@ class Client {
 
   private async makeHttpRequest(uri: string, { params, method = 'POST' }: { params: any, method?: Method}): Promise<Response> {
     const requestParams = snakeCaseKeys(params)
+    const urlParams = new URLSearchParams(JSON.stringify(requestParams)).toString()
 
-    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${new URLSearchParams(requestParams).toString()}` : `${this.baseUri}/${uri}`
+    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${urlParams}` : `${this.baseUri}/${uri}`
 
     const response = await fetch(requestUri, {
       method,
@@ -62,7 +63,7 @@ class Client {
         'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify(requestParams)
+      body: method === 'GET' ? undefined : JSON.stringify(requestParams)
     })
 
     return response.json()
