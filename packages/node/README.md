@@ -8,11 +8,10 @@ _DashX Node.js SDK_
   </a>
 </p>
 
-
 ## Install
 
 ```sh
-$ yarn add @dashx/node
+yarn add @dashx/node
 ```
 
 ## Usage
@@ -93,6 +92,53 @@ User info can include the following keys:
 |**`lastName`**|`string`|
 |**`email`**|`string`|
 |**`phone`**|`string`|
+
+### Content
+
+```javascript
+dx.content('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
+  .then(data => console.log(data));
+```
+
+Content Options can include following properties:
+
+|Name|Type|Example|
+|:--:|:--:|:-----:|
+|**`returnType`**|`all | one`||
+|**`filter`**|`object`|`{ name_eq: 'John' }`|
+|**`order`**|`object`|`{ created_at: 'DESC' }`|
+|**`limit`**|`number`||
+|**`page`**|`number`||
+
+For example, to get latest contacts with name 'John' you can do:
+
+```javascript
+dx.content('contacts', {
+  returnType: 'all',
+  filter: {
+    name_eq: 'John'
+  },
+  order: {
+    created_at: 'DESC'
+  },
+  limit: 10
+});
+```
+
+##### Using chainable api
+
+The above code can also be written as:
+
+```javascript
+dx.content('contacts')
+  .filter({ name_eq: 'John' })
+  .order({ created_at: 'DESC' })
+  .limit(10)
+  .all() /* returnType */
+```
+
+This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
+Hence `.all()` or `.one()` should be used at the end of chain.
 
 ### Track Events
 
