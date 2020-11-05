@@ -62,7 +62,7 @@ class Client {
         'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify(requestParams)
+      body: method === 'GET' ? undefined : JSON.stringify(requestParams)
     })
 
     return response.json()

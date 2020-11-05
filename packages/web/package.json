@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "DashX SDK for Browser",
   "main": "dist/index.js",
+  "module": "dist/web.esm.js",
   "files": [
     "dist"
   ],
-  "type": "module",
   "scripts": {
     "build": "tsdx build --tsconfig tsconfig.json",
     "start": "tsdx watch --tsconfig tsconfig.json --verbose --noClean"
