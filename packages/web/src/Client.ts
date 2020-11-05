@@ -1,4 +1,5 @@
 import fetch from 'unfetch'
+import qs from 'qs'
 import uuid from 'uuid-random'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
@@ -54,7 +55,7 @@ class Client {
   private async makeHttpRequest(uri: string, { params, method = 'POST' }: { params: any, method?: Method}): Promise<Response> {
     const requestParams = snakeCaseKeys(params)
 
-    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${new URLSearchParams(requestParams).toString()}` : `${this.baseUri}/${uri}`
+    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${qs.stringify(requestParams)}` : `${this.baseUri}/${uri}`
 
     const response = await fetch(requestUri, {
       method,
