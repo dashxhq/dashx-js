@@ -10,12 +10,12 @@ type DashXContextType = {
   isSidebarOpen: boolean
 } | null
 
-const DashXContext = createContext<DashXContextType>(null)
-
 type DashXRootProps = {
   children: ReactNode,
   page: any
 }
+
+const DashXContext = createContext<DashXContextType>(null)
 
 // Dummy data for fields, normalized by ContentType ID
 // to be present in page.fields in future
