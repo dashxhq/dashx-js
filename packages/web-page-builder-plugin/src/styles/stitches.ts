@@ -1,11 +1,11 @@
 import { createStyled } from '@stitches/react'
 import type { CSSProperties } from 'react'
 
-import colors from 'styles/primitives/colors'
-import radii from 'styles/primitives/radii'
-import spaces from 'styles/primitives/spaces'
-import typography from 'styles/primitives/typography'
-import zIndices from 'styles/primitives/zIndices'
+import colors from './primitives/colors'
+import radii from './primitives/radii'
+import spaces from './primitives/spaces'
+import typography from './primitives/typography'
+import zIndices from './primitives/zIndices'
 
 type VariantKeys = readonly (symbol | string | number)[]
 type ThemeVariantKeys = keyof typeof theme

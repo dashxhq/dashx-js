@@ -1,4 +1,4 @@
-import fontStack from 'lib/fontStack'
+import fontStack from '../../lib/fontStack'
 
 const systemSansSerif = [
   '-apple-system',

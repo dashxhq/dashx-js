@@ -1,1 +1,1 @@
-export { DashXRoot } from './core'
+export { DashXRoot, DashXContext } from './core'

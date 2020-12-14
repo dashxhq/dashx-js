@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react'
 
-import DashXSidebar from 'components/DashXSidebar'
+import DashXSidebar from '../components/DashXSidebar'
 
 type DashXContextType = {
   selected: string | number | null,

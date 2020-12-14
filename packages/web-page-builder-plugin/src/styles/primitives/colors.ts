@@ -1,4 +1,4 @@
-import { rgb } from 'lib/rgba'
+import { rgb } from '../../lib/rgba'
 
 const colors = {
   // Base colors

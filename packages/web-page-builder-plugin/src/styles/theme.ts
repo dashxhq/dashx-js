@@ -1,12 +1,12 @@
-import filters from 'styles/primitives/filters'
-import iconography from 'styles/primitives/iconography'
-import screens from 'styles/primitives/screens'
-import shadows from 'styles/primitives/shadows'
-import spaces from 'styles/primitives/spaces'
-import transitions from 'styles/primitives/transitions'
-import typography from 'styles/primitives/typography'
-import zIndices from 'styles/primitives/zIndices'
-import { colorVars } from 'styles/primitives/colors'
+import filters from './primitives/filters'
+import iconography from './primitives/iconography'
+import screens from './primitives/screens'
+import shadows from './primitives/shadows'
+import spaces from './primitives/spaces'
+import transitions from './primitives/transitions'
+import typography from './primitives/typography'
+import zIndices from './primitives/zIndices'
+import { colorVars } from './primitives/colors'
 
 const theme = {
   colors: colorVars,

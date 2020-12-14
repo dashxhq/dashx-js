@@ -2,8 +2,8 @@ import findIndex from 'lodash/findIndex'
 import React, { ChangeEvent, useCallback, useContext } from 'react'
 import { Field, Form } from 'react-final-form'
 
-import { css } from 'styles/stitches'
-import { DashXContext } from 'core/DashXRoot'
+import { css } from '../styles/stitches'
+import { DashXContext } from '../core/DashXRoot'
 
 type Field = any
 type Block = Record<string, any>
