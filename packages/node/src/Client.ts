@@ -5,10 +5,10 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { snakeCaseKeys } from './utils'
+import { deliverRequest, identifyAccountRequest, pushContentRequest, trackEventRequest } from './graphql'
 import type { ContentOptions } from './ContentOptionsBuilder'
 
-type Method = 'GET' | 'POST'
+type GraphqlRequest = (variables?: object | undefined) => string
 
 type Parcel = {
   to: string[] | string,
@@ -31,7 +31,7 @@ class Client {
   baseUri: string
 
   constructor({
-    baseUri = process.env.DASHX_BASE_URI || 'https://api.dashx.com/v1',
+    baseUri = process.env.DASHX_BASE_URI || 'https://api.dashx.com/graphql',
     publicKey = process.env.DASHX_PUBLIC_KEY,
     privateKey = process.env.DASHX_PRIVATE_KEY
   } = {}) {
@@ -40,13 +40,10 @@ class Client {
     this.privateKey = privateKey
   }
 
-  private makeHttpRequest(uri: string, { method = 'POST', params }: { method?: Method, params: any }): Promise<Response> {
-    const requestParams = snakeCaseKeys(params)
-    const requestUri = method === 'GET' ? `${this.baseUri + uri}?${qs.stringify(requestParams)}` : this.baseUri + uri
-
-    return http(requestUri, {
-      json: method === 'POST' ? requestParams : undefined,
-      method,
+  private makeHttpRequest(request: GraphqlRequest, params: any): Promise<Response> {
+    return http(this.baseUri, {
+      body: request(params),
+      method: 'POST',
       headers: {
         'User-Agent': 'dashx-node',
         'X-Public-Key': this.publicKey,
@@ -59,7 +56,7 @@ class Client {
   }
 
   deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest('/deliver', { params: parcel })
+    return this.makeHttpRequest(deliverRequest, parcel)
   }
 
   identify(uid: string, options?: IdentifyParams) : Promise<Response>
@@ -78,7 +75,7 @@ class Client {
       }
     }
 
-    return this.makeHttpRequest('/identify', { params })
+    return this.makeHttpRequest(identifyAccountRequest, params)
   }
 
   generateIdentityToken(uid: string): string {
@@ -98,18 +95,18 @@ class Client {
   }
 
   track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.makeHttpRequest('/track', { params: { event, uid, data } })
+    return this.makeHttpRequest(trackEventRequest, { event, uid, data })
   }
 
   content(
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<Response> {
     if (options) {
-      return this.makeHttpRequest('/content', { params: { ...options, contentType }, method: 'GET' })
+      return this.makeHttpRequest(pushContentRequest, { ...options, contentType })
     }
 
     return new ContentOptionsBuilder(
-      (wrappedOptions) => this.makeHttpRequest('/content', { params: { ...wrappedOptions, contentType }, method: 'GET' })
+      (wrappedOptions) => this.makeHttpRequest(pushContentRequest, { ...wrappedOptions, contentType })
     )
   }
 }
