@@ -3,6 +3,7 @@ import qs from 'qs'
 import uuid from 'uuid-random'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
+import { identifyAccountRequest, pushContentRequest, trackEventRequest } from './graphql';
 import generateContext from './context'
 import { getItem, setItem } from './storage'
 import { snakeCaseKeys } from './utils'
@@ -14,7 +15,7 @@ type ClientParams = {
   baseUri?: string
 }
 
-type Method = 'GET' | 'POST'
+type GraphqlRequest = (variables?: object | undefined) => string
 
 type IdentifyParams = Record<string, string | number> & {
   firstName?: string,
@@ -34,7 +35,7 @@ class Client {
 
   uid: string | null = null
 
-  constructor({ publicKey, baseUri = 'https://api.dashx.com/v1' }: ClientParams) {
+  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql' }: ClientParams) {
     this.baseUri = baseUri
     this.publicKey = publicKey
     this.context = generateContext()
@@ -52,18 +53,16 @@ class Client {
     setItem('anonymousUid', this.anonymousUid)
   }
 
-  private async makeHttpRequest(uri: string, { params, method = 'POST' }: { params: any, method?: Method}): Promise<Response> {
+  private async makeHttpRequest(request: GraphqlRequest, params: any): Promise<Response> {
     const requestParams = snakeCaseKeys(params)
 
-    const requestUri = method === 'GET' ? `${this.baseUri}/${uri}?${qs.stringify(requestParams)}` : `${this.baseUri}/${uri}`
-
-    const response = await fetch(requestUri, {
-      method,
+    const response = await fetch(this.baseUri, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey
       },
-      body: method === 'GET' ? undefined : JSON.stringify(requestParams)
+      body: JSON.stringify(requestParams)
     })
 
     return response.json()
@@ -85,7 +84,7 @@ class Client {
       ...others
     }
 
-    return this.makeHttpRequest('identify', { params })
+    return this.makeHttpRequest(identifyAccountRequest, params)
   }
 
   reset(): void {
@@ -96,7 +95,7 @@ class Client {
   track(event: string, data?: Record<string, any>): Promise<Response> {
     const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 
-    return this.makeHttpRequest('track', { params })
+    return this.makeHttpRequest(trackEventRequest, params)
   }
 
   content(
@@ -104,15 +103,15 @@ class Client {
   ): ContentOptionsBuilder | Promise<Response> {
     if (options) {
       return this.makeHttpRequest(
-        'content',
-        { params: { ...options, contentType }, method: 'GET' }
+        pushContentRequest,
+        { ...options, contentType }
       )
     }
 
     return new ContentOptionsBuilder(
       (wrappedOptions) => this.makeHttpRequest(
-        'content',
-        { params: { ...wrappedOptions, contentType }, method: 'GET' }
+        pushContentRequest,
+        { ...wrappedOptions, contentType }
       )
     )
   }

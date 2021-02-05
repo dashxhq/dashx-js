@@ -2,10 +2,20 @@
 # yarn lockfile v1
 
 
+"@types/nanographql@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/nanographql/-/nanographql-2.0.1.tgz#f5e83d8dfbb2ce43873ca00526164f8cab77dc2d"
+  integrity sha512-1WqTOVub3K/Hmym7bJnZP1jz5BT8JkINUv3sU+1A5IQY7OJZN8r+yfeczSbMD0MJlvDOLpcS81ykp94sHGdJhg==
+
 "@types/qs@^6.9.5":
   version "6.9.5"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.5.tgz#434711bdd49eb5ee69d90c1d67c354a9a8ecb18b"
   integrity sha512-/JHkVHtx/REVG0VVToGRGH2+23hsYLHdyG+GrvoUGlGAd0ErauXDyvHtRI/7H7mzLm+tBCKA7pfcpkQ1lf58iQ==
+
+nanographql@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nanographql/-/nanographql-2.0.0.tgz#d6d0a0839b27f7cd4de6385bcff215fe8058c7bc"
+  integrity sha512-Ze4qVPPG9yGmPzaM0LTKGGEkYQ9BQvvKwOkrrw4iqHVTByuVE02l50XZV+bCfABHLLs+Fm2+vJ+H9eXxFKtavQ==
 
 qs@^6.9.4:
   version "6.9.4"

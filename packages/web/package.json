@@ -22,6 +22,8 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@types/nanographql": "^2.0.1",
+    "nanographql": "^2.0.0",
     "qs": "^6.9.4",
     "unfetch": "^4.1.0",
     "uuid-random": "^1.3.2"
