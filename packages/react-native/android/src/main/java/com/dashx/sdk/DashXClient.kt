@@ -2,6 +2,7 @@ package com.dashx.sdk
 
 import android.content.SharedPreferences
 import android.os.Build
+import com.apollographql.apollo.ApolloClient
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
@@ -28,7 +29,7 @@ class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
 
     // Setup variables
-    private var baseURI: String = "https://api.dashx.com/v1"
+    private var baseURI: String = "https://api.dashx.com/graphql"
     private var publicKey: String? = null
 
     // Account variables
@@ -41,10 +42,18 @@ class DashXClient private constructor() {
     private val json = "application/json; charset=utf-8".toMediaType()
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
+    private var apolloClient = ApolloClient.builder()
+        .serverUrl(baseURI)
+        .build()
+
     var reactApplicationContext: ReactApplicationContext? = null
 
     fun setBaseURI(baseURI: String) {
         this.baseURI = baseURI
+
+        apolloClient = ApolloClient.builder()
+            .serverUrl(baseURI)
+            .build()
     }
 
     fun setPublicKey(publicKey: String) {
@@ -132,12 +141,11 @@ class DashXClient private constructor() {
         }
 
         val identifyRequest = try {
-            val optionsHashMap = options.toHashMap() as? HashMap<String, String?>
             IdentifyRequest(
-                optionsHashMap?.get("firstName"),
-                optionsHashMap?.get("lastName"),
-                optionsHashMap?.get("email"),
-                optionsHashMap?.get("phone"),
+                options.getString("firstName"),
+                options.getString("lastName"),
+                options.getString("email"),
+                options.getString("phone"),
                 anonymousUid
             )
         } catch (e: Exception) {
