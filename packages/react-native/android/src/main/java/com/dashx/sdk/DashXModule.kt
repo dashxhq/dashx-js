@@ -23,6 +23,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setup(options: ReadableMap) {
         dashXClient.setPublicKey(options.getString("publicKey")!!)
+        dashXClient.setAccountType(options.getString("accountType")!!)
 
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
             DashXExceptionHandler.enable()
@@ -68,11 +69,6 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun screen(screenName: String, data: ReadableMap?) {
         dashXClient.screen(screenName, data)
-    }
-
-    @ReactMethod
-    fun content(contentType: String, options: ReadableMap) {
-        dashXClient.content(contentType, options)
     }
 
     @ReactMethod
