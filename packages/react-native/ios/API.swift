@@ -8,7 +8,6 @@ public struct IdentifyAccountInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   /// - Parameters:
-  ///   - environmentId
   ///   - accountType
   ///   - uid
   ///   - anonymousUid
@@ -17,17 +16,8 @@ public struct IdentifyAccountInput: GraphQLMapConvertible {
   ///   - name
   ///   - firstName
   ///   - lastName
-  public init(environmentId: String, accountType: Swift.Optional<String?> = nil, uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
-    graphQLMap = ["environmentId": environmentId, "accountType": accountType, "uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName]
-  }
-
-  public var environmentId: String {
-    get {
-      return graphQLMap["environmentId"] as! String
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "environmentId")
-    }
+  public init(accountType: Swift.Optional<String?> = nil, uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
+    graphQLMap = ["accountType": accountType, "uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName]
   }
 
   public var accountType: Swift.Optional<String?> {
@@ -107,22 +97,12 @@ public struct SubscribeContactInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   /// - Parameters:
-  ///   - environmentId
   ///   - uid
   ///   - name
   ///   - kind
   ///   - value
-  public init(environmentId: String, uid: String, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String) {
-    graphQLMap = ["environmentId": environmentId, "uid": uid, "name": name, "kind": kind, "value": value]
-  }
-
-  public var environmentId: String {
-    get {
-      return graphQLMap["environmentId"] as! String
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "environmentId")
-    }
+  public init(uid: String, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String) {
+    graphQLMap = ["uid": uid, "name": name, "kind": kind, "value": value]
   }
 
   public var uid: String {
@@ -364,11 +344,11 @@ public final class IdentifyAccountMutation: GraphQLMutation {
   }
 }
 
-public final class SubscribeContactMutationMutation: GraphQLMutation {
+public final class SubscribeContactMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    mutation SubscribeContactMutation($input: SubscribeContactInput!) {
+    mutation SubscribeContact($input: SubscribeContactInput!) {
       subscribeContact(input: $input) {
         __typename
         id
@@ -376,7 +356,7 @@ public final class SubscribeContactMutationMutation: GraphQLMutation {
     }
     """
 
-  public let operationName: String = "SubscribeContactMutation"
+  public let operationName: String = "SubscribeContact"
 
   public var input: SubscribeContactInput
 
