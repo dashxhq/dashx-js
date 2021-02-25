@@ -1,4 +1,5 @@
 import Foundation
+import Apollo
 
 enum DashXClientError: Error {
     case noArgsInIdentify
@@ -21,6 +22,18 @@ class DashXClient {
 
     func setAccountType(to: String) {
         self.accountType = to
+    }
+    
+    func setTargetEnvironment(to: String) {
+        ConfigInterceptor.shared.targetEnvironment = to
+    }
+    
+    func setTargetInstallation(to: String) {
+        ConfigInterceptor.shared.targetInstallation = to
+    }
+    
+    func setIdentityToken(to: String) {
+        ConfigInterceptor.shared.identityToken = to
     }
 
     private func generateAnonymousUid(withRegenerate: Bool = false) {
@@ -78,12 +91,15 @@ class DashXClient {
     // MARK: -- track
 
     func track(_ event: String, withData: NSDictionary?) {
-        let trackData: Data?
+        let trackData: String?
 
         if withData == nil {
             trackData = nil
         } else if JSONSerialization.isValidJSONObject(withData!) {
-            trackData = try? JSONSerialization.data(withJSONObject: withData!)
+            trackData = try? String(
+                data: JSONSerialization.data(withJSONObject: withData!),
+                encoding: .utf8
+            )
         } else {
             DashXLog.d(tag: #function, "Encountered an error while encoding track data")
             return
@@ -94,9 +110,7 @@ class DashXClient {
             event: event,
             uid: uid,
             anonymousUid: anonymousUid,
-            data: trackData.map({
-                data in String(data: data, encoding: .utf8)
-            })
+            data: trackData
         )
 
         DashXLog.d(tag: #function, "Calling track with \(trackEventInput)")

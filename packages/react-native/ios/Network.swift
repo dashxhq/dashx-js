@@ -15,8 +15,10 @@ class Network {
         let store = ApolloStore(cache: cache)
         let provider = NetworkInterceptorProvider(client: client, store: store)
         let url = URL(string: baseUri)!
-        let transport = RequestChainNetworkTransport(interceptorProvider: provider,
-                                                     endpointURL: url)
+        let transport = RequestChainNetworkTransport(
+            interceptorProvider: provider,
+            endpointURL: url
+        )
         return ApolloClient(networkTransport: transport, store: store)
     }()
 }
@@ -59,9 +61,10 @@ class ConfigInterceptor: ApolloInterceptor {
             request.addHeader(name: "X-IDENTITY-TOKEN", value: "\(identityToken)")
         }
 
-
-        chain.proceedAsync(request: request,
-                           response: response,
-                           completion: completion)
+        chain.proceedAsync(
+            request: request,
+            response: response,
+            completion: completion
+        )
     }
 }

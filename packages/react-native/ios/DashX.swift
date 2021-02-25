@@ -31,11 +31,11 @@ class DashX: RCTEventEmitter {
         }
 
         if let targetInstallation = options?.value(forKey: "targetInstallation") {
-            ConfigInterceptor.shared.targetInstallation = targetInstallation as? String
+            dashXClient.setTargetInstallation(to: targetInstallation as! String)
         }
 
         if let targetEnvironment = options?.value(forKey: "targetEnvironment") {
-            ConfigInterceptor.shared.targetEnvironment = targetEnvironment as? String
+            dashXClient.setTargetInstallation(to: targetEnvironment as! String)
         }
 
         if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as! Bool {
@@ -63,7 +63,7 @@ class DashX: RCTEventEmitter {
 
     @objc
     func setIdentityToken(_ identityToken: String) {
-        ConfigInterceptor.shared.identityToken = identityToken
+        dashXClient.setIdentityToken(to: identityToken)
     }
 
     @objc
