@@ -29,6 +29,8 @@ class DashXClient private constructor() {
     // Setup variables
     private var baseURI: String = "https://api.dashx.com/graphql"
     private var publicKey: String? = null
+    private var targetEnvironment: String? = null
+    private var targetInstallation: String? = null
 
     // Account variables
     private var anonymousUid: String? = null
@@ -45,8 +47,22 @@ class DashXClient private constructor() {
 
     fun setBaseURI(baseURI: String) {
         this.baseURI = baseURI
+    }
 
+    fun createApolloClient() {
         apolloClient = getApolloClient()
+    }
+
+    fun setTargetEnvironment(targetEnvironment: String) {
+        this.targetEnvironment = targetEnvironment
+    }
+
+    fun setTargetInstallation(targetInstallation: String) {
+        this.targetEnvironment = targetInstallation
+    }
+
+    fun setAccountType(accountType: String) {
+        this.accountType = accountType
     }
 
     fun setPublicKey(publicKey: String) {
@@ -60,11 +76,8 @@ class DashXClient private constructor() {
 
     fun setIdentityToken(identityToken: String) {
         this.identityToken = identityToken
+        createApolloClient()
         subscribe()
-    }
-
-    fun setAccountType(accountType: String) {
-        this.accountType = accountType
     }
 
     private fun getApolloClient(): ApolloClient {
@@ -72,11 +85,22 @@ class DashXClient private constructor() {
             .serverUrl(baseURI)
             .okHttpClient(OkHttpClient.Builder()
                 .addInterceptor {
-                    val request = it.request().newBuilder()
+                    val requestBuilder = it.request().newBuilder()
                         .addHeader("X-Public-Key", publicKey!!)
-                        .build()
 
-                    return@addInterceptor it.proceed(request)
+                    if (targetEnvironment != null) {
+                        requestBuilder.addHeader("X-Target-Environment", targetEnvironment!!)
+                    }
+
+                    if (targetInstallation != null) {
+                        requestBuilder.addHeader("X-Target-Installation", targetInstallation!!)
+                    }
+
+                    if (identityToken != null) {
+                        requestBuilder.addHeader("X-Identity-Token", identityToken!!)
+                    }
+
+                    return@addInterceptor it.proceed(requestBuilder.build())
                 }
                 .build())
             .build()
@@ -147,7 +171,7 @@ class DashXClient private constructor() {
         )
         val identifyAccountMutation = IdentifyAccountMutation(identifyAccountInput)
 
-        apolloClient
+        Network.instance.client
             .mutate(identifyAccountMutation)
             .enqueue(object : ApolloCall.Callback<IdentifyAccountMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -184,7 +208,7 @@ class DashXClient private constructor() {
         val trackEventInput = TrackEventInput(accountType!!, event, Input.fromNullable(uid), Input.fromNullable(anonymousUid), Input.fromNullable(jsonData));
         val trackEventMutation = TrackEventMutation(trackEventInput)
 
-        apolloClient
+        Network.instance.client
             .mutate(trackEventMutation)
             .enqueue(object : ApolloCall.Callback<TrackEventMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -272,7 +296,7 @@ class DashXClient private constructor() {
         )
         val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
 
-        apolloClient
+        Network.instance.client
             .mutate(subscribeContactMutation)
             .enqueue(object : ApolloCall.Callback<SubscribeContactMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
