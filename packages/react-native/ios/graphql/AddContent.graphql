@@ -1,4 +1,4 @@
-mutation AddContentMutation($input: AddContentInput!) {
+mutation AddContent($input: AddContentInput!) {
     addContent(input: $input) {
         id
         position

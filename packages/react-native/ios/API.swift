@@ -417,11 +417,11 @@ public struct TrackEventInput: GraphQLMapConvertible {
   }
 }
 
-public final class AddContentMutationMutation: GraphQLMutation {
+public final class AddContentMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    mutation AddContentMutation($input: AddContentInput!) {
+    mutation AddContent($input: AddContentInput!) {
       addContent(input: $input) {
         __typename
         id
@@ -434,7 +434,7 @@ public final class AddContentMutationMutation: GraphQLMutation {
     }
     """
 
-  public let operationName: String = "AddContentMutation"
+  public let operationName: String = "AddContent"
 
   public var input: AddContentInput
 
@@ -565,11 +565,11 @@ public final class AddContentMutationMutation: GraphQLMutation {
   }
 }
 
-public final class EditContentMutationMutation: GraphQLMutation {
+public final class EditContentMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    mutation EditContentMutation($input: EditContentInput!) {
+    mutation EditContent($input: EditContentInput!) {
       editContent(input: $input) {
         __typename
         id
@@ -582,7 +582,7 @@ public final class EditContentMutationMutation: GraphQLMutation {
     }
     """
 
-  public let operationName: String = "EditContentMutation"
+  public let operationName: String = "EditContent"
 
   public var input: EditContentInput
 

@@ -23,15 +23,15 @@ class DashXClient {
     func setAccountType(to: String) {
         self.accountType = to
     }
-    
+
     func setTargetEnvironment(to: String) {
         ConfigInterceptor.shared.targetEnvironment = to
     }
-    
+
     func setTargetInstallation(to: String) {
         ConfigInterceptor.shared.targetInstallation = to
     }
-    
+
     func setIdentityToken(to: String) {
         ConfigInterceptor.shared.identityToken = to
     }
@@ -158,6 +158,146 @@ class DashXClient {
             DashXLog.d(tag: #function, "Sent subscribe with \(String(describing: graphQLResult))")
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)")
+          }
+        }
+    }
+    // MARK: -- content
+
+    func findContent(_ contentType: String, _ content: String) {
+        let findContentInput  = FindContentInput(
+            contentType: contentType,
+            content: content
+        )
+
+        DashXLog.d(tag: #function, "Calling findContent with \(findContentInput)")
+
+        let findContentQuery = FindContentQuery(input: findContentInput)
+
+        Network.shared.apollo.fetch(query: findContentQuery) { result in
+          switch result {
+          case .success(let graphQLResult):
+            DashXLog.d(tag: #function, "Sent findContent with \(String(describing: graphQLResult))")
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during findContent(): \(error)")
+          }
+        }
+    }
+
+    func searchContent(_ contentType: String, _ returnType: String, _ filter: NSDictionary?, _ order: NSDictionary?, _ limit: Int?) {
+        let filterJson: String?
+        let orderJson: String?
+
+        if filter == nil {
+            filterJson = nil
+        } else if JSONSerialization.isValidJSONObject(filter!) {
+            filterJson = try? String(
+                data: JSONSerialization.data(withJSONObject: filter!),
+                encoding: .utf8
+            )
+        } else {
+            DashXLog.d(tag: #function, "Encountered an error while encoding filter")
+            return
+        }
+
+        if order == nil {
+            orderJson = nil
+        } else if JSONSerialization.isValidJSONObject(order!) {
+            orderJson = try? String(
+                data: JSONSerialization.data(withJSONObject: order!),
+                encoding: .utf8
+            )
+        } else {
+            DashXLog.d(tag: #function, "Encountered an error while encoding order")
+            return
+        }
+
+
+        let searchContentInput  = SearchContentInput(
+            contentType: contentType,
+            returnType: returnType,
+            filter: filterJson,
+            order: orderJson,
+            limit: limit
+        )
+
+        DashXLog.d(tag: #function, "Calling searchContent with \(searchContentInput)")
+
+        let searchContentQuery = SearchContentQuery(input: searchContentInput)
+
+        Network.shared.apollo.fetch(query: searchContentQuery) { result in
+          switch result {
+          case .success(let graphQLResult):
+            DashXLog.d(tag: #function, "Sent searchContent with \(String(describing: graphQLResult))")
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during searchContent(): \(error)")
+          }
+        }
+    }
+
+    func addContent(_ contentType: String, _ content: String, _ data: NSDictionary) {
+        let dataJson: String?
+
+        if JSONSerialization.isValidJSONObject(data) {
+            dataJson = try? String(
+                data: JSONSerialization.data(withJSONObject: data),
+                encoding: .utf8
+            )
+        } else {
+            DashXLog.d(tag: #function, "Encountered an error while encoding data")
+            return
+        }
+
+
+        let addContentInput  = AddContentInput(
+            contentType: contentType,
+            content: content,
+            data: dataJson ?? ""
+        )
+
+        DashXLog.d(tag: #function, "Calling addContent with \(addContentInput)")
+
+        let addContentMutation = AddContentMutation(input: addContentInput)
+
+        Network.shared.apollo.perform(mutation: addContentMutation) { result in
+          switch result {
+          case .success(let graphQLResult):
+            DashXLog.d(tag: #function, "Sent addContent with \(String(describing: graphQLResult))")
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during addContent(): \(error)")
+          }
+        }
+    }
+
+    func editContent(_ contentType: String, _ content: String, _ data: NSDictionary) {
+        let dataJson: String?
+
+        if JSONSerialization.isValidJSONObject(data) {
+            dataJson = try? String(
+                data: JSONSerialization.data(withJSONObject: data),
+                encoding: .utf8
+            )
+        } else {
+            DashXLog.d(tag: #function, "Encountered an error while encoding data")
+            return
+        }
+
+
+        let editContentInput  = EditContentInput(
+            contentType: contentType,
+            content: content,
+            data: dataJson ?? ""
+        )
+
+        DashXLog.d(tag: #function, "Calling editContent with \(editContentInput)")
+
+        let editContentMutation = EditContentMutation(input: editContentInput)
+
+        Network.shared.apollo.perform(mutation: editContentMutation) { result in
+          switch result {
+          case .success(let graphQLResult):
+            DashXLog.d(tag: #function, "Sent editContent with \(String(describing: graphQLResult))")
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during editContent(): \(error)")
           }
         }
     }
