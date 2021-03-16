@@ -4,6 +4,113 @@
 import Apollo
 import Foundation
 
+public struct AddContentInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - contentType
+  ///   - content
+  ///   - data
+  public init(contentType: String, content: String, data: String) {
+    graphQLMap = ["contentType": contentType, "content": content, "data": data]
+  }
+
+  public var contentType: String {
+    get {
+      return graphQLMap["contentType"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+
+  public var content: String {
+    get {
+      return graphQLMap["content"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "content")
+    }
+  }
+
+  public var data: String {
+    get {
+      return graphQLMap["data"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "data")
+    }
+  }
+}
+
+public struct EditContentInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - contentType
+  ///   - content
+  ///   - data
+  public init(contentType: String, content: String, data: String) {
+    graphQLMap = ["contentType": contentType, "content": content, "data": data]
+  }
+
+  public var contentType: String {
+    get {
+      return graphQLMap["contentType"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+
+  public var content: String {
+    get {
+      return graphQLMap["content"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "content")
+    }
+  }
+
+  public var data: String {
+    get {
+      return graphQLMap["data"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "data")
+    }
+  }
+}
+
+public struct FindContentInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - contentType
+  ///   - content
+  public init(contentType: String, content: String) {
+    graphQLMap = ["contentType": contentType, "content": content]
+  }
+
+  public var contentType: String {
+    get {
+      return graphQLMap["contentType"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+
+  public var content: String {
+    get {
+      return graphQLMap["content"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "content")
+    }
+  }
+}
+
 public struct IdentifyAccountInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -89,6 +196,65 @@ public struct IdentifyAccountInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+}
+
+public struct SearchContentInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - contentType
+  ///   - returnType
+  ///   - filter
+  ///   - order
+  ///   - limit
+  public init(contentType: String, returnType: String, filter: Swift.Optional<String?> = nil, order: Swift.Optional<String?> = nil, limit: Swift.Optional<Int?> = nil) {
+    graphQLMap = ["contentType": contentType, "returnType": returnType, "filter": filter, "order": order, "limit": limit]
+  }
+
+  public var contentType: String {
+    get {
+      return graphQLMap["contentType"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+
+  public var returnType: String {
+    get {
+      return graphQLMap["returnType"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "returnType")
+    }
+  }
+
+  public var filter: Swift.Optional<String?> {
+    get {
+      return graphQLMap["filter"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "filter")
+    }
+  }
+
+  public var order: Swift.Optional<String?> {
+    get {
+      return graphQLMap["order"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "order")
+    }
+  }
+
+  public var limit: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["limit"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "limit")
     }
   }
 }
@@ -251,6 +417,439 @@ public struct TrackEventInput: GraphQLMapConvertible {
   }
 }
 
+public final class AddContentMutationMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation AddContentMutation($input: AddContentInput!) {
+      addContent(input: $input) {
+        __typename
+        id
+        position
+        identifier
+        data
+        createdAt
+        updatedAt
+      }
+    }
+    """
+
+  public let operationName: String = "AddContentMutation"
+
+  public var input: AddContentInput
+
+  public init(input: AddContentInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(AddContent.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(addContent: AddContent) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "addContent": addContent.resultMap])
+    }
+
+    public var addContent: AddContent {
+      get {
+        return AddContent(unsafeResultMap: resultMap["addContent"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "addContent")
+      }
+    }
+
+    public struct AddContent: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Content"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(String.self))),
+          GraphQLField("position", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("identifier", type: .nonNull(.scalar(String.self))),
+          GraphQLField("data", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(id: String, position: Int, identifier: String, data: [String], createdAt: String, updatedAt: String) {
+        self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "identifier": identifier, "data": data, "createdAt": createdAt, "updatedAt": updatedAt])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: String {
+        get {
+          return resultMap["id"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var position: Int {
+        get {
+          return resultMap["position"]! as! Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "position")
+        }
+      }
+
+      public var identifier: String {
+        get {
+          return resultMap["identifier"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "identifier")
+        }
+      }
+
+      public var data: [String] {
+        get {
+          return resultMap["data"]! as! [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "data")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return resultMap["createdAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return resultMap["updatedAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+    }
+  }
+}
+
+public final class EditContentMutationMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation EditContentMutation($input: EditContentInput!) {
+      editContent(input: $input) {
+        __typename
+        id
+        position
+        identifier
+        data
+        createdAt
+        updatedAt
+      }
+    }
+    """
+
+  public let operationName: String = "EditContentMutation"
+
+  public var input: EditContentInput
+
+  public init(input: EditContentInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("editContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(EditContent.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(editContent: EditContent) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "editContent": editContent.resultMap])
+    }
+
+    public var editContent: EditContent {
+      get {
+        return EditContent(unsafeResultMap: resultMap["editContent"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "editContent")
+      }
+    }
+
+    public struct EditContent: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Content"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(String.self))),
+          GraphQLField("position", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("identifier", type: .nonNull(.scalar(String.self))),
+          GraphQLField("data", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(id: String, position: Int, identifier: String, data: [String], createdAt: String, updatedAt: String) {
+        self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "identifier": identifier, "data": data, "createdAt": createdAt, "updatedAt": updatedAt])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: String {
+        get {
+          return resultMap["id"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var position: Int {
+        get {
+          return resultMap["position"]! as! Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "position")
+        }
+      }
+
+      public var identifier: String {
+        get {
+          return resultMap["identifier"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "identifier")
+        }
+      }
+
+      public var data: [String] {
+        get {
+          return resultMap["data"]! as! [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "data")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return resultMap["createdAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return resultMap["updatedAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+    }
+  }
+}
+
+public final class FindContentQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query FindContent($input: FindContentInput!) {
+      findContent(input: $input) {
+        __typename
+        id
+        position
+        data
+        createdAt
+        updatedAt
+      }
+    }
+    """
+
+  public let operationName: String = "FindContent"
+
+  public var input: FindContentInput
+
+  public init(input: FindContentInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("findContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(FindContent.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(findContent: FindContent) {
+      self.init(unsafeResultMap: ["__typename": "Query", "findContent": findContent.resultMap])
+    }
+
+    public var findContent: FindContent {
+      get {
+        return FindContent(unsafeResultMap: resultMap["findContent"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "findContent")
+      }
+    }
+
+    public struct FindContent: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Content"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(String.self))),
+          GraphQLField("position", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("data", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(id: String, position: Int, data: [String], createdAt: String, updatedAt: String) {
+        self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "data": data, "createdAt": createdAt, "updatedAt": updatedAt])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: String {
+        get {
+          return resultMap["id"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var position: Int {
+        get {
+          return resultMap["position"]! as! Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "position")
+        }
+      }
+
+      public var data: [String] {
+        get {
+          return resultMap["data"]! as! [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "data")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return resultMap["createdAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return resultMap["updatedAt"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+    }
+  }
+}
+
 public final class IdentifyAccountMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -338,6 +937,185 @@ public final class IdentifyAccountMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+    }
+  }
+}
+
+public final class SearchContentQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query SearchContent($input: SearchContentInput!) {
+      searchContent(input: $input) {
+        __typename
+        contents {
+          __typename
+          id
+          position
+          data
+          createdAt
+          updatedAt
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "SearchContent"
+
+  public var input: SearchContentInput
+
+  public init(input: SearchContentInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("searchContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(SearchContent.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(searchContent: SearchContent) {
+      self.init(unsafeResultMap: ["__typename": "Query", "searchContent": searchContent.resultMap])
+    }
+
+    public var searchContent: SearchContent {
+      get {
+        return SearchContent(unsafeResultMap: resultMap["searchContent"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "searchContent")
+      }
+    }
+
+    public struct SearchContent: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SearchContentResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("contents", type: .nonNull(.list(.nonNull(.object(Content.selections))))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(contents: [Content]) {
+        self.init(unsafeResultMap: ["__typename": "SearchContentResponse", "contents": contents.map { (value: Content) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var contents: [Content] {
+        get {
+          return (resultMap["contents"] as! [ResultMap]).map { (value: ResultMap) -> Content in Content(unsafeResultMap: value) }
+        }
+        set {
+          resultMap.updateValue(newValue.map { (value: Content) -> ResultMap in value.resultMap }, forKey: "contents")
+        }
+      }
+
+      public struct Content: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Content"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(String.self))),
+            GraphQLField("position", type: .nonNull(.scalar(Int.self))),
+            GraphQLField("data", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
+            GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+            GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(id: String, position: Int, data: [String], createdAt: String, updatedAt: String) {
+          self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "data": data, "createdAt": createdAt, "updatedAt": updatedAt])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: String {
+          get {
+            return resultMap["id"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var position: Int {
+          get {
+            return resultMap["position"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "position")
+          }
+        }
+
+        public var data: [String] {
+          get {
+            return resultMap["data"]! as! [String]
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "data")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return resultMap["createdAt"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return resultMap["updatedAt"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "updatedAt")
+          }
         }
       }
     }

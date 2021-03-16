@@ -1,0 +1,11 @@
+query SearchContent($input: SearchContentInput!) {
+    searchContent(input: $input) {
+      contents {
+        id
+        position
+        data
+        createdAt
+        updatedAt
+      }
+    }
+}
