@@ -1,4 +1,4 @@
-export type ContentOptions = {
+export type ContentTypeOptions = {
   returnType?: 'all' | 'one',
   filter?: Record<string, boolean | string | number>,
   order?: Record<string, 'ASC' | 'DESC'>,
@@ -6,42 +6,42 @@ export type ContentOptions = {
   page?: number
 }
 
-class ContentOptionsBuilder {
-  private options: ContentOptions
+class ContentTypeOptionsBuilder {
+  private options: ContentTypeOptions
 
-  private callback: (options: ContentOptions) => Promise<Response>
+  private callback: (options: ContentTypeOptions) => Promise<Response>
 
   constructor(
-    callback: (options: ContentOptions) => Promise<Response>
+    callback: (options: ContentTypeOptions) => Promise<Response>
   ) {
     this.options = {}
     this.callback = callback
   }
 
-  limit(by: ContentOptions['limit']): ContentOptionsBuilder {
+  limit(by: ContentTypeOptions['limit']): ContentTypeOptionsBuilder {
     this.options.limit = by
     return this
   }
 
-  filter(by: ContentOptions['filter']): ContentOptionsBuilder {
+  filter(by: ContentTypeOptions['filter']): ContentTypeOptionsBuilder {
     this.options.filter = by
     return this
   }
 
-  order(by: ContentOptions['order']): ContentOptionsBuilder {
+  order(by: ContentTypeOptions['order']): ContentTypeOptionsBuilder {
     this.options.order = by
     return this
   }
 
-  all(withOptions: ContentOptions): Promise<Response> {
+  all(withOptions: ContentTypeOptions): Promise<Response> {
     this.options = { ...withOptions, returnType: 'all' }
     return this.callback(this.options)
   }
 
-  one(withOptions: ContentOptions): Promise<Response> {
+  one(withOptions: ContentTypeOptions): Promise<Response> {
     this.options = { ...withOptions, returnType: 'one' }
     return this.callback(this.options)
   }
 }
 
-export default ContentOptionsBuilder
+export default ContentTypeOptionsBuilder

@@ -2,13 +2,13 @@ import fetch from 'unfetch'
 import qs from 'qs'
 import uuid from 'uuid-random'
 
-import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { identifyAccountRequest, pushContentRequest, trackEventRequest } from './graphql';
+import ContentTypeOptionsBuilder from './ContentOptionsBuilder'
+import { addContentRequest, editContentRequest, findContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest } from './graphql';
 import generateContext from './context'
 import { getItem, setItem } from './storage'
 import { snakeCaseKeys } from './utils'
 import type { Context } from './context'
-import type { ContentOptions } from './ContentOptionsBuilder'
+import type { ContentTypeOptions } from './ContentOptionsBuilder'
 
 type ClientParams = {
   publicKey: string,
@@ -98,22 +98,61 @@ class Client {
     return this.makeHttpRequest(trackEventRequest, params)
   }
 
-  content(
-    contentType: string, options?: ContentOptions
-  ): ContentOptionsBuilder | Promise<Response> {
+  contentType(
+    contentType: string, options?: ContentTypeOptions
+  ): ContentTypeOptionsBuilder | Promise<Response> {
     if (options) {
       return this.makeHttpRequest(
-        pushContentRequest,
+        searchContentRequest,
         { ...options, contentType }
       )
     }
 
-    return new ContentOptionsBuilder(
+    return new ContentTypeOptionsBuilder(
       (wrappedOptions) => this.makeHttpRequest(
-        pushContentRequest,
+        searchContentRequest,
         { ...wrappedOptions, contentType }
       )
     )
+  }
+
+  content(urn: string): Promise<Response> {
+    if (!urn.includes('/')) {
+      throw new Error('Urn must be of form: {contentType}/{content}')
+    }
+
+    const [contentType, content] = urn.split('/')
+    const params = { content, contentType }
+
+    return this.makeHttpRequest(findContentRequest, params)
+  }
+
+  addContent(urn: string, data: Record<string, any>): Promise<Response> {
+    let content, contentType
+
+    if (urn.includes('/')) {
+      [content, contentType] = urn.split('/')
+    } else {
+      contentType = urn
+    }
+
+    const params = { content, contentType, data }
+
+    return this.makeHttpRequest(addContentRequest, params)
+  }
+
+  editContent(urn: string, data: Record<string, any>): Promise<Response> {
+    let content, contentType
+
+    if (urn.includes('/')) {
+      [content, contentType] = urn.split('/')
+    } else {
+      contentType = urn
+    }
+
+    let params = { content, contentType, data }
+
+    return this.makeHttpRequest(editContentRequest, params)
   }
 }
 
