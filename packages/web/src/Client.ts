@@ -1,12 +1,10 @@
 import fetch from 'unfetch'
-import qs from 'qs'
 import uuid from 'uuid-random'
 
 import ContentTypeOptionsBuilder from './ContentOptionsBuilder'
 import { addContentRequest, editContentRequest, findContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest } from './graphql';
 import generateContext from './context'
 import { getItem, setItem } from './storage'
-import { snakeCaseKeys } from './utils'
 import type { Context } from './context'
 import type { ContentTypeOptions } from './ContentOptionsBuilder'
 
@@ -14,8 +12,6 @@ type ClientParams = {
   publicKey: string,
   baseUri?: string
 }
-
-type GraphqlRequest = (variables?: object | undefined) => string
 
 type IdentifyParams = Record<string, string | number> & {
   firstName?: string,
@@ -53,16 +49,17 @@ class Client {
     setItem('anonymousUid', this.anonymousUid)
   }
 
-  private async makeHttpRequest(request: GraphqlRequest, params: any): Promise<Response> {
-    const requestParams = snakeCaseKeys(params)
-
+  private async makeRequest(request: string, params: any): Promise<Response> {
     const response = await fetch(this.baseUri, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey
       },
-      body: JSON.stringify(requestParams)
+      body: JSON.stringify({
+        query: request,
+        variables: { input: params }
+      })
     })
 
     return response.json()
@@ -84,7 +81,7 @@ class Client {
       ...others
     }
 
-    return this.makeHttpRequest(identifyAccountRequest, params)
+    return this.makeRequest(identifyAccountRequest, params)
   }
 
   reset(): void {
@@ -95,21 +92,21 @@ class Client {
   track(event: string, data?: Record<string, any>): Promise<Response> {
     const params = { event, data, uid: this.uid, anonymous_uid: this.anonymousUid }
 
-    return this.makeHttpRequest(trackEventRequest, params)
+    return this.makeRequest(trackEventRequest, params)
   }
 
   contentType(
     contentType: string, options?: ContentTypeOptions
   ): ContentTypeOptionsBuilder | Promise<Response> {
     if (options) {
-      return this.makeHttpRequest(
+      return this.makeRequest(
         searchContentRequest,
         { ...options, contentType }
       )
     }
 
     return new ContentTypeOptionsBuilder(
-      (wrappedOptions) => this.makeHttpRequest(
+      (wrappedOptions) => this.makeRequest(
         searchContentRequest,
         { ...wrappedOptions, contentType }
       )
@@ -124,35 +121,35 @@ class Client {
     const [contentType, content] = urn.split('/')
     const params = { content, contentType }
 
-    return this.makeHttpRequest(findContentRequest, params)
+    return this.makeRequest(findContentRequest, params)
   }
 
   addContent(urn: string, data: Record<string, any>): Promise<Response> {
     let content, contentType
 
     if (urn.includes('/')) {
-      [content, contentType] = urn.split('/')
+      [contentType, content] = urn.split('/')
     } else {
       contentType = urn
     }
 
     const params = { content, contentType, data }
 
-    return this.makeHttpRequest(addContentRequest, params)
+    return this.makeRequest(addContentRequest, params)
   }
 
   editContent(urn: string, data: Record<string, any>): Promise<Response> {
     let content, contentType
 
     if (urn.includes('/')) {
-      [content, contentType] = urn.split('/')
+      [contentType, content] = urn.split('/')
     } else {
       contentType = urn
     }
 
     let params = { content, contentType, data }
 
-    return this.makeHttpRequest(editContentRequest, params)
+    return this.makeRequest(editContentRequest, params)
   }
 }
 

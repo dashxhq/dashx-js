@@ -1,6 +1,4 @@
-import gql from 'nanographql';
-
-export const trackEventRequest = gql`
+export const trackEventRequest = `
   mutation TrackEvent($input: TrackEventInput!) {
     trackEvent(input: $input) {
         id
@@ -8,7 +6,7 @@ export const trackEventRequest = gql`
   }
 `;
 
-export const identifyAccountRequest = gql`
+export const identifyAccountRequest = `
   mutation IdentifyAccount($input: IdentifyAccountInput!) {
     identifyAccount(input: $input) {
         id
@@ -16,40 +14,56 @@ export const identifyAccountRequest = gql`
   }
 `;
 
-export const addContentRequest = gql`
+export const addContentRequest = `
   mutation AddContent($input: AddContentInput!) {
     addContent(input: $input) {
         id
+        identifier
+        position
+        data
+        createdAt
+        updatedAt
     }
   }
 `;
 
-export const editContentRequest = gql`
+export const editContentRequest = `
   mutation EditContent($input: EditContentInput!) {
     editContent(input: $input) {
         id
+        identifier
+        position
+        data
+        createdAt
+        updatedAt
     }
   }
 `;
 
-export const searchContentRequest = gql`
+export const searchContentRequest = `
   query SearchContent($input: SearchContentInput!) {
     searchContent(input: $input) {
       contents {
           id
+          identifier
           position
           data
+          createdAt
+          updatedAt
       }
     }
   }
 `;
 
-export const findContentRequest = gql`
+export const findContentRequest = `
   query FindContent($input: FindContentInput!) {
     findContent(input: $input) {
         id
+        identifier
         position
         data
+        createdAt
+        updatedAt
     }
   }
 `;
