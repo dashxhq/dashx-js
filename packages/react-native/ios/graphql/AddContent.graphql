@@ -4,7 +4,5 @@ mutation AddContent($input: AddContentInput!) {
         position
         identifier
         data
-        createdAt
-        updatedAt
     }
 }

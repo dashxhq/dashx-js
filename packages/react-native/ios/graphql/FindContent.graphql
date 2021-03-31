@@ -3,7 +3,5 @@ query FindContent($input: FindContentInput!) {
         id
         position
         data
-        createdAt
-        updatedAt
     }
 }

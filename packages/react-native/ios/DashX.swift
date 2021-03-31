@@ -80,4 +80,62 @@ class DashX: RCTEventEmitter {
     func screen(_ screenName: String, _ data: NSDictionary?) {
         dashXClient.screen(screenName, withData: data)
     }
+    
+    @objc(contentType:options:resolver:rejecter:)
+    func contentType(_ contentType: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        let optionsDictionary = options as? [String: Any]
+
+        dashXClient.searchContent(
+            contentType,
+            optionsDictionary?["returnType"] as! String? ?? "all",
+            optionsDictionary?["filter"] as! NSDictionary?,
+            optionsDictionary?["order"] as! NSDictionary?,
+            optionsDictionary?["limit"] as! Int?,
+            resolve,
+            reject
+        )
+    }
+    
+    @objc(content:resolver:rejecter:)
+    func content(_ urn: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        
+        let urnArray = urn.split{$0 == "/"}.map(String.init)
+        
+        dashXClient.findContent(
+            urnArray[0],
+            urnArray[1],
+            resolve,
+            reject
+        )
+    }
+
+    
+    @objc(addContent:data:resolver:rejecter:)
+    func addContent(_ urn: String, _ data: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        
+        let urnArray = urn.split{$0 == "/"}.map(String.init)
+        
+        dashXClient.addContent(
+            urnArray[0],
+            urnArray[1],
+            data,
+            resolve,
+            reject
+        )
+    }
+    
+    @objc(editContent:data:resolver:rejecter:)
+    func editContent(_ urn: String, _ data: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        
+        let urnArray = urn.split{$0 == "/"}.map(String.init)
+        
+        dashXClient.editContent(
+            urnArray[0],
+            urnArray[1],
+            data,
+            resolve,
+            reject
+        )
+    }
+
 }

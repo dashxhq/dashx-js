@@ -61,7 +61,7 @@ class DashXClient {
 
         let optionsDictionary = withOptions as? [String: String]
 
-        let identifyAccountInput = IdentifyAccountInput(
+        let identifyAccountInput = DashXGql.IdentifyAccountInput(
             accountType: accountType,
             uid: uid,
             anonymousUid: anonymousUid,
@@ -72,7 +72,7 @@ class DashXClient {
             lastName: optionsDictionary?["lastName"]
         )
 
-        let identifyAccountMutation = IdentifyAccountMutation(input: identifyAccountInput)
+        let identifyAccountMutation = DashXGql.IdentifyAccountMutation(input: identifyAccountInput)
 
         Network.shared.apollo.perform(mutation: identifyAccountMutation) { result in
           switch result {
@@ -105,7 +105,7 @@ class DashXClient {
             return
         }
 
-        let trackEventInput = TrackEventInput(
+        let trackEventInput = DashXGql.TrackEventInput(
             accountType: accountType!,
             event: event,
             uid: uid,
@@ -115,7 +115,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling track with \(trackEventInput)")
 
-        let trackEventMutation = TrackEventMutation(input: trackEventInput)
+        let trackEventMutation = DashXGql.TrackEventMutation(input: trackEventInput)
 
         Network.shared.apollo.perform(mutation: trackEventMutation) { result in
           switch result {
@@ -141,7 +141,7 @@ class DashXClient {
 
         let deviceKind = "IOS"
 
-        let subscribeContactInput  = SubscribeContactInput(
+        let subscribeContactInput  = DashXGql.SubscribeContactInput(
             uid: uid!,
             name: deviceKind,
             kind: .ios,
@@ -150,7 +150,7 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling subscribe with \(subscribeContactInput)")
 
-        let subscribeContactMutation = SubscribeContactMutation(input: subscribeContactInput)
+        let subscribeContactMutation = DashXGql.SubscribeContactMutation(input: subscribeContactInput)
 
         Network.shared.apollo.perform(mutation: subscribeContactMutation) { result in
           switch result {
@@ -163,27 +163,31 @@ class DashXClient {
     }
     // MARK: -- content
 
-    func findContent(_ contentType: String, _ content: String) {
-        let findContentInput  = FindContentInput(
+    func findContent(_ contentType: String, _ content: String, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
+        let findContentInput  = DashXGql.FindContentInput(
             contentType: contentType,
             content: content
         )
 
         DashXLog.d(tag: #function, "Calling findContent with \(findContentInput)")
 
-        let findContentQuery = FindContentQuery(input: findContentInput)
+        let findContentQuery = DashXGql.FindContentQuery(input: findContentInput)
 
         Network.shared.apollo.fetch(query: findContentQuery) { result in
           switch result {
           case .success(let graphQLResult):
             DashXLog.d(tag: #function, "Sent findContent with \(String(describing: graphQLResult))")
+            let content = graphQLResult.data?.findContent
+            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
+            resolve(json)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during findContent(): \(error)")
+            reject("", error.localizedDescription, error)
           }
         }
     }
 
-    func searchContent(_ contentType: String, _ returnType: String, _ filter: NSDictionary?, _ order: NSDictionary?, _ limit: Int?) {
+    func searchContent(_ contentType: String, _ returnType: String, _ filter: NSDictionary?, _ order: NSDictionary?, _ limit: Int?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
         let filterJson: String?
         let orderJson: String?
 
@@ -212,7 +216,7 @@ class DashXClient {
         }
 
 
-        let searchContentInput  = SearchContentInput(
+        let searchContentsInput  = DashXGql.SearchContentsInput(
             contentType: contentType,
             returnType: returnType,
             filter: filterJson,
@@ -220,26 +224,33 @@ class DashXClient {
             limit: limit
         )
 
-        DashXLog.d(tag: #function, "Calling searchContent with \(searchContentInput)")
+        DashXLog.d(tag: #function, "Calling searchContent with \(searchContentsInput)")
 
-        let searchContentQuery = SearchContentQuery(input: searchContentInput)
+        let searchContentQuery = DashXGql.SearchContentsQuery(input: searchContentsInput)
 
         Network.shared.apollo.fetch(query: searchContentQuery) { result in
           switch result {
           case .success(let graphQLResult):
-            DashXLog.d(tag: #function, "Sent searchContent with \(String(describing: graphQLResult))")
+            DashXLog.d(tag: #function, "Sent searchContents with \(String(describing: graphQLResult.data?.searchContents.contents))")
+            let json = graphQLResult.data?.searchContents.contents.map({ content in
+                ["position": content.position, "data": content.data.serialize(), "id": content.id ]
+            })
+            resolve(json)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during searchContent(): \(error)")
+            reject("", error.localizedDescription, error)
           }
         }
     }
 
-    func addContent(_ contentType: String, _ content: String, _ data: NSDictionary) {
+    func addContent(_ contentType: String, _ content: String, _ data: NSDictionary?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
         let dataJson: String?
 
-        if JSONSerialization.isValidJSONObject(data) {
+        if data == nil {
+            dataJson = nil
+        } else if JSONSerialization.isValidJSONObject(data!) {
             dataJson = try? String(
-                data: JSONSerialization.data(withJSONObject: data),
+                data: JSONSerialization.data(withJSONObject: data!),
                 encoding: .utf8
             )
         } else {
@@ -248,7 +259,7 @@ class DashXClient {
         }
 
 
-        let addContentInput  = AddContentInput(
+        let addContentInput  = DashXGql.AddContentInput(
             contentType: contentType,
             content: content,
             data: dataJson ?? ""
@@ -256,24 +267,30 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling addContent with \(addContentInput)")
 
-        let addContentMutation = AddContentMutation(input: addContentInput)
+        let addContentMutation = DashXGql.AddContentMutation(input: addContentInput)
 
         Network.shared.apollo.perform(mutation: addContentMutation) { result in
           switch result {
           case .success(let graphQLResult):
             DashXLog.d(tag: #function, "Sent addContent with \(String(describing: graphQLResult))")
+            let content = graphQLResult.data?.addContent
+            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
+            resolve(json)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during addContent(): \(error)")
+            reject("", error.localizedDescription, error)
           }
         }
     }
 
-    func editContent(_ contentType: String, _ content: String, _ data: NSDictionary) {
+    func editContent(_ contentType: String, _ content: String, _ data: NSDictionary?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
         let dataJson: String?
 
-        if JSONSerialization.isValidJSONObject(data) {
+        if data == nil {
+            dataJson = nil
+        } else if JSONSerialization.isValidJSONObject(data!) {
             dataJson = try? String(
-                data: JSONSerialization.data(withJSONObject: data),
+                data: JSONSerialization.data(withJSONObject: data!),
                 encoding: .utf8
             )
         } else {
@@ -281,8 +298,7 @@ class DashXClient {
             return
         }
 
-
-        let editContentInput  = EditContentInput(
+        let editContentInput  = DashXGql.EditContentInput(
             contentType: contentType,
             content: content,
             data: dataJson ?? ""
@@ -290,14 +306,18 @@ class DashXClient {
 
         DashXLog.d(tag: #function, "Calling editContent with \(editContentInput)")
 
-        let editContentMutation = EditContentMutation(input: editContentInput)
+        let editContentMutation = DashXGql.EditContentMutation(input: editContentInput)
 
         Network.shared.apollo.perform(mutation: editContentMutation) { result in
           switch result {
           case .success(let graphQLResult):
             DashXLog.d(tag: #function, "Sent editContent with \(String(describing: graphQLResult))")
+            let content = graphQLResult.data?.editContent
+            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
+            resolve(json)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during editContent(): \(error)")
+            reject("", error.localizedDescription, error)
           }
         }
     }

@@ -22,9 +22,12 @@ DashX.identify({ firstName: 'John', lastName: 'Doe' });
 DashX.track('Added Product to Cart', {
   productId: 101,
   price: 14.99,
-  size: 'large',
   isFeatured: true,
   coupon: null
 });
+
+DashX.contentType('page').all().then(console.log);
+DashX.content('page/some').then(console.log);
+DashX.editContent('page/some', { "hello": "world" }).then(console.log);
 
 AppRegistry.registerComponent(appName, () => App);
