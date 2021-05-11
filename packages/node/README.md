@@ -104,13 +104,26 @@ Content Options can include following properties:
 
 |Name|Type|Example|
 |:--:|:--:|:-----:|
-|**`returnType`**|`all | one`||
+|**`returnType`**|`'all'` or `'one'`||
 |**`filter`**|`object`|`{ name_eq: 'John' }`|
 |**`order`**|`object`|`{ created_at: 'DESC' }`|
 |**`limit`**|`number`||
 |**`page`**|`number`||
 
 For example, to get latest contacts with name 'John' you can do:
+
+```javascript
+dx.content('contacts')
+  .filter({ name_eq: 'John' })
+  .order({ created_at: 'DESC' })
+  .limit(10)
+  .all() /* returnType */
+```
+
+This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
+Hence `.all()` or `.one()` should be used at the end of chain.
+
+The above code can also be written as:
 
 ```javascript
 dx.content('contacts', {
@@ -124,21 +137,6 @@ dx.content('contacts', {
   limit: 10
 });
 ```
-
-##### Using chainable api
-
-The above code can also be written as:
-
-```javascript
-dx.content('contacts')
-  .filter({ name_eq: 'John' })
-  .order({ created_at: 'DESC' })
-  .limit(10)
-  .all() /* returnType */
-```
-
-This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
-Hence `.all()` or `.one()` should be used at the end of chain.
 
 ### Track Events
 
