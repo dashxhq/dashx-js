@@ -1,14 +1,11 @@
 import crypto from 'crypto'
 import http from 'got'
-import qs from 'qs'
 import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { deliverRequest, identifyAccountRequest, pushContentRequest, trackEventRequest } from './graphql'
+import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest } from './graphql'
 import type { ContentOptions } from './ContentOptionsBuilder'
-
-type GraphqlRequest = (variables?: object | undefined) => string
 
 type Parcel = {
   to: string[] | string,
@@ -40,9 +37,12 @@ class Client {
     this.privateKey = privateKey
   }
 
-  private makeHttpRequest(request: GraphqlRequest, params: any): Promise<Response> {
+  private makeHttpRequest(request: string, params: any): Promise<Response> {
     return http(this.baseUri, {
-      body: request(params),
+      body: JSON.stringify({
+        query: request,
+        variables: { input: params }
+      }),
       method: 'POST',
       headers: {
         'User-Agent': 'dashx-node',
@@ -59,8 +59,8 @@ class Client {
     return this.makeHttpRequest(deliverRequest, parcel)
   }
 
-  identify(uid: string, options?: IdentifyParams) : Promise<Response>
-  identify(options?: IdentifyParams) : Promise<Response>
+  identify(uid: string, options?: IdentifyParams): Promise<Response>
+  identify(options?: IdentifyParams): Promise<Response>
   identify(
     uid: string | IdentifyParams = {}, options: IdentifyParams = {} as IdentifyParams
   ): Promise<Response> {
@@ -98,16 +98,62 @@ class Client {
     return this.makeHttpRequest(trackEventRequest, { event, uid, data })
   }
 
-  content(
+  addContent(urn: string, data: Record<string, any>): Promise<Response> {
+    let content; let
+      contentType
+
+    if (urn.includes('/')) {
+      [ contentType, content ] = urn.split('/')
+    } else {
+      contentType = urn
+    }
+
+    const params = { content, contentType, data }
+
+    return this.makeHttpRequest(addContentRequest, params)
+  }
+
+  editContent(urn: string, data: Record<string, any>): Promise<Response> {
+    let content; let
+      contentType
+
+    if (urn.includes('/')) {
+      [ contentType, content ] = urn.split('/')
+    } else {
+      contentType = urn
+    }
+
+    const params = { content, contentType, data }
+
+    return this.makeHttpRequest(editContentRequest, params)
+  }
+
+  searchContent(
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<Response> {
     if (options) {
-      return this.makeHttpRequest(pushContentRequest, { ...options, contentType })
+      return this.makeHttpRequest(
+        searchContentRequest,
+        { ...options, contentType }
+      )
     }
 
     return new ContentOptionsBuilder(
-      (wrappedOptions) => this.makeHttpRequest(pushContentRequest, { ...wrappedOptions, contentType })
+      (wrappedOptions) => this.makeHttpRequest(
+        searchContentRequest,
+        { ...wrappedOptions, contentType }
+      )
     )
+  }
+
+  fetchContent(urn: string): Promise<Response> {
+    if (!urn.includes('/')) {
+      throw new Error('Urn must be of form: {contentType}/{content}')
+    }
+    const [ contentType, content ] = urn.split('/')
+    const params = { content, contentType }
+
+    return this.makeHttpRequest(fetchContentRequest, params)
   }
 }
 
