@@ -56,7 +56,7 @@ class Client {
   }
 
   deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest(deliverRequest, parcel)
+    return this.makeHttpRequest(deliverRequest, { parcel })
   }
 
   identify(uid: string, options?: IdentifyParams): Promise<Response>
@@ -148,7 +148,7 @@ class Client {
 
   fetchContent(urn: string): Promise<Response> {
     if (!urn.includes('/')) {
-      throw new Error('Urn must be of form: {contentType}/{content}')
+      throw new Error('URN must be of form: {contentType}/{content}')
     }
     const [ contentType, content ] = urn.split('/')
     const params = { content, contentType }
