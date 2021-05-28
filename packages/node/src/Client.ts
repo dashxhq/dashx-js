@@ -25,16 +25,24 @@ class Client {
 
   privateKey?: string
 
+  targetInstallation?: string
+
+  targetEnvironment?: string
+
   baseUri: string
 
   constructor({
     baseUri = process.env.DASHX_BASE_URI || 'https://api.dashx.com/graphql',
     publicKey = process.env.DASHX_PUBLIC_KEY,
-    privateKey = process.env.DASHX_PRIVATE_KEY
+    privateKey = process.env.DASHX_PRIVATE_KEY,
+    targetInstallation = process.env.DASHX_TARGET_INSTALLATION,
+    targetEnvironment = process.env.DASHX_TARGET_ENVIRONMENT
   } = {}) {
     this.baseUri = baseUri
     this.publicKey = publicKey
     this.privateKey = privateKey
+    this.targetEnvironment = targetEnvironment
+    this.targetInstallation = targetInstallation
   }
 
   private makeHttpRequest(request: string, params: any): Promise<Response> {
@@ -48,6 +56,8 @@ class Client {
         'User-Agent': 'dashx-node',
         'X-Public-Key': this.publicKey,
         'X-Private-Key': this.privateKey,
+        'X-Target-Installation': this.targetInstallation,
+        'X-Target-Environment': this.targetEnvironment,
         'Content-Type': 'application/json'
       },
       responseType: 'json'
