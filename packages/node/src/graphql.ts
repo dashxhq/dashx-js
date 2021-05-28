@@ -4,7 +4,7 @@ export const trackEventRequest = `
         id
     }
   }
-`;
+`
 
 export const identifyAccountRequest = `
   mutation IdentifyAccount($input: IdentifyAccountInput!) {
@@ -12,7 +12,7 @@ export const identifyAccountRequest = `
         id
     }
   }
-`;
+`
 
 export const addContentRequest = `
   mutation AddContent($input: AddContentInput!) {
@@ -23,7 +23,7 @@ export const addContentRequest = `
         data
     }
   }
-`;
+`
 
 export const editContentRequest = `
   mutation EditContent($input: EditContentInput!) {
@@ -34,7 +34,7 @@ export const editContentRequest = `
         data
     }
   }
-`;
+`
 
 export const searchContentRequest = `
   query SearchContent($input: SearchContentInput!) {
@@ -47,10 +47,10 @@ export const searchContentRequest = `
       }
     }
   }
-`;
+`
 
 export const fetchContentRequest = `
-  query FetchContentRequest($input: FindContentInput!) {
+  query FetchContentRequest($input: FetchContentInput!) {
     fetchContent(input: $input) {
         id
         identifier
@@ -58,7 +58,7 @@ export const fetchContentRequest = `
         data
     }
   }
-`;
+`
 
 export const deliverRequest = `
   mutation Deliver($input: DeliverInput!) {
@@ -66,4 +66,4 @@ export const deliverRequest = `
         id
     }
   }
-`;
+`
