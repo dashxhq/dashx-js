@@ -2,6 +2,7 @@ import type { Response } from 'got'
 
 export type ContentOptions = {
   returnType?: 'all' | 'one',
+  language?: string,
   filter?: Record<string, boolean | string | number>,
   order?: Record<string, 'ASC' | 'DESC'>,
   limit?: number,
@@ -32,6 +33,11 @@ class ContentOptionsBuilder {
 
   order(by: ContentOptions['order']) {
     this.options.order = by
+    return this
+  }
+
+  language(to: ContentOptions['language']) {
+    this.options.language = to
     return this
   }
 
