@@ -105,9 +105,9 @@ Content Options can include following properties:
 |Name|Type|Example|
 |:--:|:--:|:-----:|
 |**`language`**|`string`|`'en_US'`||
-|**`include`**|`array`|`['name', 'userId']`||
-|**`exclude`**|`array`|`['last_updated']`||
-|**`fields`**|`array`|`['name', 'userId']`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
 |**`preview`**|`boolean`||
 |**`returnType`**|`'all'` or `'one'`||
 |**`filter`**|`object`|`{ name_eq: 'John' }`|
@@ -157,9 +157,9 @@ Fetch Content Options can include following properties:
 |Name|Type|Example|
 |:--:|:--:|:-----:|
 |**`language`**|`string`|`'en_US'`||
-|**`include`**|`array`|`['name', 'userId']`||
-|**`exclude`**|`array`|`['last_updated']`||
-|**`fields`**|`array`|`['name', 'userId']`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
 |**`preview`**|`boolean`||
 
 ```javascript
