@@ -161,8 +161,7 @@ class Client {
       throw new Error('URN must be of form: {contentType}/{content}')
     }
     const [ contentType, content ] = urn.split('/')
-    const { language } = options
-    const params = { content, contentType, language }
+    const params = { content, contentType, ...options }
 
     return this.makeHttpRequest(fetchContentRequest, params)
   }
