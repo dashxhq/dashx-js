@@ -5,7 +5,7 @@ import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest } from './graphql'
-import type { ContentOptions } from './ContentOptionsBuilder'
+import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
 type Parcel = {
   to: string[] | string,
@@ -156,7 +156,7 @@ class Client {
     )
   }
 
-  fetchContent(urn: string, options: { language: string }): Promise<Response> {
+  fetchContent(urn: string, options: FetchContentOptions): Promise<Response> {
     if (!urn.includes('/')) {
       throw new Error('URN must be of form: {contentType}/{content}')
     }
