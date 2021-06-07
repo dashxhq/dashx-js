@@ -156,12 +156,13 @@ class Client {
     )
   }
 
-  fetchContent(urn: string): Promise<Response> {
+  fetchContent(urn: string, options: { language: string }): Promise<Response> {
     if (!urn.includes('/')) {
       throw new Error('URN must be of form: {contentType}/{content}')
     }
     const [ contentType, content ] = urn.split('/')
-    const params = { content, contentType }
+    const { language } = options
+    const params = { content, contentType, language }
 
     return this.makeHttpRequest(fetchContentRequest, params)
   }
