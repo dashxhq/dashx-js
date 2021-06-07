@@ -3,11 +3,17 @@ import type { Response } from 'got'
 export type ContentOptions = {
   returnType?: 'all' | 'one',
   language?: string,
+  include?: Array<string>,
+  exclude?: Array<string>,
+  fields?: Array<string>,
+  preview?: boolean,
   filter?: Record<string, boolean | string | number>,
   order?: Record<string, 'ASC' | 'DESC'>,
   limit?: number,
   page?: number
 }
+
+export type FetchContentOptions = Pick<ContentOptions, 'exclude' | 'include' | 'fields' | 'language' | 'preview'>
 
 class ContentOptionsBuilder {
   private options: ContentOptions
@@ -38,6 +44,26 @@ class ContentOptionsBuilder {
 
   language(to: ContentOptions['language']) {
     this.options.language = to
+    return this
+  }
+
+  fields(identifiers: ContentOptions['fields']) {
+    this.options.fields = identifiers
+    return this
+  }
+
+  include(identifiers: ContentOptions['include']) {
+    this.options.include = identifiers
+    return this
+  }
+
+  exclude(identifiers: ContentOptions['exclude']) {
+    this.options.exclude = identifiers
+    return this
+  }
+
+  preview() {
+    this.options.preview = true
     return this
   }
 

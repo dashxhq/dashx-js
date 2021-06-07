@@ -93,10 +93,10 @@ User info can include the following keys:
 |**`email`**|`string`|
 |**`phone`**|`string`|
 
-### Content
+### Search Content
 
 ```javascript
-dx.content('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
+dx.searchContent('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
   .then(data => console.log(data));
 ```
 
@@ -104,6 +104,11 @@ Content Options can include following properties:
 
 |Name|Type|Example|
 |:--:|:--:|:-----:|
+|**`language`**|`string`||`'en_US'`||
+|**`include`**|`array`||`['name', 'userId']`||
+|**`exclude`**|`array`||`['last_updated']`||
+|**`fields`**|`array`||`['name', 'userId']`||
+|**`preview`**|`boolean`||
 |**`returnType`**|`'all'` or `'one'`||
 |**`filter`**|`object`|`{ name_eq: 'John' }`|
 |**`order`**|`object`|`{ created_at: 'DESC' }`|
@@ -113,9 +118,10 @@ Content Options can include following properties:
 For example, to get latest contacts with name 'John' you can do:
 
 ```javascript
-dx.content('contacts')
+dx.searchContent('contacts')
   .filter({ name_eq: 'John' })
   .order({ created_at: 'DESC' })
+  .preview() // Sets preview to true
   .limit(10)
   .all() /* returnType */
 ```
@@ -126,7 +132,7 @@ Hence `.all()` or `.one()` should be used at the end of chain.
 The above code can also be written as:
 
 ```javascript
-dx.content('contacts', {
+dx.searchContent('contacts', {
   returnType: 'all',
   filter: {
     name_eq: 'John'
@@ -134,7 +140,35 @@ dx.content('contacts', {
   order: {
     created_at: 'DESC'
   },
+  preview: true,
   limit: 10
+});
+```
+
+### Fetch Content
+
+```javascript
+dx.fetchContent('content_type/content', { language: 'en_US' } /* Fetch Content Options */)
+  .then(data => console.log(data));
+```
+
+Fetch Content Options can include following properties:
+
+|Name|Type|Example|
+|:--:|:--:|:-----:|
+|**`language`**|`string`||`'en_US'`||
+|**`include`**|`array`||`['name', 'userId']`||
+|**`exclude`**|`array`||`['last_updated']`||
+|**`fields`**|`array`||`['name', 'userId']`||
+|**`preview`**|`boolean`||
+
+```javascript
+dx.fetchContent('movies/avengers', {
+  language: 'en_US',
+  include: ['character.created_by'],
+  exclude: ['directors'],
+  fields: ['character', 'release_date'],
+  preview: true
 });
 ```
 
