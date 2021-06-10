@@ -38,25 +38,13 @@ export const editContentRequest = `
 
 export const searchContentRequest = `
   query SearchContent($input: SearchContentInput!) {
-    searchContent(input: $input) {
-      contents {
-          id
-          identifier
-          position
-          data
-      }
-    }
+    searchContent(input: $input)
   }
 `
 
 export const fetchContentRequest = `
   query FetchContentRequest($input: FetchContentInput!) {
-    fetchContent(input: $input) {
-        id
-        identifier
-        position
-        data
-    }
+    fetchContent(input: $input)
   }
 `
 
