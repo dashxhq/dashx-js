@@ -18,10 +18,10 @@ export type FetchContentOptions = Pick<ContentOptions, 'exclude' | 'include' | '
 class ContentOptionsBuilder {
   private options: ContentOptions
 
-  private callback: (options: ContentOptions) => Promise<Response>
+  private callback: (options: ContentOptions) => Promise<any>
 
   constructor(
-    callback: (options: ContentOptions) => Promise<Response>
+    callback: (options: ContentOptions) => Promise<any>
   ) {
     this.options = {}
     this.callback = callback
@@ -74,7 +74,7 @@ class ContentOptionsBuilder {
 
   one(withOptions: ContentOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'one' }
-    return this.callback(this.options)
+    return this.callback(this.options).then(data => Array.isArray(data) ? data[0] : null)
   }
 }
 

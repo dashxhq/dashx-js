@@ -45,7 +45,7 @@ class Client {
     this.targetInstallation = targetInstallation
   }
 
-  private makeHttpRequest(request: string, params: any): Promise<Response> {
+  private makeHttpRequest(request: string, params: any): Promise<any> {
     return http(this.baseUri, {
       body: JSON.stringify({
         query: request,
@@ -140,7 +140,7 @@ class Client {
 
   searchContent(
     contentType: string, options?: ContentOptions
-  ): ContentOptionsBuilder | Promise<Response> {
+  ): ContentOptionsBuilder | Promise<any> {
     if (options) {
       return this.makeHttpRequest(
         searchContentRequest,
@@ -152,18 +152,30 @@ class Client {
       (wrappedOptions) => this.makeHttpRequest(
         searchContentRequest,
         { ...wrappedOptions, contentType }
-      )
+      ).then(response => {
+        if (response.data) {
+          return response.data?.searchContent
+        } else {
+          return response.errors
+        }
+      })
     )
   }
 
-  fetchContent(urn: string, options: FetchContentOptions): Promise<Response> {
+  fetchContent(urn: string, options: FetchContentOptions): Promise<any> {
     if (!urn.includes('/')) {
       throw new Error('URN must be of form: {contentType}/{content}')
     }
     const [ contentType, content ] = urn.split('/')
     const params = { content, contentType, ...options }
 
-    return this.makeHttpRequest(fetchContentRequest, params)
+    return this.makeHttpRequest(fetchContentRequest, params).then(response => {
+      if (response.data) {
+        return response.data?.fetchContent
+      } else {
+        return response.errors
+      }
+    })
   }
 }
 
