@@ -1,5 +1,7 @@
 import type { Response } from 'got'
 
+import { parseFilterObject } from './utils'
+
 export type ContentOptions = {
   returnType?: 'all' | 'one',
   language?: string,
@@ -7,7 +9,7 @@ export type ContentOptions = {
   exclude?: Array<string>,
   fields?: Array<string>,
   preview?: boolean,
-  filter?: Record<string, boolean | string | number>,
+  filter?: Record<string, any>,
   order?: Record<string, 'ASC' | 'DESC'>,
   limit?: number,
   page?: number
@@ -33,7 +35,7 @@ class ContentOptionsBuilder {
   }
 
   filter(by: ContentOptions['filter']) {
-    this.options.filter = by
+    this.options.filter = parseFilterObject(by)
     return this
   }
 

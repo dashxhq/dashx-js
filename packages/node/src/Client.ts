@@ -5,6 +5,7 @@ import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest } from './graphql'
+import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
 type Parcel = {
@@ -149,10 +150,18 @@ class Client {
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<any> {
     if (options) {
-      return this.makeHttpRequest(
+      let filter = parseFilterObject(options.filter)
+      
+      let response = this.makeHttpRequest(
         searchContentRequest,
-        { ...options, contentType }
+        { ...options, contentType, filter }
       ).then(response => response?.searchContent)
+
+      if (options.returnType == 'all') {
+        return response
+      }
+
+      return response.then(data => Array.isArray(data) ? data[0] : null)
     }
 
     return new ContentOptionsBuilder(
