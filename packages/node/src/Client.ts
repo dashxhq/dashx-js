@@ -63,6 +63,13 @@ class Client {
       responseType: 'json'
     })
       .json()
+      .then((response: any) => new Promise((resolve, reject) => {
+        if (response.data) {
+          return resolve(response.data)
+        } else {
+          return reject(response.errors)
+        }
+      }))
   }
 
   deliver(parcel: Parcel): Promise<Response> {
@@ -145,20 +152,14 @@ class Client {
       return this.makeHttpRequest(
         searchContentRequest,
         { ...options, contentType }
-      )
+      ).then(response => response?.searchContent)
     }
 
     return new ContentOptionsBuilder(
       (wrappedOptions) => this.makeHttpRequest(
         searchContentRequest,
         { ...wrappedOptions, contentType }
-      ).then(response => {
-        if (response.data) {
-          return response.data?.searchContent
-        } else {
-          return response.errors
-        }
-      })
+      ).then(response => response?.searchContent)
     )
   }
 
@@ -169,13 +170,7 @@ class Client {
     const [ contentType, content ] = urn.split('/')
     const params = { content, contentType, ...options }
 
-    return this.makeHttpRequest(fetchContentRequest, params).then(response => {
-      if (response.data) {
-        return response.data?.fetchContent
-      } else {
-        return response.errors
-      }
-    })
+    return this.makeHttpRequest(fetchContentRequest, params).then(response => response?.fetchContent)
   }
 }
 
