@@ -1,5 +1,3 @@
-import type { Response } from 'got'
-
 import { parseFilterObject } from './utils'
 
 export type ContentOptions = {
@@ -74,9 +72,11 @@ class ContentOptionsBuilder {
     return this.callback(this.options)
   }
 
-  one(withOptions: ContentOptions) {
+  async one(withOptions: ContentOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'one' }
-    return this.callback(this.options).then(data => Array.isArray(data) ? data[0] : null)
+    const data = await this.callback(this.options)
+
+    return Array.isArray(data) ? data[0] : null
   }
 }
 
