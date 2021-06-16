@@ -46,8 +46,8 @@ class Client {
     this.targetInstallation = targetInstallation
   }
 
-  private makeHttpRequest(request: string, params: any): Promise<any> {
-    return http(this.baseUri, {
+  private async makeHttpRequest(request: string, params: any): Promise<any> {
+    const response: any = await http(this.baseUri, {
       body: JSON.stringify({
         query: request,
         variables: { input: params }
@@ -64,13 +64,12 @@ class Client {
       responseType: 'json'
     })
       .json()
-      .then((response: any) => new Promise((resolve, reject) => {
-        if (response.data) {
-          return resolve(response.data)
-        } else {
-          return reject(response.errors)
-        }
-      }))
+
+    if (response.data) {
+      return Promise.resolve(response.data)
+    }
+
+    return Promise.reject(response.errors)
   }
 
   deliver(parcel: Parcel): Promise<Response> {
@@ -146,40 +145,44 @@ class Client {
     return this.makeHttpRequest(editContentRequest, params)
   }
 
+  searchContent(contentType: string): ContentOptionsBuilder
+  searchContent(contentType: string, options: ContentOptions): Promise<any>
   searchContent(
     contentType: string, options?: ContentOptions
   ): ContentOptionsBuilder | Promise<any> {
-    if (options) {
-      let filter = parseFilterObject(options.filter)
-      
-      let response = this.makeHttpRequest(
-        searchContentRequest,
-        { ...options, contentType, filter }
-      ).then(response => response?.searchContent)
-
-      if (options.returnType == 'all') {
-        return response
-      }
-
-      return response.then(data => Array.isArray(data) ? data[0] : null)
+    if (!options) {
+      return new ContentOptionsBuilder(
+        (wrappedOptions) => this.makeHttpRequest(
+          searchContentRequest,
+          { ...wrappedOptions, contentType }
+        ).then((response) => response?.searchContent)
+      )
     }
 
-    return new ContentOptionsBuilder(
-      (wrappedOptions) => this.makeHttpRequest(
-        searchContentRequest,
-        { ...wrappedOptions, contentType }
-      ).then(response => response?.searchContent)
-    )
+    const filter = parseFilterObject(options.filter)
+
+    const result = this.makeHttpRequest(
+      searchContentRequest,
+      { ...options, contentType, filter }
+    ).then((response) => response?.searchContent)
+
+    if (options.returnType === 'all') {
+      return result
+    }
+
+    return result.then((data) => (Array.isArray(data) ? data[0] : null))
   }
 
-  fetchContent(urn: string, options: FetchContentOptions): Promise<any> {
+  async fetchContent(urn: string, options: FetchContentOptions): Promise<any> {
     if (!urn.includes('/')) {
       throw new Error('URN must be of form: {contentType}/{content}')
     }
+
     const [ contentType, content ] = urn.split('/')
     const params = { content, contentType, ...options }
 
-    return this.makeHttpRequest(fetchContentRequest, params).then(response => response?.fetchContent)
+    const response = await this.makeHttpRequest(fetchContentRequest, params)
+    return response?.fetchContent
   }
 }
 
