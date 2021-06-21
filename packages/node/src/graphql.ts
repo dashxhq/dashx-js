@@ -70,6 +70,10 @@ export const fetchItemRequest = `
         pricings {
             id
             amount
+            originalAmount
+            isRecurring
+            recurringInterval
+            recurringIntervalUnit
             currencyCode
             createdAt
             updatedAt
