@@ -55,3 +55,25 @@ export const deliverRequest = `
     }
   }
 `
+
+export const fetchItemRequest = `
+  query FetchItemQuery($input: FetchItemInput) {
+    fetchItem(input: $input) {
+        id
+        installationId
+        name
+        identifier
+        description
+        createdAt
+        updatedAt
+
+        pricings {
+            id
+            amount
+            currencyCode
+            createdAt
+            updatedAt
+        }
+    }
+  }
+`
