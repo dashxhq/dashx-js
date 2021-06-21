@@ -55,3 +55,29 @@ export const deliverRequest = `
     }
   }
 `
+
+export const fetchItemRequest = `
+  query FetchItemQuery($input: FetchItemInput) {
+    fetchItem(input: $input) {
+        id
+        installationId
+        name
+        identifier
+        description
+        createdAt
+        updatedAt
+
+        pricings {
+            id
+            amount
+            originalAmount
+            isRecurring
+            recurringInterval
+            recurringIntervalUnit
+            currencyCode
+            createdAt
+            updatedAt
+        }
+    }
+  }
+`

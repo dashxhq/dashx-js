@@ -4,7 +4,7 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest } from './graphql'
+import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest } from './graphql'
 import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
@@ -183,6 +183,13 @@ class Client {
 
     const response = await this.makeHttpRequest(fetchContentRequest, params)
     return response?.fetchContent
+  }
+
+  async fetchItem(identifier: string): Promise<any> {
+    const params = { identifier }
+
+    const response = await this.makeHttpRequest(fetchItemRequest, params)
+    return response?.fetchItem
   }
 }
 

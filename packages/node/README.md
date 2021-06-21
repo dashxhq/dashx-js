@@ -177,3 +177,9 @@ dx.fetchContent('movies/avengers', {
 ```javascript
 dx.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
 ```
+
+### Fetch Item
+
+```javascript
+dx.fetchItem('item_identifier');
+```
