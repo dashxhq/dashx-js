@@ -18,8 +18,11 @@ export type Parcel = {
 
 type DeliveryContent = {
   from: string,
-  plainBody: string,
-  htmlBody: string
+  title?: string,
+  plainBody?: string,
+  htmlBody?: string,
+  body?: string,
+  replyTo?: string
 }
 
 type IdentifyParams = {
