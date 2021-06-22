@@ -4,14 +4,25 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { deliverRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest } from './graphql'
-import { parseFilterObject } from './utils'
+import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest } from './graphql'
+import { parseFilterObject, createParcel } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
-type Parcel = {
+export type Parcel = {
   to: string[] | string,
-  body: string,
+  cc?: string[],
+  bcc?: string[],
+  channel: 'email' | 'sms' | 'push',
   data: Record<string, any>
+}
+
+type DeliveryContent = {
+  from: string,
+  title?: string,
+  plainBody?: string,
+  htmlBody?: string,
+  body?: string,
+  replyTo?: string
 }
 
 type IdentifyParams = {
@@ -72,8 +83,38 @@ class Client {
     return Promise.reject(response.errors)
   }
 
-  deliver(parcel: Parcel): Promise<Response> {
-    return this.makeHttpRequest(deliverRequest, { parcel })
+  deliver(contentIdentifier: string, parcel: Parcel): Promise<any>
+  deliver(deliverOptions: Parcel & DeliveryContent): Promise<any>
+  async deliver(
+    contentIdentifier: string | Parcel & DeliveryContent, parcel?: Parcel
+  ): Promise<any> {
+    let params = {}
+
+    if (typeof contentIdentifier === 'string' && typeof parcel !== 'undefined') {
+      params = {
+        contentIdentifier,
+        attachments: [],
+        ...createParcel(parcel)
+      }
+    } else {
+      const deliverOptions = contentIdentifier as Parcel & DeliveryContent
+
+      const deliveryContent = {
+        from: deliverOptions.from,
+        plainBody: deliverOptions.htmlBody,
+        htmlBody: deliverOptions.plainBody,
+        attachments: []
+      }
+
+      params = {
+        content: deliveryContent,
+        attachments: [],
+        ...createParcel(deliverOptions)
+      }
+    }
+
+    const response = await this.makeHttpRequest(createDeliveryRequest, params)
+    return response?.createDelivery
   }
 
   identify(uid: string, options?: IdentifyParams): Promise<Response>

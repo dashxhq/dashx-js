@@ -47,14 +47,45 @@ dx.deliver({
 });
 ```
 
-`deliver` can accept multiple recipients like so:
+#### Using `contentIdentifier`
+
+`deliver` can take two parameters like so:
+
+```javascript
+dx.deliver('onboarding' /* content identifier */, {
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], /* parcelObject */
+});
+```
+
+`parcelObject` can include the following keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`to`**|`string or array of string`|
+|**`cc`**|`array of string`|
+|**`bcc`**|`array of string`|
+|**`data`**|`object`|
+|**`channel`**|`'email' or 'sms' or 'push'`|
+
+#### Using `content`
 
 ```javascript
 dx.deliver({
-  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com>'],
-  body: 'Hello World!'
-});
+  plainBody: 'Welcome to Onboarding',
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], 
+} /* deliveryOptions */ );
 ```
+
+In addition to all the keys of `parcelObject`, `deliveryOptions` can include these keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`title`**|`string`|
+|**`body`**|`string`|
+|**`plainBody`**|`string`|
+|**`htmlBody`**|`string`|
+|**`from`**|`string`|
+|**`replyTo`**|`string`|
 
 ### Identify
 

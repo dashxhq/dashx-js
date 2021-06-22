@@ -48,16 +48,16 @@ export const fetchContentRequest = `
   }
 `
 
-export const deliverRequest = `
-  mutation Deliver($input: DeliverInput!) {
-    deliver(input: $input) {
+export const createDeliveryRequest = `
+  mutation CreateDelivery($input: CreateDeliveryInput!) {
+    createDelivery(input: $input) {
         id
     }
   }
 `
 
 export const fetchItemRequest = `
-  query FetchItemQuery($input: FetchItemInput) {
+  query FetchItem($input: FetchItemInput) {
     fetchItem(input: $input) {
         id
         installationId
