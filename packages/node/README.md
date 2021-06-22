@@ -80,9 +80,12 @@ In addition to all the keys of `parcelObject`, `deliveryOptions` can include the
 
 |Name|Type|
 |:---:|:--:|
+|**`title`**|`string`|
+|**`body`**|`string`|
 |**`plainBody`**|`string`|
 |**`htmlBody`**|`string`|
 |**`from`**|`string`|
+|**`replyTo`**|`string`|
 
 ### Identify
 
