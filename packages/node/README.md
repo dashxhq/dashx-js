@@ -57,7 +57,7 @@ dx.deliver('onboarding' /* content identifier */, {
 });
 ```
 
-`parcelObject` info can include the following keys:
+`parcelObject` can include the following keys:
 
 |Name|Type|
 |:---:|:--:|
@@ -76,7 +76,7 @@ dx.deliver({
 } /* deliveryOptions */ );
 ```
 
-In addition to all the keys of `parcelObject`,  `deliveryOptions` can include these keys:
+In addition to all the keys of `parcelObject`, `deliveryOptions` can include these keys:
 
 |Name|Type|
 |:---:|:--:|
