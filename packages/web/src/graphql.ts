@@ -47,7 +47,68 @@ export const searchContentRequest = `
 `
 
 export const fetchContentRequest = `
-  query FetchContentRequest($input: FetchContentInput!) {
+  query FetchContent($input: FetchContentInput!) {
     fetchContent(input: $input)
+  }
+`
+
+const cart = `
+  id
+  status
+  subtotal
+  discount
+  tax
+  total
+
+  orderItems {
+      id
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+  }
+
+  couponRedemptions {
+      coupon {
+          name
+          identifier
+          discountType
+          discountAmount
+          currencyCode
+          expiresAt
+      }
+  }
+`
+export const addItemToCartRequest = `
+  mutation AddItemToCart($input: AddItemToCartInput) {
+    addItemToCart(input:$input) {
+      ${cart}
+    }
+  }
+`
+
+export const applyCouponToCartRequest = `
+  mutation ApplyCouponToCart($input: ApplyCouponToCartInput) {
+    applyCouponToCart(input:$input) {
+      ${cart}
+    }
+  }
+`
+
+export const removeCouponFromCartRequest = `
+  mutation RemoveCouponFromCart($input: RemoveCouponFromCartInput) {
+    removeCouponFromCart(input:$input) {
+      ${cart}
+    }
+  }
+`
+
+export const fetchCartRequest = `
+  query FetchCart($input: FetchCartInput!) {
+    fetchCart(input: $input) {
+      ${cart}
+    }
   }
 `
