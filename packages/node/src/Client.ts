@@ -103,6 +103,9 @@ class Client {
         from: deliverOptions.from,
         plainBody: deliverOptions.htmlBody,
         htmlBody: deliverOptions.plainBody,
+        body: deliverOptions.body,
+        replyTo: deliverOptions.replyTo,
+        title: deliverOptions.title,
         attachments: []
       }
 
