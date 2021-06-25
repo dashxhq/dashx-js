@@ -1,7 +1,7 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
-import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest } from './graphql'
+import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest } from './graphql'
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
@@ -11,7 +11,9 @@ import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilde
 
 type ClientParams = {
   publicKey: string,
-  baseUri?: string
+  baseUri?: string,
+  targetInstallation?: string,
+  targetEnvironment?: string
 }
 
 type IdentifyParams = Record<string, string | number> & {
@@ -26,15 +28,24 @@ class Client {
 
   accountUid: string | null = null
 
+  accountType: string
+
+  targetInstallation?: string
+
+  targetEnvironment?: string
+
   context: Context
 
   publicKey: string
 
   baseUri: string
 
-  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql' }: ClientParams) {
+  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql', targetEnvironment, targetInstallation }: ClientParams) {
     this.baseUri = baseUri
     this.publicKey = publicKey
+    this.accountType = 'individual'
+    this.targetEnvironment = targetEnvironment
+    this.targetInstallation = targetInstallation
     this.context = generateContext()
     this.generateAnonymousUid()
   }
@@ -55,7 +66,9 @@ class Client {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Public-Key': this.publicKey
+        'X-Public-Key': this.publicKey,
+        ...(this.targetInstallation ? { 'X-Target-Installation': this.targetInstallation } : {}),
+        ...(this.targetEnvironment ? { 'X-Target-Environment': this.targetEnvironment } : {})
       },
       body: JSON.stringify({
         query: request,
@@ -94,7 +107,13 @@ class Client {
   }
 
   track(event: string, data?: Record<string, any>): Promise<Response> {
-    const params = { event, data, uid: this.accountUid, anonymous_uid: this.accountAnonymousUid }
+    const params = {
+      event,
+      data,
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
 
     return this.makeHttpRequest(trackEventRequest, params)
   }
@@ -167,6 +186,55 @@ class Client {
 
     const response = await this.makeHttpRequest(fetchContentRequest, params)
     return response?.fetchContent
+  }
+
+  async addItemToCart(options: {
+    itemId: string, pricingId: string, quantity: string, reset: boolean
+  }): Promise<any> {
+    const params = {
+      ...options,
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
+
+    const response = await this.makeHttpRequest(addItemToCartRequest, params)
+    return response?.addItemToCart
+  }
+
+  async applyCouponToCart(options: { couponCode: string }): Promise<any> {
+    const params = {
+      ...options,
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
+
+    const response = await this.makeHttpRequest(applyCouponToCartRequest, params)
+    return response?.applyCouponToCart
+  }
+
+  async removeCouponFromCart(options: { couponCode: string }): Promise<any> {
+    const params = {
+      ...options,
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
+
+    const response = await this.makeHttpRequest(removeCouponFromCartRequest, params)
+    return response?.removeCouponFromCart
+  }
+
+  async fetchCart(): Promise<any> {
+    const params = {
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
+
+    const response = await this.makeHttpRequest(fetchCartRequest, params)
+    return response?.fetchCart
   }
 }
 

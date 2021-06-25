@@ -155,8 +155,8 @@ class Client {
     return encryptedToken.toString('base64').replace(/\+/g, '-').replace(/\//g, '_')
   }
 
-  track(event: string, uid: string, data: Record<string, any>): Promise<Response> {
-    return this.makeHttpRequest(trackEventRequest, { event, uid, data })
+  track(event: string, accountUid: string, data: Record<string, any>): Promise<Response> {
+    return this.makeHttpRequest(trackEventRequest, { event, accountUid, data })
   }
 
   addContent(urn: string, data: Record<string, any>): Promise<Response> {
