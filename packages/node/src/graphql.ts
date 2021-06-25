@@ -4,7 +4,7 @@ export const trackEventRequest = `
         id
     }
   }
-`;
+`
 
 export const identifyAccountRequest = `
   mutation IdentifyAccount($input: IdentifyAccountInput!) {
@@ -12,7 +12,7 @@ export const identifyAccountRequest = `
         id
     }
   }
-`;
+`
 
 export const addContentRequest = `
   mutation AddContent($input: AddContentInput!) {
@@ -23,7 +23,7 @@ export const addContentRequest = `
         data
     }
   }
-`;
+`
 
 export const editContentRequest = `
   mutation EditContent($input: EditContentInput!) {
@@ -34,36 +34,50 @@ export const editContentRequest = `
         data
     }
   }
-`;
+`
 
 export const searchContentRequest = `
   query SearchContent($input: SearchContentInput!) {
-    searchContent(input: $input) {
-      contents {
-          id
-          identifier
-          position
-          data
-      }
-    }
+    searchContent(input: $input)
   }
-`;
+`
 
 export const fetchContentRequest = `
-  query FetchContentRequest($input: FindContentInput!) {
-    fetchContent(input: $input) {
-        id
-        identifier
-        position
-        data
-    }
+  query FetchContentRequest($input: FetchContentInput!) {
+    fetchContent(input: $input)
   }
-`;
+`
 
-export const deliverRequest = `
-  mutation Deliver($input: DeliverInput!) {
-    deliver(input: $input) {
+export const createDeliveryRequest = `
+  mutation CreateDelivery($input: CreateDeliveryInput!) {
+    createDelivery(input: $input) {
         id
     }
   }
-`;
+`
+
+export const fetchItemRequest = `
+  query FetchItem($input: FetchItemInput) {
+    fetchItem(input: $input) {
+        id
+        installationId
+        name
+        identifier
+        description
+        createdAt
+        updatedAt
+
+        pricings {
+            id
+            amount
+            originalAmount
+            isRecurring
+            recurringInterval
+            recurringIntervalUnit
+            currencyCode
+            createdAt
+            updatedAt
+        }
+    }
+  }
+`
