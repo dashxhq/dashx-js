@@ -1,5 +1,5 @@
 type PersistedData = {
-  anonymousUid: string
+  accountAnonymousUid: string
 }
 
 const LOCAL_STORAGE_KEY = 'dashx-sdk'

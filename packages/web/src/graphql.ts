@@ -4,7 +4,7 @@ export const trackEventRequest = `
         id
     }
   }
-`;
+`
 
 export const identifyAccountRequest = `
   mutation IdentifyAccount($input: IdentifyAccountInput!) {
@@ -12,7 +12,7 @@ export const identifyAccountRequest = `
         id
     }
   }
-`;
+`
 
 export const addContentRequest = `
   mutation AddContent($input: AddContentInput!) {
@@ -25,7 +25,7 @@ export const addContentRequest = `
         updatedAt
     }
   }
-`;
+`
 
 export const editContentRequest = `
   mutation EditContent($input: EditContentInput!) {
@@ -38,33 +38,16 @@ export const editContentRequest = `
         updatedAt
     }
   }
-`;
+`
 
 export const searchContentRequest = `
   query SearchContent($input: SearchContentInput!) {
-    searchContent(input: $input) {
-      contents {
-          id
-          identifier
-          position
-          data
-          createdAt
-          updatedAt
-      }
-    }
+    searchContent(input: $input)
   }
-`;
+`
 
-export const findContentRequest = `
-  query FindContent($input: FindContentInput!) {
-    findContent(input: $input) {
-        id
-        identifier
-        position
-        data
-        createdAt
-        updatedAt
-    }
+export const fetchContentRequest = `
+  query FetchContentRequest($input: FetchContentInput!) {
+    fetchContent(input: $input)
   }
-`;
-
+`

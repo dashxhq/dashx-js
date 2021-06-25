@@ -1,47 +1,83 @@
-export type ContentTypeOptions = {
+import { parseFilterObject } from './utils'
+
+export type ContentOptions = {
   returnType?: 'all' | 'one',
-  filter?: Record<string, boolean | string | number>,
+  language?: string,
+  include?: Array<string>,
+  exclude?: Array<string>,
+  fields?: Array<string>,
+  preview?: boolean,
+  filter?: Record<string, any>,
   order?: Record<string, 'ASC' | 'DESC'>,
   limit?: number,
   page?: number
 }
 
-class ContentTypeOptionsBuilder {
-  private options: ContentTypeOptions
+export type FetchContentOptions = Pick<ContentOptions, 'exclude' | 'include' | 'fields' | 'language' | 'preview'>
 
-  private callback: (options: ContentTypeOptions) => Promise<Response>
+class ContentOptionsBuilder {
+  private options: ContentOptions
+
+  private callback: (options: ContentOptions) => Promise<any>
 
   constructor(
-    callback: (options: ContentTypeOptions) => Promise<Response>
+    callback: (options: ContentOptions) => Promise<any>
   ) {
     this.options = {}
     this.callback = callback
   }
 
-  limit(by: ContentTypeOptions['limit']): ContentTypeOptionsBuilder {
+  limit(by: ContentOptions['limit']) {
     this.options.limit = by
     return this
   }
 
-  filter(by: ContentTypeOptions['filter']): ContentTypeOptionsBuilder {
-    this.options.filter = by
+  filter(by: ContentOptions['filter']) {
+    this.options.filter = parseFilterObject(by)
     return this
   }
 
-  order(by: ContentTypeOptions['order']): ContentTypeOptionsBuilder {
+  order(by: ContentOptions['order']) {
     this.options.order = by
     return this
   }
 
-  all(withOptions: ContentTypeOptions): Promise<Response> {
-    this.options = { ...withOptions, returnType: 'all' }
+  language(to: ContentOptions['language']) {
+    this.options.language = to
+    return this
+  }
+
+  fields(identifiers: ContentOptions['fields']) {
+    this.options.fields = identifiers
+    return this
+  }
+
+  include(identifiers: ContentOptions['include']) {
+    this.options.include = identifiers
+    return this
+  }
+
+  exclude(identifiers: ContentOptions['exclude']) {
+    this.options.exclude = identifiers
+    return this
+  }
+
+  preview() {
+    this.options.preview = true
+    return this
+  }
+
+  all(withOptions: ContentOptions) {
+    this.options = { ...this.options, ...withOptions, returnType: 'all' }
     return this.callback(this.options)
   }
 
-  one(withOptions: ContentTypeOptions): Promise<Response> {
-    this.options = { ...withOptions, returnType: 'one' }
-    return this.callback(this.options)
+  async one(withOptions: ContentOptions) {
+    this.options = { ...this.options, ...withOptions, returnType: 'one' }
+    const data = await this.callback(this.options)
+
+    return Array.isArray(data) ? data[0] : null
   }
 }
 
-export default ContentTypeOptionsBuilder
+export default ContentOptionsBuilder
