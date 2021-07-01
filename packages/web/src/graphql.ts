@@ -59,6 +59,7 @@ const cart = `
   discount
   tax
   total
+  gatewayMeta
 
   orderItems {
       id
