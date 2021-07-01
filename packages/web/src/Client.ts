@@ -1,7 +1,7 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
-import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest } from './graphql'
+import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest } from './graphql'
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
@@ -91,6 +91,8 @@ class Client {
       this.accountUid = options
       return undefined
     }
+
+    this.accountUid = options?.accountUid as string
 
     const params = {
       anonymousUid: this.accountAnonymousUid,
@@ -235,6 +237,17 @@ class Client {
 
     const response = await this.makeHttpRequest(fetchCartRequest, params)
     return response?.fetchCart
+  }
+
+  async transferCart(): Promise<any> {
+    const params = {
+      accountType: this.accountType,
+      accountUid: this.accountUid,
+      accountAnonymousUid: this.accountAnonymousUid
+    }
+
+    const response = await this.makeHttpRequest(transferCartRequest, params)
+    return response?.transferCart
   }
 }
 
