@@ -81,3 +81,41 @@ export const fetchItemRequest = `
     }
   }
 `
+
+const cart = `
+  id
+  status
+  subtotal
+  discount
+  tax
+  total
+
+  orderItems {
+      id
+      quantity
+      unitPrice
+      subtotal
+      discount
+      tax
+      total
+  }
+
+  couponRedemptions {
+      coupon {
+          name
+          identifier
+          discountType
+          discountAmount
+          currencyCode
+          expiresAt
+      }
+  }
+`
+
+export const checkoutCartRequest = `
+  query CheckoutCart($input: CheckoutCartInput!) {
+    checkoutCart(input: $input) {
+      ${cart}
+    }
+  }
+`

@@ -4,7 +4,7 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest } from './graphql'
+import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest } from './graphql'
 import { parseFilterObject, createParcel } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
@@ -30,6 +30,12 @@ type IdentifyParams = {
   lastName?: string,
   email?: string,
   phone?: string
+}
+
+type CheckoutCartParams = {
+  anonymousUid: string,
+  accountType: string,
+  gatewayOptions: Record<string, any>
 }
 
 class Client {
@@ -234,6 +240,21 @@ class Client {
 
     const response = await this.makeHttpRequest(fetchItemRequest, params)
     return response?.fetchItem
+  }
+
+  async checkoutCart(
+    uid: string,
+    { anonymousUid, accountType, gatewayOptions } : CheckoutCartParams
+  ): Promise<any> {
+    const params = {
+      accountUid: uid,
+      accountAnonymousUid: anonymousUid,
+      accountType,
+      gatewayOptions
+    }
+
+    const response = await this.makeHttpRequest(checkoutCartRequest, params)
+    return response?.checkoutCart
   }
 }
 
