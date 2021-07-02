@@ -115,7 +115,7 @@ export const fetchCartRequest = `
 `
 
 export const transferCartRequest = `
-  query TransferCart($input: TransferCartInput!) {
+  mutation TransferCart($input: TransferCartInput!) {
     transferCart(input: $input) {
       ${cart}
     }

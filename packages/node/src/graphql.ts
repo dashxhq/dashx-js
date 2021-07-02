@@ -114,7 +114,7 @@ const cart = `
 `
 
 export const checkoutCartRequest = `
-  query CheckoutCart($input: CheckoutCartInput!) {
+  mutation CheckoutCart($input: CheckoutCartInput!) {
     checkoutCart(input: $input) {
       ${cart}
     }
