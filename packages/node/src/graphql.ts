@@ -120,3 +120,11 @@ export const checkoutCartRequest = `
     }
   }
 `
+
+export const capturePaymentRequest = `
+  mutation CapturePayment($input: CapturePaymentInput!) {
+    capturePayment(input: $input) {
+      ${cart}
+    }
+  }
+`
