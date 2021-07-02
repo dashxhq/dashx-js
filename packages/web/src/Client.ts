@@ -13,7 +13,8 @@ type ClientParams = {
   publicKey: string,
   baseUri?: string,
   targetInstallation?: string,
-  targetEnvironment?: string
+  targetEnvironment?: string,
+  accountType?: string
 }
 
 type IdentifyParams = Record<string, string | number> & {
@@ -40,10 +41,10 @@ class Client {
 
   baseUri: string
 
-  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql', targetEnvironment, targetInstallation }: ClientParams) {
+  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql', targetEnvironment, targetInstallation, accountType = 'individual' }: ClientParams) {
     this.baseUri = baseUri
     this.publicKey = publicKey
-    this.accountType = 'individual'
+    this.accountType = accountType
     this.targetEnvironment = targetEnvironment
     this.targetInstallation = targetInstallation
     this.context = generateContext()
@@ -93,6 +94,7 @@ class Client {
     }
 
     this.accountUid = options?.accountUid as string
+    this.accountType = options?.accountType as string
 
     const params = {
       anonymousUid: this.accountAnonymousUid,
