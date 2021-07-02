@@ -114,8 +114,16 @@ const cart = `
 `
 
 export const checkoutCartRequest = `
-  query CheckoutCart($input: CheckoutCartInput!) {
+  mutation CheckoutCart($input: CheckoutCartInput!) {
     checkoutCart(input: $input) {
+      ${cart}
+    }
+  }
+`
+
+export const capturePaymentRequest = `
+  mutation CapturePayment($input: CapturePaymentInput!) {
+    capturePayment(input: $input) {
       ${cart}
     }
   }

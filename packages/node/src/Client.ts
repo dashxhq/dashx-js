@@ -4,7 +4,7 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest } from './graphql'
+import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest, capturePaymentRequest } from './graphql'
 import { parseFilterObject, createParcel } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
@@ -36,6 +36,12 @@ type CheckoutCartParams = {
   anonymousUid: string,
   accountType: string,
   gatewayOptions: Record<string, any>
+}
+
+type CapturePaymentParams = {
+  anonymousUid: string,
+  accountType: string,
+  gatewayResponse: Record<string, any>
 }
 
 class Client {
@@ -255,6 +261,21 @@ class Client {
 
     const response = await this.makeHttpRequest(checkoutCartRequest, params)
     return response?.checkoutCart
+  }
+
+  async capturePayment(
+    uid: string,
+    { anonymousUid, accountType, gatewayResponse } : CapturePaymentParams
+  ): Promise<any> {
+    const params = {
+      accountUid: uid,
+      accountAnonymousUid: anonymousUid,
+      accountType,
+      gatewayResponse
+    }
+
+    const response = await this.makeHttpRequest(capturePaymentRequest, params)
+    return response?.capturePayment
   }
 }
 
