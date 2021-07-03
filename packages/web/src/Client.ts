@@ -93,11 +93,12 @@ class Client {
       return undefined
     }
 
-    this.accountUid = options?.accountUid as string
+    this.accountUid = options?.uid as string
     this.accountType = options?.accountType as string
 
     const params = {
-      anonymousUid: this.accountAnonymousUid,
+      accountUid: options?.uid,
+      accountAnonymousUid: this.accountAnonymousUid,
       ...options
     }
 
