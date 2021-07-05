@@ -142,9 +142,11 @@ class Client {
     if (typeof uid === 'string') {
       params = { uid, ...options }
     } else {
+      const identifyOptions = uid
+
       params = {
         anonymousUid: uuid(),
-        ...options
+        ...identifyOptions
       }
     }
 
