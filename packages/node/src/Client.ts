@@ -96,9 +96,9 @@ class Client {
   }
 
   deliver(urn: string, parcel: Parcel): Promise<any>
-  deliver(deliverOptions: Parcel & Partial<DeliveryContent>): Promise<any>
+  deliver(deliverOptions: Parcel & DeliveryContent): Promise<any>
   async deliver(
-    urn: string | Parcel & Partial<DeliveryContent>, parcel?: Parcel
+    urn: string | Parcel & DeliveryContent, parcel?: Parcel
   ): Promise<any> {
     let params = {}
 
@@ -116,7 +116,7 @@ class Client {
         ...createParcel(parcel)
       }
     } else {
-      const deliverOptions = urn as Parcel & Partial<DeliveryContent>
+      const deliverOptions = urn as Parcel & DeliveryContent
 
       const deliveryContent = {
         from: deliverOptions.from,
