@@ -12,8 +12,8 @@ export type Parcel = {
   to: string[] | string,
   cc?: string[],
   bcc?: string[],
-  channel: 'email' | 'sms' | 'push',
-  data: Record<string, any>
+  channel?: 'email' | 'sms' | 'push',
+  data?: Record<string, any>
 }
 
 type DeliveryContent = {
@@ -95,21 +95,28 @@ class Client {
     return Promise.reject(response.errors)
   }
 
-  deliver(contentIdentifier: string, parcel: Parcel): Promise<any>
+  deliver(urn: string, parcel: Parcel): Promise<any>
   deliver(deliverOptions: Parcel & DeliveryContent): Promise<any>
   async deliver(
-    contentIdentifier: string | Parcel & DeliveryContent, parcel?: Parcel
+    urn: string | Parcel & DeliveryContent, parcel?: Parcel
   ): Promise<any> {
     let params = {}
 
-    if (typeof contentIdentifier === 'string' && typeof parcel !== 'undefined') {
+    if (typeof urn === 'string' && typeof parcel !== 'undefined') {
+      if (!urn.includes('/')) {
+        throw new Error('URN must be of form: {contentType}/{content}')
+      }
+
+      const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
+
       params = {
+        contentTypeIdentifier,
         contentIdentifier,
         attachments: [],
         ...createParcel(parcel)
       }
     } else {
-      const deliverOptions = contentIdentifier as Parcel & DeliveryContent
+      const deliverOptions = urn as Parcel & DeliveryContent
 
       const deliveryContent = {
         from: deliverOptions.from,
