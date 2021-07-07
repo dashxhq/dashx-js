@@ -17,7 +17,7 @@ export type Parcel = {
 }
 
 type DeliveryContent = {
-  from: string,
+  from?: string,
   title?: string,
   plainBody?: string,
   htmlBody?: string,
