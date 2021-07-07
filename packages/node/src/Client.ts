@@ -17,7 +17,7 @@ export type Parcel = {
 }
 
 type DeliveryContent = {
-  from?: string,
+  from: string,
   title?: string,
   plainBody?: string,
   htmlBody?: string,
@@ -96,9 +96,9 @@ class Client {
   }
 
   deliver(urn: string, parcel: Parcel): Promise<any>
-  deliver(deliverOptions: Parcel & DeliveryContent): Promise<any>
+  deliver(deliverOptions: Parcel & Partial<DeliveryContent>): Promise<any>
   async deliver(
-    urn: string | Parcel & DeliveryContent, parcel?: Parcel
+    urn: string | Parcel & Partial<DeliveryContent>, parcel?: Parcel
   ): Promise<any> {
     let params = {}
 
@@ -116,7 +116,7 @@ class Client {
         ...createParcel(parcel)
       }
     } else {
-      const deliverOptions = urn as Parcel & DeliveryContent
+      const deliverOptions = urn as Parcel & Partial<DeliveryContent>
 
       const deliveryContent = {
         from: deliverOptions.from,
