@@ -25,12 +25,7 @@ type DeliveryContent = {
   replyTo?: string
 }
 
-type IdentifyParams = {
-  firstName?: string,
-  lastName?: string,
-  email?: string,
-  phone?: string
-}
+type IdentifyParams = Record<string, any>
 
 type CheckoutCartParams = {
   anonymousUid: string,

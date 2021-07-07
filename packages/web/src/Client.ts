@@ -17,12 +17,7 @@ type ClientParams = {
   accountType?: string
 }
 
-type IdentifyParams = Record<string, string | number> & {
-  firstName?: string,
-  lastName?: string,
-  email?: string,
-  phone?: string
-}
+type IdentifyParams = Record<string, any>
 
 class Client {
   accountAnonymousUid: string | null = null
