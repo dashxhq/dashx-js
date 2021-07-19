@@ -99,6 +99,7 @@ const cart = `
       discount
       tax
       total
+      custom
   }
 
   couponRedemptions {

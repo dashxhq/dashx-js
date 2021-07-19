@@ -188,10 +188,15 @@ class Client {
     return response?.fetchContent
   }
 
-  async addItemToCart(options: {
-    itemId: string, pricingId: string, quantity: string, reset: boolean
+  async addItemToCart({ custom = {}, ...options }: {
+    itemId: string,
+    pricingId: string,
+    quantity: string,
+    reset: boolean,
+    custom?: Record<string, any>
   }): Promise<any> {
     const params = {
+      custom,
       ...options,
       accountType: this.accountType,
       accountUid: this.accountUid,
