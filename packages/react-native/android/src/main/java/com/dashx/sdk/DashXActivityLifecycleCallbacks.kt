@@ -15,7 +15,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         dashXClient.trackAppStarted()
     }
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
         if (!lifecycleTrackingEnabled) {
             return
         }
@@ -23,7 +23,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         dashXClient.trackAppSession(System.currentTimeMillis().toDouble() - startSession)
     }
 
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity) {
         if (!lifecycleTrackingEnabled) {
             return
         }
@@ -32,7 +32,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         dashXClient.trackAppStarted(fromBackground = true)
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
         if (!screenTrackingEnabled) {
             return
         }
@@ -43,19 +43,19 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         activityLabel?.let { it -> dashXClient.screen(it.toString(), Arguments.createMap()) }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
+    override fun onActivityDestroyed(activity: Activity) {
 
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
 
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
 
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
     }
 

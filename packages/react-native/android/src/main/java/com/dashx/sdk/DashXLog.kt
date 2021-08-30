@@ -29,14 +29,14 @@ object DashXLog {
     @JvmStatic
     fun d(tag: String? = this.tag, logText: String?) {
         if (logLevel.code >= LogLevel.DEBUG.code) {
-            Log.d(tag, logText)
+            Log.d(tag, logText ?: "")
         }
     }
 
     @JvmStatic
     fun i(tag: String? = this.tag, logText: String?) {
         if (logLevel.code >= LogLevel.INFO.code) {
-            Log.i(tag, logText)
+            Log.i(tag, logText ?: "")
         }
     }
 }

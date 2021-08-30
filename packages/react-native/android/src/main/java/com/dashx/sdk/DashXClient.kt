@@ -171,7 +171,7 @@ class DashXClient private constructor() {
         )
         val identifyAccountMutation = IdentifyAccountMutation(identifyAccountInput)
 
-        Network.instance.client
+        apolloClient
             .mutate(identifyAccountMutation)
             .enqueue(object : ApolloCall.Callback<IdentifyAccountMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -208,7 +208,7 @@ class DashXClient private constructor() {
         val trackEventInput = TrackEventInput(accountType!!, event, Input.fromNullable(uid), Input.fromNullable(anonymousUid), Input.fromNullable(jsonData));
         val trackEventMutation = TrackEventMutation(trackEventInput)
 
-        Network.instance.client
+        apolloClient
             .mutate(trackEventMutation)
             .enqueue(object : ApolloCall.Callback<TrackEventMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -296,7 +296,7 @@ class DashXClient private constructor() {
         )
         val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
 
-        Network.instance.client
+        apolloClient
             .mutate(subscribeContactMutation)
             .enqueue(object : ApolloCall.Callback<SubscribeContactMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
