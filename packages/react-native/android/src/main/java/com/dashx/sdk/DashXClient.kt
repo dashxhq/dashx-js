@@ -6,17 +6,9 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.exception.ApolloException
-import com.dashx.IdentifyAccountMutation
-import com.dashx.SubscribeContactMutation
-import com.dashx.TrackEventMutation
-import com.dashx.type.ContactKind
-import com.dashx.type.IdentifyAccountInput
-import com.dashx.type.SubscribeContactInput
-import com.dashx.type.TrackEventInput
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.WritableMap
+import com.dashx.*
+import com.dashx.type.*
+import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.firebase.messaging.RemoteMessage
 import okhttp3.*
@@ -159,7 +151,7 @@ class DashXClient private constructor() {
             throw Exception("Cannot be called with null, either pass uid: string or options: object")
         }
 
-        val identifyAccountInput = IdentifyAccountInput("environment Id",
+        val identifyAccountInput = IdentifyAccountInput(
             Input.fromNullable(accountType),
             Input.fromNullable(uid),
             Input.fromNullable(anonymousUid),
@@ -221,6 +213,73 @@ class DashXClient private constructor() {
                     DashXLog.d(tag, "Sent event: $event, $trackResponse")
                 }
             })
+    }
+
+    fun fetchContent(urn: String, options: ReadableMap?, promise: Promise) {
+        if (!urn.contains('/')) {
+            throw Exception("URN must be of form: {contentType}/{content}")
+        }
+
+        val urnArray = urn.split('/')
+        val content = urnArray[1]
+        val contentType = urnArray[0]
+
+        val fetchContentInput = FetchContentInput(
+            contentType,
+            content,
+            Input.fromNullable(options?.getBoolean("preview")),
+            Input.fromNullable(options?.getString("language")),
+            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>),
+            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>),
+            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>)
+        )
+
+        val fetchContentQuery = FetchContentQuery(fetchContentInput)
+
+        apolloClient.query(fetchContentQuery).enqueue(object : ApolloCall.Callback<FetchContentQuery.Data>() {
+            override fun onFailure(e: ApolloException) {
+                DashXLog.d(tag, "Could not get content for: $urn")
+                promise.reject(e)
+                e.printStackTrace()
+            }
+
+            override fun onResponse(response: com.apollographql.apollo.api.Response<FetchContentQuery.Data>) {
+                val content = response.data?.fetchContent
+                DashXLog.d(tag, "Got content: $content")
+                promise.resolve(promise)
+            }
+        })
+    }
+
+    fun searchContent(contentType: String, options: ReadableMap?, promise: Promise) {
+        val searchContentInput = SearchContentInput(
+            contentType,
+            options?.getString("returnType") ?: "all",
+            Input.fromNullable(options?.getMap("filter")),
+            Input.fromNullable(options?.getMap("order")),
+            Input.fromNullable(options?.getInt("limit")),
+            Input.fromNullable(options?.getBoolean("preview")),
+            Input.fromNullable(options?.getString("language")),
+            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>),
+            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>),
+            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>)
+        )
+
+        val searchContentQuery = SearchContentQuery(searchContentInput)
+
+        apolloClient.query(searchContentQuery).enqueue(object : ApolloCall.Callback<SearchContentQuery.Data>() {
+            override fun onFailure(e: ApolloException) {
+                DashXLog.d(tag, "Could not get content for: $contentType")
+                promise.reject(e)
+                e.printStackTrace()
+            }
+
+            override fun onResponse(response: com.apollographql.apollo.api.Response<SearchContentQuery.Data>) {
+                val content = response.data?.searchContent
+                promise.resolve(content)
+                DashXLog.d(tag, "Got content: $content")
+            }
+        })
     }
 
     fun trackAppStarted(fromBackground: Boolean = false) {
@@ -288,7 +347,6 @@ class DashXClient private constructor() {
         }
 
         val subscribeContactInput = SubscribeContactInput(
-            "environmentId",
             uid!!,
             Input.fromNullable("Android"),
             ContactKind.ANDROID,

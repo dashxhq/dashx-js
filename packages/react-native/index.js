@@ -5,7 +5,7 @@ import ContentOptionsBuilder from './ContentOptionsBuilder'
 const { DashX } = NativeModules
 const dashXEventEmitter = new NativeEventEmitter(DashX)
 
-const { identify, track, content } = DashX
+const { identify, track, fetchContent, searchContent } = DashX
 
 // Handle overloads at JS, because Native modules doesn't allow that
 // https://github.com/facebook/react-native/issues/19116
@@ -19,14 +19,18 @@ DashX.identify = (options) => {
 
 DashX.track = (event, data) => track(event, data || null)
 
-DashX.content = (contentType, options) => {
+DashX.searchContent = (contentType, options) => {
   if (options) {
-    return content(contentType, options)
+    return searchContent(contentType, options)
   }
 
   return new ContentOptionsBuilder(
-    wrappedOptions => content(contentType, wrappedOptions)
+    wrappedOptions => searchContent(contentType, wrappedOptions)
   )
+}
+
+DashX.fetchContent = (contentType, options) => {
+  return fetchContent(contentType, options)
 }
 
 DashX.onMessageReceived = (callback) =>

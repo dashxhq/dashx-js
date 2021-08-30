@@ -1,9 +1,6 @@
 package com.dashx.sdk
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 
@@ -85,6 +82,16 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setIdentityToken(identityToken: String) {
         dashXClient.setIdentityToken(identityToken)
+    }
+
+    @ReactMethod
+    fun fetchContent(urn: String, options: ReadableMap?, promise: Promise) {
+        dashXClient.fetchContent(urn, options, promise)
+    }
+
+    @ReactMethod
+    fun searchContent(contentType: String, options: ReadableMap?, promise: Promise) {
+        dashXClient.searchContent(contentType, options, promise)
     }
 
     init {
