@@ -7,7 +7,9 @@
   ],
   "plugins": ["@typescript-eslint", "import"],
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/semi": ["error", "never"],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {

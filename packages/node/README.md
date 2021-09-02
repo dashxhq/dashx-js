@@ -47,14 +47,45 @@ dx.deliver({
 });
 ```
 
-`deliver` can accept multiple recipients like so:
+#### Using `contentIdentifier`
+
+`deliver` can take two parameters like so:
+
+```javascript
+dx.deliver('onboarding' /* content identifier */, {
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], /* parcelObject */
+});
+```
+
+`parcelObject` can include the following keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`to`**|`string or array of string`|
+|**`cc`**|`array of string`|
+|**`bcc`**|`array of string`|
+|**`data`**|`object`|
+|**`channel`**|`'email' or 'sms' or 'push'`|
+
+#### Using `content`
 
 ```javascript
 dx.deliver({
-  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com>'],
-  body: 'Hello World!'
-});
+  plainBody: 'Welcome to Onboarding',
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], 
+} /* deliveryOptions */ );
 ```
+
+In addition to all the keys of `parcelObject`, `deliveryOptions` can include these keys:
+
+|Name|Type|
+|:---:|:--:|
+|**`title`**|`string`|
+|**`body`**|`string`|
+|**`plainBody`**|`string`|
+|**`htmlBody`**|`string`|
+|**`from`**|`string`|
+|**`replyTo`**|`string`|
 
 ### Identify
 
@@ -93,10 +124,10 @@ User info can include the following keys:
 |**`email`**|`string`|
 |**`phone`**|`string`|
 
-### Content
+### Search Content
 
 ```javascript
-dx.content('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
+dx.searchContent('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
   .then(data => console.log(data));
 ```
 
@@ -104,7 +135,12 @@ Content Options can include following properties:
 
 |Name|Type|Example|
 |:--:|:--:|:-----:|
-|**`returnType`**|`all | one`||
+|**`language`**|`string`|`'en_US'`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
+|**`preview`**|`boolean`||
+|**`returnType`**|`'all'` or `'one'`||
 |**`filter`**|`object`|`{ name_eq: 'John' }`|
 |**`order`**|`object`|`{ created_at: 'DESC' }`|
 |**`limit`**|`number`||
@@ -113,26 +149,10 @@ Content Options can include following properties:
 For example, to get latest contacts with name 'John' you can do:
 
 ```javascript
-dx.content('contacts', {
-  returnType: 'all',
-  filter: {
-    name_eq: 'John'
-  },
-  order: {
-    created_at: 'DESC'
-  },
-  limit: 10
-});
-```
-
-##### Using chainable api
-
-The above code can also be written as:
-
-```javascript
-dx.content('contacts')
+dx.searchContent('contacts')
   .filter({ name_eq: 'John' })
   .order({ created_at: 'DESC' })
+  .preview() // Sets preview to true
   .limit(10)
   .all() /* returnType */
 ```
@@ -140,8 +160,57 @@ dx.content('contacts')
 This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
 Hence `.all()` or `.one()` should be used at the end of chain.
 
+The above code can also be written as:
+
+```javascript
+dx.searchContent('contacts', {
+  returnType: 'all',
+  filter: {
+    name_eq: 'John'
+  },
+  order: {
+    created_at: 'DESC'
+  },
+  preview: true,
+  limit: 10
+});
+```
+
+### Fetch Content
+
+```javascript
+dx.fetchContent('content_type/content', { language: 'en_US' } /* Fetch Content Options */)
+  .then(data => console.log(data));
+```
+
+Fetch Content Options can include following properties:
+
+|Name|Type|Example|
+|:--:|:--:|:-----:|
+|**`language`**|`string`|`'en_US'`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
+|**`preview`**|`boolean`||
+
+```javascript
+dx.fetchContent('movies/avengers', {
+  language: 'en_US',
+  include: ['character.created_by'],
+  exclude: ['directors'],
+  fields: ['character', 'release_date'],
+  preview: true
+});
+```
+
 ### Track Events
 
 ```javascript
 dx.track('event_name', 'uid_of_user', { hello: 'world' } /* Event data */);
+```
+
+### Fetch Item
+
+```javascript
+dx.fetchItem('item_identifier');
 ```

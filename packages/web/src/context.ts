@@ -44,8 +44,7 @@ type ContextReferrer = {
 function getDisplayMetrics() {
   return {
     height: window.screen.height,
-    width: window.screen.width,
-    orientation: window.screen.orientation.type
+    width: window.screen.width
   }
 }
 

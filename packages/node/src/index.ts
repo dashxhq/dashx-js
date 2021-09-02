@@ -1,11 +1,5 @@
 import Client from './Client'
 
-type Params = {
-  baseUri: string,
-  publicKey: string,
-  privateKey: string
-}
-
 export default {
-  createClient: (params: Params): Client => new Client(params)
+  createClient: (params: ConstructorParameters<typeof Client>[0]): Client => new Client(params)
 }

@@ -65,10 +65,10 @@ For new user `identify()` accepts following properties:
 
 *Please note that `identify()` should not be called with `null` or `undefined`*
 
-### Content
+### Search Content
 
 ```javascript
-dx.content('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
+dx.searchContent('content_type', { returnType: 'all', limit: 10 } /* Content Options */)
   .then(data => console.log(data));
 ```
 
@@ -76,7 +76,12 @@ Content Options can include following properties:
 
 |Name|Type|Example|
 |:--:|:--:|:-----:|
-|**`returnType`**|`all | one`||
+|**`language`**|`string`|`'en_US'`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
+|**`preview`**|`boolean`||
+|**`returnType`**|`'all'` or `'one'`||
 |**`filter`**|`object`|`{ name_eq: 'John' }`|
 |**`order`**|`object`|`{ created_at: 'DESC' }`|
 |**`limit`**|`number`||
@@ -85,7 +90,21 @@ Content Options can include following properties:
 For example, to get latest contacts with name 'John' you can do:
 
 ```javascript
-dx.content('contacts', {
+dx.searchContent('contacts')
+  .filter({ name_eq: 'John' })
+  .order({ created_at: 'DESC' })
+  .preview() // Sets preview to true
+  .limit(10)
+  .all() /* returnType */
+```
+
+This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
+Hence `.all()` or `.one()` should be used at the end of chain.
+
+The above code can also be written as:
+
+```javascript
+dx.searchContent('contacts', {
   returnType: 'all',
   filter: {
     name_eq: 'John'
@@ -93,24 +112,37 @@ dx.content('contacts', {
   order: {
     created_at: 'DESC'
   },
+  preview: true,
   limit: 10
 });
 ```
 
-##### Using chainable api
-
-The above code can also be written as:
+### Fetch Content
 
 ```javascript
-dx.content('contacts')
-  .filter({ name_eq: 'John' })
-  .order({ created_at: 'DESC' })
-  .limit(10)
-  .all() /* returnType */
+dx.fetchContent('content_type/content', { language: 'en_US' } /* Fetch Content Options */)
+  .then(data => console.log(data));
 ```
 
-This code is lazy by default and will not be executed until `.all()` or `.one()` is called.
-Hence `.all()` or `.one()` should be used at the end of chain.
+Fetch Content Options can include following properties:
+
+|Name|Type|Example|
+|:--:|:--:|:-----:|
+|**`language`**|`string`|`'en_US'`||
+|**`include`**|`array`|`['character.createdBy', 'character.birthDate']`||
+|**`exclude`**|`array`|`['directors']`||
+|**`fields`**|`array`|`['character', 'cast']`||
+|**`preview`**|`boolean`||
+
+```javascript
+dx.fetchContent('movies/avengers', {
+  language: 'en_US',
+  include: ['character.created_by'],
+  exclude: ['directors'],
+  fields: ['character', 'release_date'],
+  preview: true
+});
+```
 
 ### Track Events
 

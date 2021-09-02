@@ -21,7 +21,7 @@ npm i -g yarn
 - Install JDK, either download [Amazon Coretto](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html) or install using brew.
 
 ```sh
-brew cask install adoptopenjdk/openjdk/adoptopenjdk8
+brew install --cask adoptopenjdk/openjdk/adoptopenjdk8
 ```
 
 - Install Android Studio with `Android SDK > 28`, `Android Platform Tools` and `AVD`
