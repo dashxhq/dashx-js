@@ -62,7 +62,7 @@ class ContentOptionsBuilder {
     return this
   }
 
-  preview(value: boolean) {
+  preview(value = true) {
     this.options.preview = value
     return this
   }
