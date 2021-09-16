@@ -93,7 +93,7 @@ For example, to get latest contacts with name 'John' you can do:
 dx.searchContent('contacts')
   .filter({ name_eq: 'John' })
   .order({ created_at: 'DESC' })
-  .preview(true) // Sets preview to true
+  .preview() // Sets preview to true
   .limit(10)
   .all() /* returnType */
 ```
