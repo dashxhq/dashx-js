@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.reactnative
 
 import android.app.Activity
 import android.app.Application

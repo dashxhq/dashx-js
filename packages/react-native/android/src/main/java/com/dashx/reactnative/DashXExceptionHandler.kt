@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.reactnative
 
 class DashXExceptionHandler(private val mainExceptionHandler: Thread.UncaughtExceptionHandler)
     : Thread.UncaughtExceptionHandler {

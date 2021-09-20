@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.dashx.sdk">
+          package="com.dashx.reactnative">
 
   <application>
-    <service android:name=".DashXMessagingService">
+    <service android:name="com.dashx.reactnative.DashXMessagingService">
       <intent-filter android:priority="1">
         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
       </intent-filter>

@@ -1,6 +1,6 @@
 @file:JvmName("Constants")
 
-package com.dashx.sdk
+package com.dashx.reactnative
 
 
 const val PACKAGE_NAME = "com.dashx.sdk"

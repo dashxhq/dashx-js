@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.reactnative
 
 import android.content.SharedPreferences
 import android.os.Build
@@ -6,13 +6,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.exception.ApolloException
-import com.dashx.IdentifyAccountMutation
-import com.dashx.SubscribeContactMutation
-import com.dashx.TrackEventMutation
-import com.dashx.type.ContactKind
-import com.dashx.type.IdentifyAccountInput
-import com.dashx.type.SubscribeContactInput
-import com.dashx.type.TrackEventInput
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
@@ -21,7 +14,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.google.firebase.messaging.RemoteMessage
 import okhttp3.*
 import java.util.UUID
-
+import com.dashx.reactnative
 
 class DashXClient private constructor() {
     private val tag = DashXClient::class.java.simpleName
@@ -159,7 +152,7 @@ class DashXClient private constructor() {
             throw Exception("Cannot be called with null, either pass uid: string or options: object")
         }
 
-        val identifyAccountInput = IdentifyAccountInput("environment Id",
+        val identifyAccountInput = IdentifyAccountInput(
             Input.fromNullable(accountType),
             Input.fromNullable(uid),
             Input.fromNullable(anonymousUid),
