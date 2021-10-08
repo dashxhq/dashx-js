@@ -1,5 +1,5 @@
 export function parseFilterObject(filterObject) {
-  const filterBy
+  const filterBy = {}
 
   Object.keys(filterObject).forEach((key) => {
     if (key.startsWith('_')) {
