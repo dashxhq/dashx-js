@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.exception.ApolloException
 import com.dashx.*
@@ -227,11 +228,15 @@ class DashXClient private constructor() {
         val fetchContentInput = FetchContentInput(
             contentType,
             content,
-            Input.fromNullable(options?.getBoolean("preview")),
-            Input.fromNullable(options?.getString("language")),
-            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>),
-            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>),
-            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>)
+            Input.fromNullable(options?.let {
+                if (it.hasKey("preview")) it.getBoolean("preview") else false
+            }),
+            Input.fromNullable(options?.let {
+                if (it.hasKey("language")) it.getString("language") else null
+            }),
+            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>?),
+            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>?),
+            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>?)
         )
 
         val fetchContentQuery = FetchContentQuery(fetchContentInput)
@@ -244,6 +249,12 @@ class DashXClient private constructor() {
             }
 
             override fun onResponse(response: com.apollographql.apollo.api.Response<FetchContentQuery.Data>) {
+                if (!response.errors.isNullOrEmpty()) {
+                    val errors = response.errors?.map { e -> e.message }.toString()
+                    DashXLog.d(tag, errors)
+                    promise.reject("EUNSPECIFIED", errors)
+                    return
+                }
                 val content = response.data?.fetchContent
                 DashXLog.d(tag, "Got content: $content")
                 promise.resolve(promise)
@@ -257,12 +268,18 @@ class DashXClient private constructor() {
             options?.getString("returnType") ?: "all",
             Input.fromNullable(options?.getMap("filter")),
             Input.fromNullable(options?.getMap("order")),
-            Input.fromNullable(options?.getInt("limit")),
-            Input.fromNullable(options?.getBoolean("preview")),
-            Input.fromNullable(options?.getString("language")),
-            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>),
-            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>),
-            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>)
+            Input.fromNullable(options?.let {
+                if (it.hasKey("limit")) it.getInt("limit") else null
+            }),
+            Input.fromNullable(options?.let {
+                if (it.hasKey("preview")) it.getBoolean("preview") else false
+            }),
+            Input.fromNullable(options?.let {
+                if (it.hasKey("language")) it.getString("language") else null
+            }),
+            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>?),
+            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>?),
+            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>?)
         )
 
         val searchContentQuery = SearchContentQuery(searchContentInput)
@@ -275,6 +292,12 @@ class DashXClient private constructor() {
             }
 
             override fun onResponse(response: com.apollographql.apollo.api.Response<SearchContentQuery.Data>) {
+                if (!response.errors.isNullOrEmpty()) {
+                    val errors = response.errors?.map { e -> e.message }.toString()
+                    DashXLog.d(tag, errors)
+                    promise.reject("EUNSPECIFIED", errors)
+                    return
+                }
                 val content = response.data?.searchContent
                 promise.resolve(content)
                 DashXLog.d(tag, "Got content: $content")

@@ -21,7 +21,10 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun setup(options: ReadableMap) {
         dashXClient.setPublicKey(options.getString("publicKey")!!)
-        dashXClient.setAccountType(options.getString("accountType")!!)
+
+        if (options.hasKey("accountType")) {
+            options.getString("accountType")?.let { dashXClient.setAccountType(it) }
+        }
 
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
             DashXExceptionHandler.enable()
