@@ -1,6 +1,7 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
+import { parseFilterObject } from './utils'
 
 const { DashX } = NativeModules
 const dashXEventEmitter = new NativeEventEmitter(DashX)
@@ -20,13 +21,21 @@ DashX.identify = (options) => {
 DashX.track = (event, data) => track(event, data || null)
 
 DashX.searchContent = (contentType, options) => {
-  if (options) {
-    return searchContent(contentType, options)
+  if (!options) {
+    return new ContentOptionsBuilder(
+      (wrappedOptions) => searchContent(contentType, wrappedOptions)
+    )
   }
 
-  return new ContentOptionsBuilder(
-    wrappedOptions => searchContent(contentType, wrappedOptions)
-  )
+  const filter = parseFilterObject(options.filter)
+
+  const result = searchContent(contentType, { ...options, filter })
+
+  if (options.returnType === 'all') {
+    return result
+  }
+
+  return result.then((data) => Array.isArray(data) ? data[0] : null)
 }
 
 DashX.fetchContent = (contentType, options) => {

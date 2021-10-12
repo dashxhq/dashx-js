@@ -255,9 +255,10 @@ class DashXClient private constructor() {
                     promise.reject("EUNSPECIFIED", errors)
                     return
                 }
-                val content = response.data?.fetchContent
+                val content = response.data
                 DashXLog.d(tag, "Got content: $content")
-                promise.resolve(promise)
+                val data = convertToWritableMap(content as Map<*, *>)
+                promise.resolve(data)
             }
         })
     }
@@ -299,8 +300,11 @@ class DashXClient private constructor() {
                     return
                 }
                 val content = response.data?.searchContent
-                promise.resolve(content)
-                DashXLog.d(tag, "Got content: $content")
+                val readableArray = Arguments.createArray()
+                content?.forEach {
+                    readableArray.pushMap(convertToWritableMap(it as Map<*, *>))
+                }
+                promise.resolve(readableArray)
             }
         })
     }
