@@ -1,4 +1,4 @@
-import { parseFilterObject } from './utils'
+import { parseFilterObject, toContentSingleton, toContentList } from './utils'
 
 class Builder {
   constructor(callback) {
@@ -48,14 +48,14 @@ class Builder {
 
   all(withOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'all' }
-    return this.callback(this.options)
+    return this.callback(this.options).then(toContentList)
   }
 
   async one(withOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'one' }
     const data = await this.callback(this.options)
 
-    return Array.isArray(data) ? data[0] : null
+    return toContentSingleton(data)
   }
 }
 

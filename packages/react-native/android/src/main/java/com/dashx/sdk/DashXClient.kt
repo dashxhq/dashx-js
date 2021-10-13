@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.exception.ApolloException
 import com.dashx.*
@@ -255,10 +254,9 @@ class DashXClient private constructor() {
                     promise.reject("EUNSPECIFIED", errors)
                     return
                 }
-                val content = response.data
+                val content = response.data?.fetchContent
                 DashXLog.d(tag, "Got content: $content")
-                val data = convertToWritableMap(content as Map<*, *>)
-                promise.resolve(data)
+                promise.resolve(content)
             }
         })
     }
@@ -302,7 +300,7 @@ class DashXClient private constructor() {
                 val content = response.data?.searchContent
                 val readableArray = Arguments.createArray()
                 content?.forEach {
-                    readableArray.pushMap(convertToWritableMap(it as Map<*, *>))
+                    readableArray.pushString(it.toString())
                 }
                 promise.resolve(readableArray)
             }

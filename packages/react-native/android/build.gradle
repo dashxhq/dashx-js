@@ -134,6 +134,9 @@ def configureReactNativePom(def pom) {
 apollo {
   // instruct the compiler to generate Kotlin models
   generateKotlinModels.set(true)
+  customTypeMapping = [
+    "Json" : "java.lang.String"
+  ]
 }
 
 afterEvaluate { project ->

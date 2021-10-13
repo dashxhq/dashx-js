@@ -1,7 +1,7 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { parseFilterObject } from './utils'
+import { parseFilterObject, toContentList, toContentSingleton } from './utils'
 
 const { DashX } = NativeModules
 const dashXEventEmitter = new NativeEventEmitter(DashX)
@@ -32,14 +32,14 @@ DashX.searchContent = (contentType, options) => {
   const result = searchContent(contentType, { ...options, filter })
 
   if (options.returnType === 'all') {
-    return result
+    return result.then(toContentList)
   }
 
-  return result.then((data) => Array.isArray(data) ? data[0] : null)
+  return result.then(toContentSingleton)
 }
 
 DashX.fetchContent = (contentType, options) => {
-  return fetchContent(contentType, options)
+  return fetchContent(contentType, options).then(JSON.parse)
 }
 
 DashX.onMessageReceived = (callback) =>

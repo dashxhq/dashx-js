@@ -15,3 +15,11 @@ export function parseFilterObject(filterObject) {
 
   return filterBy
 }
+
+export function toContentList(contentList) {
+  return contentList.map(JSON.parse)
+}
+
+export function toContentSingleton(contentList) {
+  return Array.isArray(contentList) ? JSON.parse(data[0]) : null
+}
