@@ -2,6 +2,7 @@ package com.dashx.rn.sdk
 
 import android.content.SharedPreferences
 import android.os.Build
+import com.dashx.sdk.DashXClient as DashX
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
@@ -15,8 +16,8 @@ import okhttp3.*
 import java.util.UUID
 
 
-class DashXClient private constructor() {
-    private val tag = DashXClient::class.java.simpleName
+class DashXInterceptor private constructor() {
+    private val tag = DashXInterceptor::class.java.simpleName
 
     // Setup variables
     private var baseURI: String = "https://api.dashx.com/graphql"
@@ -33,7 +34,7 @@ class DashXClient private constructor() {
 
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
-    private var apolloClient = getApolloClient()
+    private var dashXClient: com.dashx.sdk.DashXClient? = null
 
     var reactApplicationContext: ReactApplicationContext? = null
 
@@ -41,8 +42,8 @@ class DashXClient private constructor() {
         this.baseURI = baseURI
     }
 
-    fun createApolloClient() {
-        apolloClient = getApolloClient()
+    fun createDashXClient() {
+        dashXClient = DashX(publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
     }
 
     fun setTargetEnvironment(targetEnvironment: String) {
@@ -61,79 +62,6 @@ class DashXClient private constructor() {
         this.publicKey = publicKey
     }
 
-    fun setDeviceToken(deviceToken: String) {
-        this.deviceToken = deviceToken
-        subscribe()
-    }
-
-    fun setIdentityToken(identityToken: String) {
-        this.identityToken = identityToken
-        createApolloClient()
-        subscribe()
-    }
-
-    private fun getApolloClient(): ApolloClient {
-        return ApolloClient.builder()
-            .serverUrl(baseURI)
-            .okHttpClient(OkHttpClient.Builder()
-                .addInterceptor {
-                    val requestBuilder = it.request().newBuilder()
-                        .addHeader("X-Public-Key", publicKey!!)
-
-                    if (targetEnvironment != null) {
-                        requestBuilder.addHeader("X-Target-Environment", targetEnvironment!!)
-                    }
-
-                    if (targetInstallation != null) {
-                        requestBuilder.addHeader("X-Target-Installation", targetInstallation!!)
-                    }
-
-                    if (identityToken != null) {
-                        requestBuilder.addHeader("X-Identity-Token", identityToken!!)
-                    }
-
-                    return@addInterceptor it.proceed(requestBuilder.build())
-                }
-                .build())
-            .build()
-    }
-
-    fun generateAnonymousUid(regenerate: Boolean = false) {
-        val dashXSharedPreferences: SharedPreferences = getDashXSharedPreferences(reactApplicationContext!!.applicationContext)
-        val anonymousUid = dashXSharedPreferences.getString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, null)
-        if (!regenerate && anonymousUid != null) {
-            this.anonymousUid = anonymousUid
-        } else {
-            this.anonymousUid = UUID.randomUUID().toString()
-            dashXSharedPreferences.edit()
-                .putString(SHARED_PREFERENCES_KEY_ANONYMOUS_UID, this.anonymousUid)
-                .apply()
-        }
-    }
-
-    fun handleMessage(remoteMessage: RemoteMessage) {
-        val notification = remoteMessage.notification
-        val eventProperties: WritableMap = Arguments.createMap()
-        DashXLog.d(tag, "Data: " + remoteMessage.data)
-
-        try {
-            eventProperties.putMap("data", convertToWritableMap(remoteMessage.data, listOf(dashXNotificationFilter)))
-        } catch (e: Exception) {
-            DashXLog.d(tag, "Encountered an error while parsing notification data")
-            e.printStackTrace()
-        }
-
-        if (notification != null) {
-            val notificationProperties: WritableMap = Arguments.createMap()
-            notificationProperties.putString("title", notification.title)
-            notificationProperties.putString("body", notification.body)
-            eventProperties.putMap("notification", notificationProperties)
-            DashXLog.d(tag, "onMessageReceived: " + notification.title)
-        }
-
-        sendJsEvent("messageReceived", eventProperties)
-    }
-
     private fun sendJsEvent(eventName: String, params: WritableMap) {
         reactApplicationContext
             ?.getJSModule(RCTDeviceEventEmitter::class.java)
@@ -141,170 +69,72 @@ class DashXClient private constructor() {
     }
 
     fun identify(uid: String?, options: ReadableMap?) {
-        if (uid != null) {
-            this.uid = uid
-            DashXLog.d(tag, "Set Uid: $uid")
-            return
-        }
-
-        if (options == null) {
-            throw Exception("Cannot be called with null, either pass uid: string or options: object")
-        }
-
-        val identifyAccountInput = IdentifyAccountInput(
-            Input.fromNullable(accountType),
-            Input.fromNullable(uid),
-            Input.fromNullable(anonymousUid),
-            Input.fromNullable(options.getString("email")),
-            Input.fromNullable(options.getString("phone")),
-            Input.fromNullable(options.getString("name")),
-            Input.fromNullable(options.getString("firstName")),
-            Input.fromNullable(options.getString("lastName"))
-        )
-        val identifyAccountMutation = IdentifyAccountMutation(identifyAccountInput)
-
-        apolloClient
-            .mutate(identifyAccountMutation)
-            .enqueue(object : ApolloCall.Callback<IdentifyAccountMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    DashXLog.d(tag, "Could not identify with: $uid $options")
-                    e.printStackTrace()
-                }
-
-                override fun onResponse(response: com.apollographql.apollo.api.Response<IdentifyAccountMutation.Data>) {
-                    val identifyResponse = response.data?.identifyAccount
-                    DashXLog.d(tag, "Sent identify: $identifyResponse")
-                }
-            })
+        val optionsHashMap = options?.toHashMap()
+        dashXClient?.identify(uid, optionsHashMap as HashMap<String, String>)
     }
 
     fun reset() {
         uid = null
-        generateAnonymousUid(regenerate = true)
+        dashXClient?.generateAnonymousUid(regenerate = true)
     }
 
     fun track(event: String, data: ReadableMap?) {
         val jsonData = try {
-            convertMapToJson(data)
+            data?.toHashMap() as HashMap<String, String>
         } catch (e: Exception) {
             DashXLog.d(tag, "Encountered an error while parsing data")
             e.printStackTrace()
             return
         }
 
-        if (accountType == null) {
-            DashXLog.d(tag, "Account type not set. Aborting request")
-            return
-        }
-
-        val trackEventInput = TrackEventInput(accountType!!, event, Input.fromNullable(uid), Input.fromNullable(anonymousUid), Input.fromNullable(jsonData));
-        val trackEventMutation = TrackEventMutation(trackEventInput)
-
-        apolloClient
-            .mutate(trackEventMutation)
-            .enqueue(object : ApolloCall.Callback<TrackEventMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    DashXLog.d(tag, "Could not track: $event $data")
-                    e.printStackTrace()
-                }
-
-                override fun onResponse(response: com.apollographql.apollo.api.Response<TrackEventMutation.Data>) {
-                    val trackResponse = response.data?.trackEvent
-                    DashXLog.d(tag, "Sent event: $event, $trackResponse")
-                }
-            })
+        dashXClient?.track(event, jsonData)
     }
 
     fun fetchContent(urn: String, options: ReadableMap?, promise: Promise) {
-        if (!urn.contains('/')) {
-            throw Exception("URN must be of form: {contentType}/{content}")
-        }
-
-        val urnArray = urn.split('/')
-        val content = urnArray[1]
-        val contentType = urnArray[0]
-
-        val fetchContentInput = FetchContentInput(
-            contentType,
-            content,
-            Input.fromNullable(options?.let {
-                if (it.hasKey("preview")) it.getBoolean("preview") else false
-            }),
-            Input.fromNullable(options?.let {
+        dashXClient?.fetchContent(
+            urn,
+            false,
+            options?.let {
                 if (it.hasKey("language")) it.getString("language") else null
-            }),
-            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>?),
-            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>?),
-            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>?)
+            },
+            options?.getArray("fields")?.toArrayList() as List<String>?,
+            options?.getArray("include")?.toArrayList() as List<String>?,
+            options?.getArray("exclude")?.toArrayList() as List<String>?,
+            onError = {
+                promise.reject("EUNSPECIFIED", it)
+            },
+            onSuccess = {
+                promise.resolve(it)
+            }
         )
-
-        val fetchContentQuery = FetchContentQuery(fetchContentInput)
-
-        apolloClient.query(fetchContentQuery).enqueue(object : ApolloCall.Callback<FetchContentQuery.Data>() {
-            override fun onFailure(e: ApolloException) {
-                DashXLog.d(tag, "Could not get content for: $urn")
-                promise.reject(e)
-                e.printStackTrace()
-            }
-
-            override fun onResponse(response: com.apollographql.apollo.api.Response<FetchContentQuery.Data>) {
-                if (!response.errors.isNullOrEmpty()) {
-                    val errors = response.errors?.map { e -> e.message }.toString()
-                    DashXLog.d(tag, errors)
-                    promise.reject("EUNSPECIFIED", errors)
-                    return
-                }
-                val content = response.data?.fetchContent
-                DashXLog.d(tag, "Got content: $content")
-                promise.resolve(content)
-            }
-        })
     }
 
     fun searchContent(contentType: String, options: ReadableMap?, promise: Promise) {
-        val searchContentInput = SearchContentInput(
+        dashXClient?.searchContent(
             contentType,
             options?.getString("returnType") ?: "all",
-            Input.fromNullable(options?.getMap("filter")),
-            Input.fromNullable(options?.getMap("order")),
-            Input.fromNullable(options?.let {
+            options?.getMap("filter"),
+            options?.getMap("order"),
+            options?.let {
                 if (it.hasKey("limit")) it.getInt("limit") else null
-            }),
-            Input.fromNullable(options?.let {
-                if (it.hasKey("preview")) it.getBoolean("preview") else false
-            }),
-            Input.fromNullable(options?.let {
+            },
+            false,
+            options?.let {
                 if (it.hasKey("language")) it.getString("language") else null
-            }),
-            Input.fromNullable(options?.getArray("fields")?.toArrayList() as List<String>?),
-            Input.fromNullable(options?.getArray("include")?.toArrayList() as List<String>?),
-            Input.fromNullable(options?.getArray("exclude")?.toArrayList() as List<String>?)
-        )
-
-        val searchContentQuery = SearchContentQuery(searchContentInput)
-
-        apolloClient.query(searchContentQuery).enqueue(object : ApolloCall.Callback<SearchContentQuery.Data>() {
-            override fun onFailure(e: ApolloException) {
-                DashXLog.d(tag, "Could not get content for: $contentType")
-                promise.reject(e)
-                e.printStackTrace()
-            }
-
-            override fun onResponse(response: com.apollographql.apollo.api.Response<SearchContentQuery.Data>) {
-                if (!response.errors.isNullOrEmpty()) {
-                    val errors = response.errors?.map { e -> e.message }.toString()
-                    DashXLog.d(tag, errors)
-                    promise.reject("EUNSPECIFIED", errors)
-                    return
-                }
-                val content = response.data?.searchContent
+            },
+            options?.getArray("fields")?.toArrayList() as List<String>?,
+            options?.getArray("include")?.toArrayList() as List<String>?,
+            options?.getArray("exclude")?.toArrayList() as List<String>?,
+            onError = {
+                promise.reject("EUNSPECIFIED", it)
+            },
+            onSuccess = { content ->
                 val readableArray = Arguments.createArray()
-                content?.forEach {
+                content.forEach {
                     readableArray.pushString(it.toString())
                 }
-                promise.resolve(readableArray)
             }
-        })
+        )
     }
 
     fun trackAppStarted(fromBackground: Boolean = false) {

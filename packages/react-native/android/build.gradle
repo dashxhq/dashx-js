@@ -86,9 +86,11 @@ repositories {
     }
     google()
     jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
+  implementation 'com.github.dashxhq:dashx-android:main-SNAPSHOT'
     //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'   // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

@@ -5,8 +5,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private val tag = DashXClient::class.java.simpleName
-    private var dashXClient: DashXClient = DashXClient.instance
+    private val tag = DashXModule::class.java.simpleName
+    private var interceptor: DashXInterceptor = DashXInterceptor.instance
 
 
     override fun getName(): String {
@@ -20,10 +20,10 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     @ReactMethod
     fun setup(options: ReadableMap) {
-        dashXClient.setPublicKey(options.getString("publicKey")!!)
+        interceptor.setPublicKey(options.getString("publicKey")!!)
 
         if (options.hasKey("accountType")) {
-            options.getString("accountType")?.let { dashXClient.setAccountType(it) }
+            options.getString("accountType")?.let { interceptor.setAccountType(it) }
         }
 
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
@@ -36,18 +36,18 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         }
 
         if (options.hasKey("baseUri")) {
-            options.getString("baseUri")?.let { it -> dashXClient.setBaseURI(it) }
+            options.getString("baseUri")?.let { it -> interceptor.setBaseURI(it) }
         }
 
         if (options.hasKey("targetEnvironment")) {
-            options.getString("targetEnvironment")?.let { it -> dashXClient.setTargetEnvironment(it) }
+            options.getString("targetEnvironment")?.let { it -> interceptor.setTargetEnvironment(it) }
         }
 
         if (options.hasKey("targetInstallation")) {
-            options.getString("targetInstallation")?.let { it -> dashXClient.setTargetInstallation(it) }
+            options.getString("targetInstallation")?.let { it -> interceptor.setTargetInstallation(it) }
         }
 
-        dashXClient.createApolloClient()
+        interceptor.createDashXClient()
 
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
