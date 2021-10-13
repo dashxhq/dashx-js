@@ -1,6 +1,6 @@
 @file:JvmName("Utils")
 
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
 import android.content.Context
 import android.content.SharedPreferences

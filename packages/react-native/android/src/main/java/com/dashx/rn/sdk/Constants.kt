@@ -1,9 +1,9 @@
 @file:JvmName("Constants")
 
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
 
-const val PACKAGE_NAME = "com.dashx.sdk"
+const val PACKAGE_NAME = "com.dashx.rn.sdk"
 const val DEFAULT_INSTANCE = "default"
 
 const val SHARED_PREFERENCES_PREFIX = PACKAGE_NAME

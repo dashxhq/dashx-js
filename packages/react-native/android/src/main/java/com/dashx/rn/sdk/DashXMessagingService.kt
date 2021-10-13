@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

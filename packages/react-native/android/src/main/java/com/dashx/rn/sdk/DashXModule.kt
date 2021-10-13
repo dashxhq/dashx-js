@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
 import com.facebook.react.bridge.*
 import com.google.android.gms.tasks.OnCompleteListener

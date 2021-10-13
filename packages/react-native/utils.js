@@ -21,5 +21,5 @@ export function toContentList(contentList) {
 }
 
 export function toContentSingleton(contentList) {
-  return Array.isArray(contentList) ? JSON.parse(data[0]) : null
+  return Array.isArray(contentList) ? JSON.parse(contentList[0]) : null
 }

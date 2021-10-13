@@ -110,7 +110,7 @@ def configureReactNativePom(def pom) {
         name packageJson.title
         artifactId packageJson.name
         version = packageJson.version
-        group = 'com.dashx.sdk'
+        group = 'com.dashx.rn.sdk'
         description packageJson.description
         url packageJson.repository.baseUrl
 
