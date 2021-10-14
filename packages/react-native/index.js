@@ -32,14 +32,14 @@ DashX.searchContent = (contentType, options) => {
   const result = searchContent(contentType, { ...options, filter })
 
   if (options.returnType === 'all') {
-    return result.then(toContentList)
+    return result
   }
 
   return result.then(toContentSingleton)
 }
 
 DashX.fetchContent = (contentType, options) => {
-  return fetchContent(contentType, options).then(JSON.parse)
+  return fetchContent(contentType, options)
 }
 
 DashX.onMessageReceived = (callback) =>

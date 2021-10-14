@@ -16,10 +16,6 @@ export function parseFilterObject(filterObject) {
   return filterBy
 }
 
-export function toContentList(contentList) {
-  return contentList.map(JSON.parse)
-}
-
 export function toContentSingleton(contentList) {
-  return Array.isArray(contentList) ? JSON.parse(contentList[0]) : null
+  return Array.isArray(contentList) ? contentList[0] : null
 }

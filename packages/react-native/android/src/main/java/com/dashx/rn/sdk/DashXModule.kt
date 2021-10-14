@@ -7,7 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 
 class DashXModule(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private val tag = DashXModule::class.java.simpleName
-    private var interceptor: DashXClientInstance = DashXClientInstance.instance
+    private var interceptor: DashXClientInterceptor = DashXClientInterceptor.instance
 
 
     override fun getName(): String {
@@ -29,6 +29,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
             options.getStringIfPresent("targetEnvironment"),
             options.getStringIfPresent("targetInstallation")
         )
+        interceptor.getDashXClient().generateAnonymousUid()
 
         if (options.hasKey("trackAppLifecycleEvents") && options.getBoolean("trackAppLifecycleEvents")) {
             DashXExceptionHandler.enable()
@@ -68,8 +69,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
         val jsonData = try {
             data?.toHashMap() as HashMap<String, String>
         } catch (e: Exception) {
-            DashXLog.d(tag, "Encountered an error while parsing data")
-            e.printStackTrace()
+            DashXLog.d(tag, e.message)
             return
         }
 
@@ -83,7 +83,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     @ReactMethod
     fun setIdentityToken(identityToken: String) {
-        dashXClient.setIdentityToken(identityToken)
+        interceptor.getDashXClient().setIdentityToken(identityToken)
     }
 
     @ReactMethod
@@ -99,18 +99,48 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
                 promise.reject("EUNSPECIFIED", it)
             },
             onSuccess = {
-                promise.resolve(it)
+                promise.resolve(convertToWritableMap(it))
             }
         )
     }
 
     @ReactMethod
     fun searchContent(contentType: String, options: ReadableMap?, promise: Promise) {
-        dashXClient.searchContent(contentType, options, promise)
-    }
+        val jsonFilter = try {
+            convertMapToJson(options?.getMap("filter"))
+        } catch (e: Exception) {
+            DashXLog.d(tag, e.message)
+            throw Exception("Encountered an error while parsing filter")
+        }
 
-    init {
-        dashXClient.reactApplicationContext = reactContext
-        dashXClient.generateAnonymousUid()
+        val jsonOrder = try {
+            convertMapToJson(options?.getMap("order"))
+        } catch (e: Exception) {
+            DashXLog.d(tag, e.message)
+            throw Exception("Encountered an error while parsing order")
+        }
+
+        interceptor.getDashXClient().searchContent(
+            contentType,
+            options?.getString("returnType") ?: "all",
+            jsonFilter,
+            jsonOrder,
+            options?.getIntIfPresent("limit"),
+            options?.getBooleanIfPresent("preview"),
+            options?.getStringIfPresent("language"),
+            options?.getArray("fields")?.toArrayList() as List<String>?,
+            options?.getArray("include")?.toArrayList() as List<String>?,
+            options?.getArray("exclude")?.toArrayList() as List<String>?,
+            onError = {
+                promise.reject("EUNSPECIFIED", it)
+            },
+            onSuccess = { content ->
+                val readableArray = Arguments.createArray()
+                content.forEach {
+                    readableArray.pushMap(convertToWritableMap(it))
+                }
+                promise.resolve(readableArray)
+            }
+        )
     }
 }

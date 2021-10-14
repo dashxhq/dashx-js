@@ -2,10 +2,6 @@
 
 package com.dashx.rn.sdk
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
@@ -14,10 +10,6 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
-
-fun getPackageInfo(context: Context): PackageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
-fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
-fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
 
 @Throws(JSONException::class)
 fun convertMapToJson(readableMap: ReadableMap?): JsonObject? {

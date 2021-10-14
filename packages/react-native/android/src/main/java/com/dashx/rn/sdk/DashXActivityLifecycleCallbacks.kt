@@ -8,7 +8,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 
 class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
-    private val dashXClient = DashXClient.instance
+    private val dashXClient = DashXClientInterceptor.instance.getDashXClient()
     private var startSession = System.currentTimeMillis().toDouble()
 
     init {
@@ -40,7 +40,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         val packageManager = activity?.packageManager
         val info = packageManager?.getActivityInfo(activity.componentName, PackageManager.GET_META_DATA)
         val activityLabel = info?.loadLabel(packageManager)
-        activityLabel?.let { it -> dashXClient.screen(it.toString(), Arguments.createMap()) }
+        activityLabel?.let { it -> dashXClient.screen(it.toString(), hashMapOf()) }
     }
 
     override fun onActivityDestroyed(activity: Activity) {

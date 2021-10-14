@@ -48,7 +48,7 @@ class Builder {
 
   all(withOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'all' }
-    return this.callback(this.options).then(toContentList)
+    return this.callback(this.options)
   }
 
   async one(withOptions) {
