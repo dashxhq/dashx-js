@@ -99,7 +99,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
                 promise.reject("EUNSPECIFIED", it)
             },
             onSuccess = {
-                promise.resolve(convertToWritableMap(it))
+                promise.resolve(convertJsonToMap(it))
             }
         )
     }
@@ -137,7 +137,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
             onSuccess = { content ->
                 val readableArray = Arguments.createArray()
                 content.forEach {
-                    readableArray.pushMap(convertToWritableMap(it))
+                    readableArray.pushMap(convertJsonToMap(it))
                 }
                 promise.resolve(readableArray)
             }

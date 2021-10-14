@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.dashxhq:dashx-android:c6ef9ef017'
+  implementation 'com.github.dashxhq:dashx-android:0df6e384d8'
     //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'   // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
