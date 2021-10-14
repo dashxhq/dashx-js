@@ -3,63 +3,28 @@ package com.dashx.rn.sdk
 import android.content.SharedPreferences
 import android.os.Build
 import com.dashx.sdk.DashXClient as DashX
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.exception.ApolloException
-import com.dashx.*
-import com.dashx.type.*
+import com.dashx.sdk.DashXLog
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.google.firebase.messaging.RemoteMessage
-import okhttp3.*
-import java.util.UUID
 
 
-class DashXInterceptor private constructor() {
-    private val tag = DashXInterceptor::class.java.simpleName
+class DashXClientInstance private constructor() {
+    private val tag = DashXClientInstance::class.java.simpleName
 
-    // Setup variables
-    private var baseURI: String = "https://api.dashx.com/graphql"
-    private var publicKey: String? = null
-    private var targetEnvironment: String? = null
-    private var targetInstallation: String? = null
-
-    // Account variables
-    private var anonymousUid: String? = null
-    private var uid: String? = null
-    private var deviceToken: String? = null
-    private var identityToken: String? = null
-    private var accountType: String? = null
-
-    private val dashXNotificationFilter = "DASHX_PN_TYPE"
-
-    private var dashXClient: com.dashx.sdk.DashXClient? = null
-
+    private var client: com.dashx.sdk.DashXClient? = null
     var reactApplicationContext: ReactApplicationContext? = null
 
-    fun setBaseURI(baseURI: String) {
-        this.baseURI = baseURI
+    fun createDashXClient(publicKey: String, baseURI: String?, accountType: String?, targetEnvironment: String?, targetInstallation: String?) {
+        client = DashX(publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
+        client?.applicationContext = reactApplicationContext?.applicationContext
     }
 
-    fun createDashXClient() {
-        dashXClient = DashX(publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
-    }
+    fun getDashXClient(): com.dashx.sdk.DashXClient {
+        if (client == null) {
+            throw Exception("DashXClient not initialised")
+        }
 
-    fun setTargetEnvironment(targetEnvironment: String) {
-        this.targetEnvironment = targetEnvironment
-    }
-
-    fun setTargetInstallation(targetInstallation: String) {
-        this.targetEnvironment = targetInstallation
-    }
-
-    fun setAccountType(accountType: String) {
-        this.accountType = accountType
-    }
-
-    fun setPublicKey(publicKey: String) {
-        this.publicKey = publicKey
+        return client!!
     }
 
     private fun sendJsEvent(eventName: String, params: WritableMap) {
@@ -68,35 +33,11 @@ class DashXInterceptor private constructor() {
             ?.emit(eventName, params)
     }
 
-    fun identify(uid: String?, options: ReadableMap?) {
-        val optionsHashMap = options?.toHashMap()
-        dashXClient?.identify(uid, optionsHashMap as HashMap<String, String>)
-    }
-
-    fun reset() {
-        uid = null
-        dashXClient?.generateAnonymousUid(regenerate = true)
-    }
-
-    fun track(event: String, data: ReadableMap?) {
-        val jsonData = try {
-            data?.toHashMap() as HashMap<String, String>
-        } catch (e: Exception) {
-            DashXLog.d(tag, "Encountered an error while parsing data")
-            e.printStackTrace()
-            return
-        }
-
-        dashXClient?.track(event, jsonData)
-    }
-
     fun fetchContent(urn: String, options: ReadableMap?, promise: Promise) {
-        dashXClient?.fetchContent(
+        client?.fetchContent(
             urn,
-            false,
-            options?.let {
-                if (it.hasKey("language")) it.getString("language") else null
-            },
+            options?.getBooleanIfPresent("preview"),
+            options?.getStringIfPresent("language"),
             options?.getArray("fields")?.toArrayList() as List<String>?,
             options?.getArray("include")?.toArrayList() as List<String>?,
             options?.getArray("exclude")?.toArrayList() as List<String>?,
@@ -194,39 +135,9 @@ class DashXInterceptor private constructor() {
         track(INTERNAL_EVENT_APP_SCREEN_VIEWED, data)
     }
 
-    private fun subscribe() {
-        if (deviceToken == null || identityToken == null) {
-            DashXLog.d(tag,
-                "Subscribe called with deviceToken: $deviceToken and identityToken: $identityToken")
-            return
-        }
-
-        val subscribeContactInput = SubscribeContactInput(
-            uid!!,
-            Input.fromNullable("Android"),
-            ContactKind.ANDROID,
-            deviceToken!!
-        )
-        val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
-
-        apolloClient
-            .mutate(subscribeContactMutation)
-            .enqueue(object : ApolloCall.Callback<SubscribeContactMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    DashXLog.d(tag, "Could not subscribe: $deviceToken")
-                    e.printStackTrace()
-                }
-
-                override fun onResponse(response: com.apollographql.apollo.api.Response<SubscribeContactMutation.Data>) {
-                    val subscribeContactResponse = response.data?.subscribeContact
-                    DashXLog.d(tag, "Subscribed: $deviceToken, $subscribeContactResponse")
-                }
-            })
-    }
-
     companion object {
-        val instance: DashXClient by lazy {
-            DashXClient()
+        val instance: DashXClientInstance by lazy {
+            DashXClientInstance()
         }
     }
 }

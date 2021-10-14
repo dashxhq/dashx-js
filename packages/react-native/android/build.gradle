@@ -90,7 +90,8 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.dashxhq:dashx-android:main-SNAPSHOT'
+  api fileTree(dir: '../../../../dashx-android/app/build/outputs/aar/', include: ['*.aar'])
+  implementation name: 'dashx-android-0.1'
     //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'   // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
