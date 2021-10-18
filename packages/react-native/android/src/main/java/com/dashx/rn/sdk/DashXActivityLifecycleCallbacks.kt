@@ -1,4 +1,4 @@
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
 import android.app.Activity
 import android.app.Application
@@ -8,14 +8,14 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 
 class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
-    private val dashXClient = DashXClient.instance
+    private val dashXClient = DashXClientInterceptor.instance.getDashXClient()
     private var startSession = System.currentTimeMillis().toDouble()
 
     init {
         dashXClient.trackAppStarted()
     }
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
         if (!lifecycleTrackingEnabled) {
             return
         }
@@ -23,7 +23,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         dashXClient.trackAppSession(System.currentTimeMillis().toDouble() - startSession)
     }
 
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity) {
         if (!lifecycleTrackingEnabled) {
             return
         }
@@ -32,7 +32,7 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         dashXClient.trackAppStarted(fromBackground = true)
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
         if (!screenTrackingEnabled) {
             return
         }
@@ -40,22 +40,22 @@ class DashXActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
         val packageManager = activity?.packageManager
         val info = packageManager?.getActivityInfo(activity.componentName, PackageManager.GET_META_DATA)
         val activityLabel = info?.loadLabel(packageManager)
-        activityLabel?.let { it -> dashXClient.screen(it.toString(), Arguments.createMap()) }
+        activityLabel?.let { it -> dashXClient.screen(it.toString(), hashMapOf()) }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
-
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivityDestroyed(activity: Activity) {
 
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
 
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityStopped(activity: Activity) {
+
+    }
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
     }
 

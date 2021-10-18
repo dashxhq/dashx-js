@@ -1,11 +1,12 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
+import { parseFilterObject, toContentList, toContentSingleton } from './utils'
 
 const { DashX } = NativeModules
 const dashXEventEmitter = new NativeEventEmitter(DashX)
 
-const { identify, track, content } = DashX
+const { identify, track, fetchContent, searchContent } = DashX
 
 // Handle overloads at JS, because Native modules doesn't allow that
 // https://github.com/facebook/react-native/issues/19116
@@ -19,14 +20,26 @@ DashX.identify = (options) => {
 
 DashX.track = (event, data) => track(event, data || null)
 
-DashX.content = (contentType, options) => {
-  if (options) {
-    return content(contentType, options)
+DashX.searchContent = (contentType, options) => {
+  if (!options) {
+    return new ContentOptionsBuilder(
+      (wrappedOptions) => searchContent(contentType, wrappedOptions)
+    )
   }
 
-  return new ContentOptionsBuilder(
-    wrappedOptions => content(contentType, wrappedOptions)
-  )
+  const filter = parseFilterObject(options.filter)
+
+  const result = searchContent(contentType, { ...options, filter })
+
+  if (options.returnType === 'all') {
+    return result
+  }
+
+  return result.then(toContentSingleton)
+}
+
+DashX.fetchContent = (contentType, options) => {
+  return fetchContent(contentType, options)
 }
 
 DashX.onMessageReceived = (callback) =>

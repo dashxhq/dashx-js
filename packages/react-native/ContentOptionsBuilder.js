@@ -1,4 +1,6 @@
-class ContentOptionsBuilder {
+import { parseFilterObject, toContentSingleton, toContentList } from './utils'
+
+class Builder {
   constructor(callback) {
     this.options = {}
     this.callback = callback
@@ -10,7 +12,7 @@ class ContentOptionsBuilder {
   }
 
   filter(by) {
-    this.options.filter = by
+    this.options.filter = parseFilterObject(by)
     return this
   }
 
@@ -19,15 +21,42 @@ class ContentOptionsBuilder {
     return this
   }
 
+  language(to) {
+    this.options.language = to
+    return this
+  }
+
+  fields(identifiers) {
+    this.options.fields = identifiers
+    return this
+  }
+
+  include(identifiers) {
+    this.options.include = identifiers
+    return this
+  }
+
+  exclude(identifiers) {
+    this.options.exclude = identifiers
+    return this
+  }
+
+  preview() {
+    this.options.preview = true
+    return this
+  }
+
   all(withOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'all' }
     return this.callback(this.options)
   }
 
-  one(withOptions) {
+  async one(withOptions) {
     this.options = { ...this.options, ...withOptions, returnType: 'one' }
-    return this.callback(this.options)
+    const data = await this.callback(this.options)
+
+    return toContentSingleton(data)
   }
 }
 
-export default ContentOptionsBuilder
+export default Builder

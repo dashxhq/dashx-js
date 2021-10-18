@@ -1,23 +1,11 @@
 @file:JvmName("Utils")
 
-package com.dashx.sdk
+package com.dashx.rn.sdk
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableType
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.bridge.*
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONException
-
-fun getPackageInfo(context: Context): PackageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
-fun getPrefKey(context: Context) = "$PACKAGE_NAME.$DEFAULT_INSTANCE.$context.packageName"
-fun getDashXSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(getPrefKey(context), Context.MODE_PRIVATE)
 
 @Throws(JSONException::class)
 fun convertMapToJson(readableMap: ReadableMap?): JsonObject? {
@@ -56,7 +44,10 @@ fun convertArrayToJson(readableArray: ReadableArray?): JsonArray {
 
 @JvmOverloads
 @Throws(Exception::class)
-fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<String>()): WritableMap {
+fun convertToWritableMap(
+    map: Map<*, *>,
+    blacklist: List<String> = emptyList<String>()
+): WritableMap {
     val writableMap: WritableMap = WritableNativeMap()
     val iterator: Iterator<String> = map.keys.iterator() as Iterator<String>
     while (iterator.hasNext()) {
@@ -75,6 +66,52 @@ fun convertToWritableMap(map: Map<*, *>, blacklist: List<String> = emptyList<Str
         }
     }
     return writableMap
+}
+
+@Throws(JSONException::class)
+fun convertJsonToMap(jsonObject: JsonObject?): WritableMap? {
+    val entries = jsonObject?.entrySet() ?: return null
+    val map: WritableMap = WritableNativeMap()
+    for ((key) in entries) {
+        val value = jsonObject[key]
+
+        if (value is JsonObject) {
+            map.putMap(key, convertJsonToMap(value))
+        } else if (value is JsonArray) {
+            map.putArray(key, convertJsonToArray(value))
+        } else if (value.asJsonPrimitive.isBoolean) {
+            map.putBoolean(key, value.asBoolean)
+        } else if (value.asJsonPrimitive.isNumber) {
+            map.putDouble(key, value.asDouble)
+        } else if (value.asJsonPrimitive.isString) {
+            map.putString(key, value.asString)
+        } else {
+            map.putString(key, value.toString())
+        }
+    }
+    return map
+}
+
+@Throws(JSONException::class)
+fun convertJsonToArray(jsonArray: JsonArray): WritableArray? {
+    val array: WritableArray = WritableNativeArray()
+    for (i in 0 until jsonArray.size()) {
+        val value = jsonArray[i]
+        if (value is JsonObject) {
+            array.pushMap(convertJsonToMap(value))
+        } else if (value is JsonArray) {
+            array.pushArray(convertJsonToArray(value))
+        } else if (value.asJsonPrimitive.isBoolean) {
+            array.pushBoolean(value.asBoolean)
+        } else if (value.asJsonPrimitive.isNumber) {
+            array.pushDouble(value.asDouble)
+        } else if (value.asJsonPrimitive.isString) {
+            array.pushString(value.asString)
+        } else {
+            array.pushString(value.toString())
+        }
+    }
+    return array
 }
 
 fun ReadableMap.getMapIfPresent(key: String): ReadableMap? {
