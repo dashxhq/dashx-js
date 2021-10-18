@@ -60,6 +60,7 @@ const cart = `
   tax
   total
   gatewayMeta
+  currencyCode
 
   orderItems {
       id
@@ -70,6 +71,7 @@ const cart = `
       tax
       total
       custom
+      currencyCode
   }
 
   couponRedemptions {

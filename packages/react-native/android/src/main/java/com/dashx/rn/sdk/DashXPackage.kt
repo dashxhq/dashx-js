@@ -1,4 +1,4 @@
-package com.dashx.reactnative
+package com.dashx.rn.sdk
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
