@@ -93,6 +93,11 @@ class DashXClient {
     func track(_ event: String, withData: NSDictionary?) {
         let trackData: String?
 
+        if accountType == nil {
+            DashXLog.d(tag: #function, "AccountType not set skipping track()")
+            return
+        }
+
         if withData == nil {
             trackData = nil
         } else if JSONSerialization.isValidJSONObject(withData!) {
