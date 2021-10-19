@@ -1,7 +1,0 @@
-query FindContent($input: FindContentInput!) {
-    findContent(input: $input) {
-        id
-        position
-        data
-    }
-}

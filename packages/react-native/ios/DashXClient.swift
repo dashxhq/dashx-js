@@ -108,8 +108,8 @@ class DashXClient {
         let trackEventInput = DashXGql.TrackEventInput(
             accountType: accountType!,
             event: event,
-            uid: uid,
-            anonymousUid: anonymousUid,
+            accountUid: uid,
+            accountAnonymousUid: anonymousUid,
             data: trackData
         )
 
@@ -163,31 +163,58 @@ class DashXClient {
     }
     // MARK: -- content
 
-    func findContent(_ contentType: String, _ content: String, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
-        let findContentInput  = DashXGql.FindContentInput(
+    func fetchContent(
+        _ contentType: String,
+        _ content: String,
+        _ preview: Bool? = true,
+        _ language: String?,
+        _ fields: [String]? = [],
+        _ include: [String]? = [],
+        _ exclude: [String]? = [],
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        _ reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let fetchContentInput  = DashXGql.FetchContentInput(
             contentType: contentType,
-            content: content
+            content: content,
+            preview: preview,
+            language: language,
+            fields: fields,
+            include: include,
+            exclude: exclude
         )
 
-        DashXLog.d(tag: #function, "Calling findContent with \(findContentInput)")
+        DashXLog.d(tag: #function, "Calling fetchContent with \(fetchContentInput)")
 
-        let findContentQuery = DashXGql.FindContentQuery(input: findContentInput)
+        let findContentQuery = DashXGql.FetchContentQuery(input: fetchContentInput)
 
         Network.shared.apollo.fetch(query: findContentQuery) { result in
           switch result {
           case .success(let graphQLResult):
             DashXLog.d(tag: #function, "Sent findContent with \(String(describing: graphQLResult))")
-            let content = graphQLResult.data?.findContent
-            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
-            resolve(json)
+            let content = graphQLResult.data?.fetchContent
+            resolve(content)
           case .failure(let error):
-            DashXLog.d(tag: #function, "Encountered an error during findContent(): \(error)")
+            DashXLog.d(tag: #function, "Encountered an error during fetchContent(): \(error)")
             reject("", error.localizedDescription, error)
           }
         }
     }
 
-    func searchContent(_ contentType: String, _ returnType: String, _ filter: NSDictionary?, _ order: NSDictionary?, _ limit: Int?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
+    func searchContent(
+        _ contentType: String,
+        _ returnType: String,
+        _ filter: NSDictionary?,
+        _ order: NSDictionary?,
+        _ limit: Int?,
+        _ preview: Bool? = true,
+        _ language: String?,
+        _ fields: [String]? = [],
+        _ include: [String]? = [],
+        _ exclude: [String]? = [],
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        _ reject: @escaping RCTPromiseRejectBlock
+    ) {
         let filterJson: String?
         let orderJson: String?
 
@@ -216,107 +243,31 @@ class DashXClient {
         }
 
 
-        let searchContentsInput  = DashXGql.SearchContentsInput(
+        let searchContentsInput  = DashXGql.SearchContentInput(
             contentType: contentType,
             returnType: returnType,
             filter: filterJson,
             order: orderJson,
-            limit: limit
+            limit: limit,
+            preview: preview,
+            language: language,
+            fields: fields,
+            include: include,
+            exclude: exclude
         )
 
         DashXLog.d(tag: #function, "Calling searchContent with \(searchContentsInput)")
 
-        let searchContentQuery = DashXGql.SearchContentsQuery(input: searchContentsInput)
+        let searchContentQuery = DashXGql.SearchContentQuery(input: searchContentsInput)
 
         Network.shared.apollo.fetch(query: searchContentQuery) { result in
           switch result {
           case .success(let graphQLResult):
-            DashXLog.d(tag: #function, "Sent searchContents with \(String(describing: graphQLResult.data?.searchContents.contents))")
-            let json = graphQLResult.data?.searchContents.contents.map({ content in
-                ["position": content.position, "data": content.data.serialize(), "id": content.id ]
-            })
+            let json = graphQLResult.data?.searchContent
+            DashXLog.d(tag: #function, "Sent searchContents with \(String(describing: json))")
             resolve(json)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during searchContent(): \(error)")
-            reject("", error.localizedDescription, error)
-          }
-        }
-    }
-
-    func addContent(_ contentType: String, _ content: String, _ data: NSDictionary?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
-        let dataJson: String?
-
-        if data == nil {
-            dataJson = nil
-        } else if JSONSerialization.isValidJSONObject(data!) {
-            dataJson = try? String(
-                data: JSONSerialization.data(withJSONObject: data!),
-                encoding: .utf8
-            )
-        } else {
-            DashXLog.d(tag: #function, "Encountered an error while encoding data")
-            return
-        }
-
-
-        let addContentInput  = DashXGql.AddContentInput(
-            contentType: contentType,
-            content: content,
-            data: dataJson ?? ""
-        )
-
-        DashXLog.d(tag: #function, "Calling addContent with \(addContentInput)")
-
-        let addContentMutation = DashXGql.AddContentMutation(input: addContentInput)
-
-        Network.shared.apollo.perform(mutation: addContentMutation) { result in
-          switch result {
-          case .success(let graphQLResult):
-            DashXLog.d(tag: #function, "Sent addContent with \(String(describing: graphQLResult))")
-            let content = graphQLResult.data?.addContent
-            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
-            resolve(json)
-          case .failure(let error):
-            DashXLog.d(tag: #function, "Encountered an error during addContent(): \(error)")
-            reject("", error.localizedDescription, error)
-          }
-        }
-    }
-
-    func editContent(_ contentType: String, _ content: String, _ data: NSDictionary?, _ resolve: @escaping RCTPromiseResolveBlock, _ reject: @escaping RCTPromiseRejectBlock) {
-        let dataJson: String?
-
-        if data == nil {
-            dataJson = nil
-        } else if JSONSerialization.isValidJSONObject(data!) {
-            dataJson = try? String(
-                data: JSONSerialization.data(withJSONObject: data!),
-                encoding: .utf8
-            )
-        } else {
-            DashXLog.d(tag: #function, "Encountered an error while encoding data")
-            return
-        }
-
-        let editContentInput  = DashXGql.EditContentInput(
-            contentType: contentType,
-            content: content,
-            data: dataJson ?? ""
-        )
-
-        DashXLog.d(tag: #function, "Calling editContent with \(editContentInput)")
-
-        let editContentMutation = DashXGql.EditContentMutation(input: editContentInput)
-
-        Network.shared.apollo.perform(mutation: editContentMutation) { result in
-          switch result {
-          case .success(let graphQLResult):
-            DashXLog.d(tag: #function, "Sent editContent with \(String(describing: graphQLResult))")
-            let content = graphQLResult.data?.editContent
-            let json = [ "position": content?.position, "data": content?.data.serialize(), "id": content?.id ]
-            resolve(json)
-          case .failure(let error):
-            DashXLog.d(tag: #function, "Encountered an error during editContent(): \(error)")
             reject("", error.localizedDescription, error)
           }
         }

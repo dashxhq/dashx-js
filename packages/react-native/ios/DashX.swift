@@ -22,7 +22,10 @@ class DashX: RCTEventEmitter {
     @objc
     func setup(_ options: NSDictionary?) {
         ConfigInterceptor.shared.publicKey = options?.value(forKey: "publicKey") as? String
-        dashXClient.setAccountType(to: options?.value(forKey: "accountType") as! String)
+
+        if let accountType = options?.value(forKey: "accountType") {
+            dashXClient.setAccountType(to: accountType as! String)
+        }
 
         DashXAppDelegate.swizzleDidReceiveRemoteNotification()
 
@@ -80,9 +83,9 @@ class DashX: RCTEventEmitter {
     func screen(_ screenName: String, _ data: NSDictionary?) {
         dashXClient.screen(screenName, withData: data)
     }
-    
-    @objc(contentType:options:resolver:rejecter:)
-    func contentType(_ contentType: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+    @objc(searchContent:options:resolver:rejecter:)
+    func searchContent(_ contentType: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let optionsDictionary = options as? [String: Any]
 
         dashXClient.searchContent(
@@ -91,51 +94,31 @@ class DashX: RCTEventEmitter {
             optionsDictionary?["filter"] as! NSDictionary?,
             optionsDictionary?["order"] as! NSDictionary?,
             optionsDictionary?["limit"] as! Int?,
-            resolve,
-            reject
-        )
-    }
-    
-    @objc(content:resolver:rejecter:)
-    func content(_ urn: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        
-        let urnArray = urn.split{$0 == "/"}.map(String.init)
-        
-        dashXClient.findContent(
-            urnArray[0],
-            urnArray[1],
+            optionsDictionary?["preview"] as! Bool?,
+            optionsDictionary?["language"] as! String?,
+            optionsDictionary?["fields"] as! [String]?,
+            optionsDictionary?["include"] as! [String]?,
+            optionsDictionary?["exclude"] as! [String]?,
             resolve,
             reject
         )
     }
 
-    
-    @objc(addContent:data:resolver:rejecter:)
-    func addContent(_ urn: String, _ data: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        
+    @objc(fetchContent:options:resolver:rejecter:)
+    func fetchContent(_ urn: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        let optionsDictionary = options as? [String: Any]
         let urnArray = urn.split{$0 == "/"}.map(String.init)
-        
-        dashXClient.addContent(
-            urnArray[0],
-            urnArray[1],
-            data,
-            resolve,
-            reject
-        )
-    }
-    
-    @objc(editContent:data:resolver:rejecter:)
-    func editContent(_ urn: String, _ data: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        
-        let urnArray = urn.split{$0 == "/"}.map(String.init)
-        
-        dashXClient.editContent(
-            urnArray[0],
-            urnArray[1],
-            data,
-            resolve,
-            reject
-        )
-    }
 
+        dashXClient.fetchContent(
+            urnArray[0],
+            urnArray[1],
+            optionsDictionary?["preview"] as! Bool?,
+            optionsDictionary?["language"] as! String?,
+            optionsDictionary?["fields"] as! [String]?,
+            optionsDictionary?["include"] as! [String]?,
+            optionsDictionary?["exclude"] as! [String]?,
+            resolve,
+            reject
+        )
+    }
 }

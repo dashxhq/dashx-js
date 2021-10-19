@@ -1,9 +1,0 @@
-query SearchContents($input: SearchContentsInput!) {
-    searchContents(input: $input) {
-      contents {
-        id
-        position
-        data
-      }
-    }
-}
