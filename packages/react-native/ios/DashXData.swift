@@ -20,32 +20,17 @@ struct FirebaseRemoteMessage: Decodable {
 }
 
 public extension DashXGql {
-    typealias JSON = String
+    typealias JSON = [String : Any?]
+    typealias Json = [String : Any?]
     typealias UUID = String
-    
-    enum Json {
-      case dictionary([String: Any])
-      case array([Any])
-    }
 }
 
-extension DashXGql.Json: JSONDecodable {
+extension Dictionary: JSONDecodable {
   public init(jsonValue value: JSONValue) throws {
-    if let dict = value as? [String: Any] {
-      self = .dictionary(dict)
-    } else if let array = value as? [Any] {
-      self = .array(array)
-    } else {
-      throw JSONDecodingError.couldNotConvert(value: value, to: DashXGql.Json.self)
+    guard let dictionary = value as? Dictionary else {
+      throw JSONDecodingError.couldNotConvert(value: value, to: Dictionary.self)
     }
+    self = dictionary
   }
-    
-    public func serialize() -> JSONValue {
-        switch self {
-        case .dictionary(let value):
-            return value.jsonObject
-        case .array(let value):
-            return value.jsonValue
-        }
-    }
 }
+

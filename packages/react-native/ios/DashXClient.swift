@@ -110,7 +110,7 @@ class DashXClient {
             event: event,
             accountUid: uid,
             accountAnonymousUid: anonymousUid,
-            data: trackData
+            data: withData as? [String: Any?]
         )
 
         DashXLog.d(tag: #function, "Calling track with \(trackEventInput)")
@@ -246,8 +246,8 @@ class DashXClient {
         let searchContentsInput  = DashXGql.SearchContentInput(
             contentType: contentType,
             returnType: returnType,
-            filter: filterJson,
-            order: orderJson,
+            filter: filter as? [String: Any],
+            order: order as? [String: Any],
             limit: limit,
             preview: preview,
             language: language,

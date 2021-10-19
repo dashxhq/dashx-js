@@ -38,7 +38,7 @@ class DashX: RCTEventEmitter {
         }
 
         if let targetEnvironment = options?.value(forKey: "targetEnvironment") {
-            dashXClient.setTargetInstallation(to: targetEnvironment as! String)
+            dashXClient.setTargetEnvironment(to: targetEnvironment as! String)
         }
 
         if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as! Bool {
