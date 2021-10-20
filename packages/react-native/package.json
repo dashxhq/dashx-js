@@ -9,6 +9,7 @@
     "android",
     "index.js",
     "ContentOptionsBuilder.js",
+    "utils.js",
     "ios",
     "react-native.podspec"
   ],
