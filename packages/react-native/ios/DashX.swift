@@ -21,12 +21,24 @@ class DashX: RCTEventEmitter {
 
     @objc
     func setup(_ options: NSDictionary?) {
-        dashXClient.setPublicKey(to: options?.value(forKey: "publicKey") as! String)
+        ConfigInterceptor.shared.publicKey = options?.value(forKey: "publicKey") as? String
+
+        if let accountType = options?.value(forKey: "accountType") {
+            dashXClient.setAccountType(to: accountType as! String)
+        }
 
         DashXAppDelegate.swizzleDidReceiveRemoteNotification()
 
         if let baseUri = options?.value(forKey: "baseUri") {
-            dashXClient.setBaseUri(to: baseUri as! String)
+            Network.shared.setBaseUri(to: baseUri as! String)
+        }
+
+        if let targetInstallation = options?.value(forKey: "targetInstallation") {
+            dashXClient.setTargetInstallation(to: targetInstallation as! String)
+        }
+
+        if let targetEnvironment = options?.value(forKey: "targetEnvironment") {
+            dashXClient.setTargetEnvironment(to: targetEnvironment as! String)
         }
 
         if let trackAppLifecycleEvents = options?.value(forKey: "trackAppLifecycleEvents"), trackAppLifecycleEvents as! Bool {
@@ -72,8 +84,41 @@ class DashX: RCTEventEmitter {
         dashXClient.screen(screenName, withData: data)
     }
 
-    @objc(content:options:)
-    func content(_ contentType: String, _ options: NSDictionary) {
-        dashXClient.content(contentType, withOptions: options)
+    @objc(searchContent:options:resolver:rejecter:)
+    func searchContent(_ contentType: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        let optionsDictionary = options as? [String: Any]
+
+        dashXClient.searchContent(
+            contentType,
+            optionsDictionary?["returnType"] as! String? ?? "all",
+            optionsDictionary?["filter"] as! NSDictionary?,
+            optionsDictionary?["order"] as! NSDictionary?,
+            optionsDictionary?["limit"] as! Int?,
+            optionsDictionary?["preview"] as! Bool?,
+            optionsDictionary?["language"] as! String?,
+            optionsDictionary?["fields"] as! [String]?,
+            optionsDictionary?["include"] as! [String]?,
+            optionsDictionary?["exclude"] as! [String]?,
+            resolve,
+            reject
+        )
+    }
+
+    @objc(fetchContent:options:resolver:rejecter:)
+    func fetchContent(_ urn: String, _ options: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        let optionsDictionary = options as? [String: Any]
+        let urnArray = urn.split{$0 == "/"}.map(String.init)
+
+        dashXClient.fetchContent(
+            urnArray[0],
+            urnArray[1],
+            optionsDictionary?["preview"] as! Bool?,
+            optionsDictionary?["language"] as! String?,
+            optionsDictionary?["fields"] as! [String]?,
+            optionsDictionary?["include"] as! [String]?,
+            optionsDictionary?["exclude"] as! [String]?,
+            resolve,
+            reject
+        )
     }
 }

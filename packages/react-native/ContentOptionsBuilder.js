@@ -1,4 +1,4 @@
-import { parseFilterObject, toContentSingleton, toContentList } from './utils'
+import { parseFilterObject, toContentSingleton } from './utils'
 
 class Builder {
   constructor(callback) {

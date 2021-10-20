@@ -1,7 +1,7 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { parseFilterObject, toContentList, toContentSingleton } from './utils'
+import { parseFilterObject, toContentSingleton } from './utils'
 
 const { DashX } = NativeModules
 const dashXEventEmitter = new NativeEventEmitter(DashX)
