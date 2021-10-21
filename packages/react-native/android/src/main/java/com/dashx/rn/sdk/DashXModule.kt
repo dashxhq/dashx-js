@@ -21,8 +21,8 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
 
     @ReactMethod
     fun setup(options: ReadableMap) {
-        interceptor.reactApplicationContext = reactContext
         interceptor.createDashXClient(
+            reactContext,
             options.getString("publicKey")!!,
             options.getStringIfPresent("baseUri"),
             options.getStringIfPresent("accountType"),

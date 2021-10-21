@@ -1,5 +1,6 @@
 package com.dashx.rn.sdk
 
+import android.content.Context
 import com.dashx.sdk.DashXClient as DashX
 import com.dashx.sdk.DashXLog
 import com.facebook.react.bridge.*
@@ -13,9 +14,9 @@ class DashXClientInterceptor private constructor() {
     var reactApplicationContext: ReactApplicationContext? = null
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
-    fun createDashXClient(publicKey: String, baseURI: String?, accountType: String?, targetEnvironment: String?, targetInstallation: String?) {
-        client = DashX(publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
-        client?.applicationContext = reactApplicationContext?.applicationContext
+    fun createDashXClient(reactApplicationContext: ReactApplicationContext, publicKey: String, baseURI: String?, accountType: String?, targetEnvironment: String?, targetInstallation: String?) {
+        this.reactApplicationContext = reactApplicationContext
+        client = DashX(reactApplicationContext.applicationContext, publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
     }
 
     fun getDashXClient(): com.dashx.sdk.DashXClient {
