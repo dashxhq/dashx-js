@@ -91,22 +91,8 @@ class DashXClient {
     // MARK: -- track
 
     func track(_ event: String, withData: NSDictionary?) {
-        let trackData: String?
-
         if accountType == nil {
             DashXLog.d(tag: #function, "AccountType not set skipping track()")
-            return
-        }
-
-        if withData == nil {
-            trackData = nil
-        } else if JSONSerialization.isValidJSONObject(withData!) {
-            trackData = try? String(
-                data: JSONSerialization.data(withJSONObject: withData!),
-                encoding: .utf8
-            )
-        } else {
-            DashXLog.d(tag: #function, "Encountered an error while encoding track data")
             return
         }
 
@@ -193,7 +179,7 @@ class DashXClient {
 
         let findContentQuery = DashXGql.FetchContentQuery(input: fetchContentInput)
 
-        Network.shared.apollo.fetch(query: findContentQuery) { result in
+        Network.shared.apollo.fetch(query: findContentQuery, cachePolicy: .returnCacheDataElseFetch) { result in
           switch result {
           case .success(let graphQLResult):
             DashXLog.d(tag: #function, "Sent findContent with \(String(describing: graphQLResult))")
@@ -220,34 +206,6 @@ class DashXClient {
         _ resolve: @escaping RCTPromiseResolveBlock,
         _ reject: @escaping RCTPromiseRejectBlock
     ) {
-        let filterJson: String?
-        let orderJson: String?
-
-        if filter == nil {
-            filterJson = nil
-        } else if JSONSerialization.isValidJSONObject(filter!) {
-            filterJson = try? String(
-                data: JSONSerialization.data(withJSONObject: filter!),
-                encoding: .utf8
-            )
-        } else {
-            DashXLog.d(tag: #function, "Encountered an error while encoding filter")
-            return
-        }
-
-        if order == nil {
-            orderJson = nil
-        } else if JSONSerialization.isValidJSONObject(order!) {
-            orderJson = try? String(
-                data: JSONSerialization.data(withJSONObject: order!),
-                encoding: .utf8
-            )
-        } else {
-            DashXLog.d(tag: #function, "Encountered an error while encoding order")
-            return
-        }
-
-
         let searchContentsInput  = DashXGql.SearchContentInput(
             contentType: contentType,
             returnType: returnType,
@@ -265,7 +223,7 @@ class DashXClient {
 
         let searchContentQuery = DashXGql.SearchContentQuery(input: searchContentsInput)
 
-        Network.shared.apollo.fetch(query: searchContentQuery) { result in
+        Network.shared.apollo.fetch(query: searchContentQuery, cachePolicy: .returnCacheDataElseFetch) { result in
           switch result {
           case .success(let graphQLResult):
             let json = graphQLResult.data?.searchContent
