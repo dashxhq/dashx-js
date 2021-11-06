@@ -69,11 +69,14 @@ export const fetchItemRequest = `
 
         pricings {
             id
+            kind
             amount
             originalAmount
             isRecurring
             recurringInterval
             recurringIntervalUnit
+            appleProductIdentifier
+            googleProductIdentifier
             currencyCode
             createdAt
             updatedAt
