@@ -30,6 +30,7 @@ type IdentifyParams = Record<string, any>
 type CheckoutCartParams = {
   anonymousUid: string,
   accountType: string,
+  gateway: string,
   gatewayOptions: Record<string, any>
 }
 
@@ -254,12 +255,13 @@ class Client {
 
   async checkoutCart(
     uid: string,
-    { anonymousUid, accountType, gatewayOptions } : CheckoutCartParams
+    { anonymousUid, accountType, gateway, gatewayOptions } : CheckoutCartParams
   ): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
       accountType,
+      gatewayIdentifier: gateway,
       gatewayOptions
     }
 
