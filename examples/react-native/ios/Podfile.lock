@@ -4,7 +4,7 @@ PODS:
   - Apollo/Core (0.39.0)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.5)
-  - DashX (0.1.0):
+  - DashX (0.1.5):
     - Apollo
     - Firebase/Messaging
     - FirebaseInstanceID
@@ -537,7 +537,7 @@ SPEC CHECKSUMS:
   Apollo: f6c6410ebee82dd5846be87b81cedc8bc7754a82
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DashX: 7df10ab0b7c29c7cdd0fadcd0046f892bab41f75
+  DashX: 482bc30e8b597344de34017270a582030dba349f
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 7b423f9e248eae65987838148c36eec1dbfe0b53
   FBReactNativeSpec: 0e876bb1983478c3037162a63c688887a1c636b4

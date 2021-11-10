@@ -121,4 +121,28 @@ class DashX: RCTEventEmitter {
             reject
         )
     }
+
+    @objc(addItemToCart:pricingId:quantity:reset:custom:resolver:rejector:)
+    func addItemToCart(_ itemId: String, _ pricingId: String, quantity: String, reset: Bool, custom: NSDictionary?, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+        dashXClient.addItemToCart(
+            itemId,
+            pricingId,
+            quantity,
+            reset,
+            custom,
+            resolve,
+            reject
+        )
+    }
+
+    @objc(resolver:rejecter:)
+    func fetchCart(resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+        dashXClient.fetchCart(
+            resolve,
+            reject
+        )
+    }
+
 }

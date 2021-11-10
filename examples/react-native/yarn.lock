@@ -1249,6 +1249,9 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@dashx/react-native@../../packages/react-native/":
+  version "0.1.5"
+
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"

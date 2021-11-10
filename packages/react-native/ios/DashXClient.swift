@@ -235,4 +235,60 @@ class DashXClient {
           }
         }
     }
+    // MARK: -- cart
+
+    func addItemToCart(
+        _ itemId: String,
+        _ pricingId: String,
+        _ quantity: String,
+        _ reset: Bool,
+        _ custom: NSDictionary?,
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        _ reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let addItemToCartInput  = DashXGql.AddItemToCartInput(
+            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid, itemId: itemId, pricingId: pricingId, quantity: quantity, reset: reset, custom: custom as? [String: Any]
+        )
+
+        DashXLog.d(tag: #function, "Calling addItemToCart with \(addItemToCartInput)")
+
+        let addItemToCartMutation = DashXGql.AddItemToCartMutation(input: addItemToCartInput)
+
+        Network.shared.apollo.perform(mutation: addItemToCartMutation) { result in
+          switch result {
+          case .success(let graphQLResult):
+            let json = graphQLResult.data?.addItemToCart
+            DashXLog.d(tag: #function, "Sent addItemToCart with \(String(describing: json))")
+            resolve(json)
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during addItemToCart(): \(error)")
+            reject("", error.localizedDescription, error)
+          }
+        }
+    }
+
+    func fetchCart(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        _ reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let fetchCartInput  = DashXGql.FetchCartInput(
+            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid
+        )
+
+        DashXLog.d(tag: #function, "Calling fetchCart with \(fetchCartInput)")
+
+        let fetchCartQuery = DashXGql.FetchCartQuery(input: fetchCartInput)
+
+        Network.shared.apollo.fetch(query: fetchCartQuery, cachePolicy: .returnCacheDataElseFetch) { result in
+          switch result {
+          case .success(let graphQLResult):
+            let data = graphQLResult.data?.fetchCart
+            DashXLog.d(tag: #function, "Sent fetchCart with \(String(describing: data))")
+            resolve(data)
+          case .failure(let error):
+            DashXLog.d(tag: #function, "Encountered an error during fetchCart(): \(error)")
+            reject("", error.localizedDescription, error)
+          }
+        }
+    }
 }
