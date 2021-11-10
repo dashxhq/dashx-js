@@ -259,7 +259,7 @@ class DashXClient {
           case .success(let graphQLResult):
             let json = graphQLResult.data?.addItemToCart
             DashXLog.d(tag: #function, "Sent addItemToCart with \(String(describing: json))")
-            resolve(json)
+            resolve(json?.resultMap)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during addItemToCart(): \(error)")
             reject("", error.localizedDescription, error)
@@ -279,12 +279,12 @@ class DashXClient {
 
         let fetchCartQuery = DashXGql.FetchCartQuery(input: fetchCartInput)
 
-        Network.shared.apollo.fetch(query: fetchCartQuery, cachePolicy: .returnCacheDataElseFetch) { result in
+        Network.shared.apollo.fetch(query: fetchCartQuery) { result in
           switch result {
           case .success(let graphQLResult):
-            let data = graphQLResult.data?.fetchCart
-            DashXLog.d(tag: #function, "Sent fetchCart with \(String(describing: data))")
-            resolve(data)
+            let json = graphQLResult.data?.fetchCart
+            DashXLog.d(tag: #function, "Sent fetchCart with \(String(describing: json))")
+            resolve(json?.resultMap)
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during fetchCart(): \(error)")
             reject("", error.localizedDescription, error)
