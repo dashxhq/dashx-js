@@ -23,6 +23,8 @@ public extension DashXGql {
     typealias JSON = [String : Any?]
     typealias Json = [String : Any?]
     typealias UUID = String
+    typealias DateTime = String
+    typealias Decimal = String
 }
 
 extension Dictionary: JSONDecodable {
@@ -33,4 +35,3 @@ extension Dictionary: JSONDecodable {
     self = dictionary
   }
 }
-

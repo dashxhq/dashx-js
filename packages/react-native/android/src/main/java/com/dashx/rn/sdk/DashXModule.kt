@@ -143,4 +143,47 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
             }
         )
     }
+
+    @ReactMethod
+    fun addItemToCart(
+        itemId: String,
+        pricingId: String,
+        quantity: String,
+        reset: Boolean? = false,
+        custom: ReadableMap? = null,
+        promise: Promise
+    ) {
+        val jsonCustom = try {
+            convertMapToJson(custom)
+        } catch (e: Exception) {
+            DashXLog.d(tag, e.message)
+            throw Exception("Encountered an error while parsing custom")
+        }
+
+        interceptor.getDashXClient().addItemToCart(
+            itemId,
+            pricingId,
+            quantity,
+            reset ?: false,
+            jsonCustom,
+            onError = {
+                promise.reject("EUNSPECIFIED", it)
+            },
+            onSuccess = { content ->
+                promise.resolve(convertJsonToMap(content))
+            }
+        )
+    }
+
+    @ReactMethod
+    fun fetchCart(promise: Promise) {
+        interceptor.getDashXClient().fetchCart(
+            onError = {
+                promise.reject("EUNSPECIFIED", it)
+            },
+            onSuccess = { content ->
+                promise.resolve(convertJsonToMap(content))
+            }
+        )
+    }
 }
