@@ -90,7 +90,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.dashxhq:dashx-android:cart-operations-SNAPSHOT'
+  implementation 'com.github.dashxhq:dashx-android:set-uid-in-identify-SNAPSHOT'
     //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'   // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
