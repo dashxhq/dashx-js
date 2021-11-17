@@ -61,9 +61,11 @@ class DashXClient {
 
         let optionsDictionary = withOptions as? [String: String]
 
+        self.uid = optionsDictionary?["uid"]
+
         let identifyAccountInput = DashXGql.IdentifyAccountInput(
             accountType: accountType,
-            uid: uid,
+            uid: optionsDictionary?["uid"],
             anonymousUid: anonymousUid,
             email: optionsDictionary?["email"],
             phone: optionsDictionary?["phone"],
