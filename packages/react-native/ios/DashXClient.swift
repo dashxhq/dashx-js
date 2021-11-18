@@ -61,9 +61,11 @@ class DashXClient {
 
         let optionsDictionary = withOptions as? [String: String]
 
+        self.uid = optionsDictionary?["uid"]
+
         let identifyAccountInput = DashXGql.IdentifyAccountInput(
             accountType: accountType,
-            uid: uid,
+            uid: optionsDictionary?["uid"],
             anonymousUid: anonymousUid,
             email: optionsDictionary?["email"],
             phone: optionsDictionary?["phone"],
@@ -247,7 +249,7 @@ class DashXClient {
         _ reject: @escaping RCTPromiseRejectBlock
     ) {
         let addItemToCartInput  = DashXGql.AddItemToCartInput(
-            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid, itemId: itemId, pricingId: pricingId, quantity: quantity, reset: reset, custom: custom as? [String: Any]
+            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid, itemId: itemId, pricingId: pricingId, quantity: quantity, reset: reset, custom: custom as? [String: JSONDecodable?]
         )
 
         DashXLog.d(tag: #function, "Calling addItemToCart with \(addItemToCartInput)")

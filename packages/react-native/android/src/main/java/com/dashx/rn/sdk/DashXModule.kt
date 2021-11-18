@@ -56,7 +56,7 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun identify(uid: String?, options: ReadableMap?) {
         val optionsHashMap = options?.toHashMap()
-        interceptor.getDashXClient().identify(uid, optionsHashMap as HashMap<String, String>)
+        interceptor.getDashXClient().identify(uid, optionsHashMap as HashMap<String, String>?)
     }
 
     @ReactMethod
