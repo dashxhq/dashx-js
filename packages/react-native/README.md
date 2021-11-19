@@ -176,3 +176,20 @@ You can generate identity token by using `POST` `/v1/generate_token` which accep
   "key": "dashx_private_key"
 }
 ```
+
+## Development
+
+### Setting up development environment
+
+Please follow [these steps](https://github.com/dashxhq/dashx-js/tree/master/examples/react-native#setting-up-development-environment) to set-up development environment.
+
+You'll also need Apollo CLI to generate files.
+
+```sh
+$ npm i -g apollo
+```
+
+For the next steps, please follow the guide for the respective platform:
+
+- [Android](android/README.md)
+- [iOS](ios/README.md)

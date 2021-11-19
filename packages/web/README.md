@@ -157,3 +157,31 @@ dx.track('event_name', { hello: 'world' } /* Event data */);
 ```javascript
 dx.reset();
 ```
+
+## Development
+
+- Make sure all the dependencies are installed:
+
+```sh
+$ lerna bootstrap
+```
+
+- To start dev server with hot reload: 
+
+```sh
+$ yarn start
+```
+
+This will run a dev server that logs out errors and warnings and reloads itself on any file save.
+
+- To create production build:
+
+```sh
+yarn build
+```
+
+- To publish package, make sure to login on npm cli and commit all the changes before running this:
+
+```sh
+yarn publish
+```
