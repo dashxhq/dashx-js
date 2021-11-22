@@ -23,10 +23,6 @@ class DashX: RCTEventEmitter {
     func setup(_ options: NSDictionary?) {
         ConfigInterceptor.shared.publicKey = options?.value(forKey: "publicKey") as? String
 
-        if let accountType = options?.value(forKey: "accountType") {
-            dashXClient.setAccountType(to: accountType as! String)
-        }
-
         DashXAppDelegate.swizzleDidReceiveRemoteNotification()
 
         if let baseUri = options?.value(forKey: "baseUri") {

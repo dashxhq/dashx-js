@@ -29,14 +29,12 @@ type IdentifyParams = Record<string, any>
 
 type CheckoutCartParams = {
   anonymousUid: string,
-  accountType: string,
   gateway: string,
   gatewayOptions: Record<string, any>
 }
 
 type CapturePaymentParams = {
   anonymousUid: string,
-  accountType: string,
   gatewayResponse: Record<string, any>
 }
 
@@ -255,12 +253,11 @@ class Client {
 
   async checkoutCart(
     uid: string,
-    { anonymousUid, accountType, gateway, gatewayOptions } : CheckoutCartParams
+    { anonymousUid, gateway, gatewayOptions } : CheckoutCartParams
   ): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
-      accountType,
       gatewayIdentifier: gateway,
       gatewayOptions
     }
@@ -271,12 +268,11 @@ class Client {
 
   async capturePayment(
     uid: string,
-    { anonymousUid, accountType, gatewayResponse } : CapturePaymentParams
+    { anonymousUid, gatewayResponse } : CapturePaymentParams
   ): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
-      accountType,
       gatewayResponse
     }
 
