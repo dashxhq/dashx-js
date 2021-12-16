@@ -27,6 +27,10 @@ type DeliveryContent = {
 
 type IdentifyParams = Record<string, any>
 
+type GenerateIdentityTokenOptions = {
+  kind?: string,
+}
+
 type CheckoutCartParams = {
   anonymousUid: string,
   gateway: string,
@@ -154,16 +158,18 @@ class Client {
     return this.makeHttpRequest(identifyAccountRequest, params)
   }
 
-  generateIdentityToken(uid: string): string {
+  generateIdentityToken(uid: string, options?: GenerateIdentityTokenOptions): string {
     if (!this.privateKey) {
       throw new Error('Private key not set')
     }
 
+    const kind = options?.kind || 'regular'
     const nonce = crypto.randomBytes(12)
     const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(this.privateKey), nonce, {
       authTagLength: 16
     })
-    const encrypted = Buffer.concat([ cipher.update(uid), cipher.final() ])
+
+    const encrypted = Buffer.concat([ cipher.update(`v1;${kind};${uid}`), cipher.final() ])
     const encryptedToken = Buffer.concat([ nonce, encrypted, cipher.getAuthTag() ])
 
     // Base64.urlsafe_encode64
