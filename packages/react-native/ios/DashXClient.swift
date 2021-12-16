@@ -10,7 +10,6 @@ class DashXClient {
     private var anonymousUid: String?
     private var uid: String?
     private var deviceToken: String?
-    private var accountType: String?
 
     private init() {
         generateAnonymousUid()
@@ -18,10 +17,6 @@ class DashXClient {
 
     func setDeviceToken(to: String) {
         self.deviceToken = to
-    }
-
-    func setAccountType(to: String) {
-        self.accountType = to
     }
 
     func setTargetEnvironment(to: String) {
@@ -64,7 +59,6 @@ class DashXClient {
         self.uid = optionsDictionary?["uid"]
 
         let identifyAccountInput = DashXGql.IdentifyAccountInput(
-            accountType: accountType,
             uid: optionsDictionary?["uid"],
             anonymousUid: anonymousUid,
             email: optionsDictionary?["email"],
@@ -93,13 +87,7 @@ class DashXClient {
     // MARK: -- track
 
     func track(_ event: String, withData: NSDictionary?) {
-        if accountType == nil {
-            DashXLog.d(tag: #function, "AccountType not set skipping track()")
-            return
-        }
-
         let trackEventInput = DashXGql.TrackEventInput(
-            accountType: accountType!,
             event: event,
             accountUid: uid,
             accountAnonymousUid: anonymousUid,
@@ -249,7 +237,7 @@ class DashXClient {
         _ reject: @escaping RCTPromiseRejectBlock
     ) {
         let addItemToCartInput  = DashXGql.AddItemToCartInput(
-            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid, itemId: itemId, pricingId: pricingId, quantity: quantity, reset: reset, custom: custom as? [String: JSONDecodable?]
+             accountUid: self.uid, accountAnonymousUid: self.anonymousUid, itemId: itemId, pricingId: pricingId, quantity: quantity, reset: reset, custom: custom as? [String: JSONDecodable?]
         )
 
         DashXLog.d(tag: #function, "Calling addItemToCart with \(addItemToCartInput)")
@@ -274,7 +262,7 @@ class DashXClient {
         _ reject: @escaping RCTPromiseRejectBlock
     ) {
         let fetchCartInput  = DashXGql.FetchCartInput(
-            accountType: self.accountType, accountUid: self.uid, accountAnonymousUid: self.anonymousUid
+            accountUid: self.uid, accountAnonymousUid: self.anonymousUid
         )
 
         DashXLog.d(tag: #function, "Calling fetchCart with \(fetchCartInput)")

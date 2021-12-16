@@ -25,7 +25,6 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
             reactContext,
             options.getString("publicKey")!!,
             options.getStringIfPresent("baseUri"),
-            options.getStringIfPresent("accountType"),
             options.getStringIfPresent("targetEnvironment"),
             options.getStringIfPresent("targetInstallation")
         )

@@ -14,9 +14,9 @@ class DashXClientInterceptor private constructor() {
     var reactApplicationContext: ReactApplicationContext? = null
     private val dashXNotificationFilter = "DASHX_PN_TYPE"
 
-    fun createDashXClient(reactApplicationContext: ReactApplicationContext, publicKey: String, baseURI: String?, accountType: String?, targetEnvironment: String?, targetInstallation: String?) {
+    fun createDashXClient(reactApplicationContext: ReactApplicationContext, publicKey: String, baseURI: String?, targetEnvironment: String?, targetInstallation: String?) {
         this.reactApplicationContext = reactApplicationContext
-        client = DashX(reactApplicationContext.applicationContext, publicKey!!, baseURI, accountType, targetEnvironment, targetInstallation)
+        client = DashX(reactApplicationContext.applicationContext, publicKey!!, baseURI, targetEnvironment, targetInstallation)
     }
 
     fun getDashXClient(): com.dashx.sdk.DashXClient {

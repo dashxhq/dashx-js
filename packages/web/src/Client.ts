@@ -24,8 +24,6 @@ class Client {
 
   accountUid: string | null = null
 
-  accountType: string
-
   targetInstallation?: string
 
   targetEnvironment?: string
@@ -36,10 +34,9 @@ class Client {
 
   baseUri: string
 
-  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql', targetEnvironment, targetInstallation, accountType = 'individual' }: ClientParams) {
+  constructor({ publicKey, baseUri = 'https://api.dashx.com/graphql', targetEnvironment, targetInstallation }: ClientParams) {
     this.baseUri = baseUri
     this.publicKey = publicKey
-    this.accountType = accountType
     this.targetEnvironment = targetEnvironment
     this.targetInstallation = targetInstallation
     this.context = generateContext()
@@ -89,7 +86,6 @@ class Client {
     }
 
     this.accountUid = options?.uid as string
-    this.accountType = options?.accountType as string
 
     const params = {
       uid: options?.uid,
@@ -110,7 +106,6 @@ class Client {
     const params = {
       event,
       data,
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -198,7 +193,6 @@ class Client {
     const params = {
       custom,
       ...options,
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -210,7 +204,6 @@ class Client {
   async applyCouponToCart(options: { couponCode: string }): Promise<any> {
     const params = {
       ...options,
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -222,7 +215,6 @@ class Client {
   async removeCouponFromCart(options: { couponCode: string }): Promise<any> {
     const params = {
       ...options,
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -233,7 +225,6 @@ class Client {
 
   async fetchCart(): Promise<any> {
     const params = {
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -244,7 +235,6 @@ class Client {
 
   async transferCart(): Promise<any> {
     const params = {
-      accountType: this.accountType,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
