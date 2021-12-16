@@ -165,7 +165,7 @@ class Client {
       throw new Error('Private key not set')
     }
 
-    const kind = options?.kind || 'regular';
+    const kind = options?.kind || 'regular'
     const nonce = crypto.randomBytes(12)
     const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(this.privateKey), nonce, {
       authTagLength: 16
