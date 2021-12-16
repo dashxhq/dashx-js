@@ -27,16 +27,18 @@ type DeliveryContent = {
 
 type IdentifyParams = Record<string, any>
 
+type GenerateIdentityTokenOptions = {
+  kind?: string,
+}
+
 type CheckoutCartParams = {
   anonymousUid: string,
-  accountType: string,
   gateway: string,
   gatewayOptions: Record<string, any>
 }
 
 type CapturePaymentParams = {
   anonymousUid: string,
-  accountType: string,
   gatewayResponse: Record<string, any>
 }
 
@@ -156,16 +158,18 @@ class Client {
     return this.makeHttpRequest(identifyAccountRequest, params)
   }
 
-  generateIdentityToken(uid: string): string {
+  generateIdentityToken(uid: string, options?: GenerateIdentityTokenOptions): string {
     if (!this.privateKey) {
       throw new Error('Private key not set')
     }
 
+    const kind = options?.kind || 'regular'
     const nonce = crypto.randomBytes(12)
     const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(this.privateKey), nonce, {
       authTagLength: 16
     })
-    const encrypted = Buffer.concat([ cipher.update(uid), cipher.final() ])
+
+    const encrypted = Buffer.concat([ cipher.update(`v1;${kind};${uid}`), cipher.final() ])
     const encryptedToken = Buffer.concat([ nonce, encrypted, cipher.getAuthTag() ])
 
     // Base64.urlsafe_encode64
@@ -255,12 +259,11 @@ class Client {
 
   async checkoutCart(
     uid: string,
-    { anonymousUid, accountType, gateway, gatewayOptions } : CheckoutCartParams
+    { anonymousUid, gateway, gatewayOptions } : CheckoutCartParams
   ): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
-      accountType,
       gatewayIdentifier: gateway,
       gatewayOptions
     }
@@ -271,12 +274,11 @@ class Client {
 
   async capturePayment(
     uid: string,
-    { anonymousUid, accountType, gatewayResponse } : CapturePaymentParams
+    { anonymousUid, gatewayResponse } : CapturePaymentParams
   ): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
-      accountType,
       gatewayResponse
     }
 

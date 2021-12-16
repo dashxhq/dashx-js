@@ -49,7 +49,6 @@ public enum DashXGql {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
-    ///   - accountType
     ///   - accountUid
     ///   - accountAnonymousUid
     ///   - itemId
@@ -57,17 +56,8 @@ public enum DashXGql {
     ///   - quantity
     ///   - reset
     ///   - custom
-    public init(accountType: Swift.Optional<String?> = nil, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, itemId: UUID, pricingId: UUID, quantity: Decimal, reset: Bool, custom: Swift.Optional<JSON?> = nil) {
-      graphQLMap = ["accountType": accountType, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "itemId": itemId, "pricingId": pricingId, "quantity": quantity, "reset": reset, "custom": custom]
-    }
-
-    public var accountType: Swift.Optional<String?> {
-      get {
-        return graphQLMap["accountType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-      }
-      set {
-        graphQLMap.updateValue(newValue, forKey: "accountType")
-      }
+    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, itemId: UUID, pricingId: UUID, quantity: Decimal, reset: Bool, custom: Swift.Optional<JSON?> = nil) {
+      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "itemId": itemId, "pricingId": pricingId, "quantity": quantity, "reset": reset, "custom": custom]
     }
 
     public var accountUid: Swift.Optional<String?> {
@@ -267,20 +257,10 @@ public enum DashXGql {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
-    ///   - accountType
     ///   - accountUid
     ///   - accountAnonymousUid
-    public init(accountType: Swift.Optional<String?> = nil, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil) {
-      graphQLMap = ["accountType": accountType, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid]
-    }
-
-    public var accountType: Swift.Optional<String?> {
-      get {
-        return graphQLMap["accountType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-      }
-      set {
-        graphQLMap.updateValue(newValue, forKey: "accountType")
-      }
+    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil) {
+      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid]
     }
 
     public var accountUid: Swift.Optional<String?> {
@@ -385,7 +365,6 @@ public enum DashXGql {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
-    ///   - accountType
     ///   - uid
     ///   - anonymousUid
     ///   - email
@@ -393,17 +372,8 @@ public enum DashXGql {
     ///   - name
     ///   - firstName
     ///   - lastName
-    public init(accountType: Swift.Optional<String?> = nil, uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
-      graphQLMap = ["accountType": accountType, "uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName]
-    }
-
-    public var accountType: Swift.Optional<String?> {
-      get {
-        return graphQLMap["accountType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-      }
-      set {
-        graphQLMap.updateValue(newValue, forKey: "accountType")
-      }
+    public init(uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
+      graphQLMap = ["uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName]
     }
 
     public var uid: Swift.Optional<String?> {
@@ -682,22 +652,12 @@ public enum DashXGql {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
-    ///   - accountType
     ///   - event
     ///   - accountUid
     ///   - accountAnonymousUid
     ///   - data
-    public init(accountType: String, event: String, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, data: Swift.Optional<JSON?> = nil) {
-      graphQLMap = ["accountType": accountType, "event": event, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "data": data]
-    }
-
-    public var accountType: String {
-      get {
-        return graphQLMap["accountType"] as! String
-      }
-      set {
-        graphQLMap.updateValue(newValue, forKey: "accountType")
-      }
+    public init(event: String, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, data: Swift.Optional<JSON?> = nil) {
+      graphQLMap = ["event": event, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "data": data]
     }
 
     public var event: String {
