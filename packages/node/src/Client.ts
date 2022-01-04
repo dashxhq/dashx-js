@@ -5,7 +5,7 @@ import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest, capturePaymentRequest } from './graphql'
-import { parseFilterObject, createParcel } from './utils'
+import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
 export type Parcel = {
@@ -13,15 +13,6 @@ export type Parcel = {
   cc?: string[],
   bcc?: string[],
   data?: Record<string, any>
-}
-
-type DeliveryContent = {
-  from: string,
-  title?: string,
-  plainBody?: string,
-  htmlBody?: string,
-  body?: string,
-  replyTo?: string
 }
 
 type IdentifyParams = Record<string, any>
@@ -92,44 +83,19 @@ class Client {
     return Promise.reject(response.errors)
   }
 
-  deliver(urn: string, parcel: Parcel): Promise<any>
-  deliver(deliverOptions: Parcel & DeliveryContent): Promise<any>
-  async deliver(
-    urn: string | Parcel & DeliveryContent, parcel?: Parcel
-  ): Promise<any> {
-    let params = {}
+  async deliver(urn: string, parcel?: Parcel): Promise<any> {
+    const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
 
-    if (typeof urn === 'string' && typeof parcel !== 'undefined') {
-      if (!urn.includes('/')) {
-        throw new Error('URN must be of form: {contentType}/{content}')
-      }
+    const { to = [], cc = [], bcc = [], data = {} } = parcel || {}
 
-      const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
-
-      params = {
-        contentTypeIdentifier,
-        contentIdentifier,
-        attachments: [],
-        ...createParcel(parcel)
-      }
-    } else {
-      const deliverOptions = urn as Parcel & DeliveryContent
-
-      const deliveryContent = {
-        from: deliverOptions.from,
-        plainBody: deliverOptions.htmlBody,
-        htmlBody: deliverOptions.plainBody,
-        body: deliverOptions.body,
-        replyTo: deliverOptions.replyTo,
-        title: deliverOptions.title,
-        attachments: []
-      }
-
-      params = {
-        content: deliveryContent,
-        attachments: [],
-        ...createParcel(deliverOptions)
-      }
+    const params = {
+      contentTypeIdentifier,
+      contentIdentifier,
+      to: Array.isArray(to) ? to : [ to ],
+      cc,
+      bcc,
+      data,
+      attachments: [],
     }
 
     const response = await this.makeHttpRequest(createDeliveryRequest, params)

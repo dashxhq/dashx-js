@@ -40,24 +40,20 @@ const dx = DashX.createClient();
 
 ### Deliver
 
+`deliver` takes two parameters like so:
+
 ```javascript
-dx.deliver({
-  to: 'John Doe <john@example.com>',
-  body: 'Hello World!'
+dx.deliver('email/welcome', {
+  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com']
 });
 ```
 
-#### Using `contentIdentifier`
+The first parameter, `contentUrn`, can take the following forms:
+- `<content-type>/<content>` This is the *Content URN*, which points to a piece of Content in Clay. Example: `onboarding-email/welcome` or `email/welcome`
+- `<content-type>` This is the *Content Type URN*, which points to a Content Type in Clay. Example: `onboarding-email` or `email`
+- `<system-content-type>` This is the *System Content Type URN*, which is one of `email`, `push`, `sms`, `universal`. Useful if you don't have any templates set up in Clay, or want to send an ad-hoc message.
 
-`deliver` can take two parameters like so:
-
-```javascript
-dx.deliver('onboarding' /* content identifier */, {
-  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], /* parcelObject */
-});
-```
-
-`parcelObject` can include the following keys:
+The second parameter, `parcelObject`, can include the following keys:
 
 |Name|Type|
 |:---:|:--:|
@@ -65,26 +61,6 @@ dx.deliver('onboarding' /* content identifier */, {
 |**`cc`**|`array of string`|
 |**`bcc`**|`array of string`|
 |**`data`**|`object`|
-
-#### Using `content`
-
-```javascript
-dx.deliver({
-  plainBody: 'Welcome to Onboarding',
-  to: ['John Doe <john@example.com>', 'admin@example.com', 'sales@example.com'],
-} /* deliveryOptions */ );
-```
-
-In addition to all the keys of `parcelObject`, `deliveryOptions` can include these keys:
-
-|Name|Type|
-|:---:|:--:|
-|**`title`**|`string`|
-|**`body`**|`string`|
-|**`plainBody`**|`string`|
-|**`htmlBody`**|`string`|
-|**`from`**|`string`|
-|**`replyTo`**|`string`|
 
 ### Identify
 

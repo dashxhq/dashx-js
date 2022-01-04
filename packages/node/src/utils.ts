@@ -1,5 +1,3 @@
-import type { Parcel } from './Client'
-
 export function parseFilterObject(filterObject: Record<string, any> = {}) {
   const filterBy: Record<string, any> = {}
 
@@ -17,12 +15,3 @@ export function parseFilterObject(filterObject: Record<string, any> = {}) {
 
   return filterBy
 }
-
-export const createParcel = (
-  { to = [], cc = [], bcc = [], data = {} } : Parcel
-) => ({
-  to: Array.isArray(to) ? to : [ to ],
-  cc,
-  bcc,
-  data
-})
