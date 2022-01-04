@@ -12,7 +12,6 @@ export type Parcel = {
   to: string[] | string,
   cc?: string[],
   bcc?: string[],
-  channel?: 'email' | 'sms' | 'push',
   data?: Record<string, any>
 }
 

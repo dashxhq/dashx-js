@@ -65,14 +65,13 @@ dx.deliver('onboarding' /* content identifier */, {
 |**`cc`**|`array of string`|
 |**`bcc`**|`array of string`|
 |**`data`**|`object`|
-|**`channel`**|`'email' or 'sms' or 'push'`|
 
 #### Using `content`
 
 ```javascript
 dx.deliver({
   plainBody: 'Welcome to Onboarding',
-  to: ['John Doe <john@example.com>','admin@example.com', 'sales@example.com'], 
+  to: ['John Doe <john@example.com>', 'admin@example.com', 'sales@example.com'],
 } /* deliveryOptions */ );
 ```
 
@@ -223,7 +222,7 @@ dx.fetchItem('item_identifier');
 $ lerna bootstrap
 ```
 
-- To start dev server with hot reload: 
+- To start dev server with hot reload:
 
 ```sh
 $ yarn start
