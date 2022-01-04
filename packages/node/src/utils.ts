@@ -19,11 +19,10 @@ export function parseFilterObject(filterObject: Record<string, any> = {}) {
 }
 
 export const createParcel = (
-  { to = [], cc = [], bcc = [], data = {}, channel } : Parcel
+  { to = [], cc = [], bcc = [], data = {} } : Parcel
 ) => ({
   to: Array.isArray(to) ? to : [ to ],
   cc,
   bcc,
-  data,
-  channel: channel?.toUpperCase()
+  data
 })
