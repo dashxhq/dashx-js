@@ -78,21 +78,31 @@ class Client {
 
   async deliver(urn: string, options?: Record<string, any>): Promise<any> {
     const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
-    const { to, cc, bcc, content, ...rest } = options || {}
+    const { content, to, cc, bcc, ...rest } = options || {}
+
+    if (!content.to && !to) {
+      throw new Error('"to" must be specified')
+    }
 
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
-      content: {
-        to: Array.isArray(to) ? to : [ to ],
-        cc,
-        bcc,
-        ...content
-      },
+      content,
       ...rest
     }
 
+    params.content.to = content.to ? [ content.to ].flat() : [ to ].flat()
+
+    if (content.cc || cc) {
+      params.content.cc = content.cc ? [ content.cc ].flat() : [ cc ].flat()
+    }
+
+    if (content.bcc || bcc) {
+      params.content.bcc = content.bcc ? [ content.bcc ].flat() : [ bcc ].flat()
+    }
+
     const response = await this.makeHttpRequest(createDeliveryRequest, params)
+
     return response?.createDelivery
   }
 
