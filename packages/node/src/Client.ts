@@ -78,17 +78,18 @@ class Client {
 
   async deliver(urn: string, options?: Record<string, any>): Promise<any> {
     const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
-    const { fields = {}, data = {} } = options || {}
+    const { to, cc, bcc, content, ...rest } = options || {}
 
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
-      content: fields,
-      data,
-      to: [],
-      cc: [],
-      bcc: [],
-      attachments: []
+      content: {
+        to: Array.isArray(to) ? to : [ to ],
+        cc,
+        bcc,
+        ...content
+      },
+      ...rest
     }
 
     const response = await this.makeHttpRequest(createDeliveryRequest, params)
