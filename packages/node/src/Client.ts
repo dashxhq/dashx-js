@@ -80,10 +80,6 @@ class Client {
     const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
     const { content, to, cc, bcc, ...rest } = options || {}
 
-    if (!content.to && !to) {
-      throw new Error('"to" must be specified')
-    }
-
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
@@ -91,7 +87,9 @@ class Client {
       ...rest
     }
 
-    params.content.to = content.to ? [ content.to ].flat() : [ to ].flat()
+    if (content.to || to) {
+      params.content.to = content.to ? [ content.to ].flat() : [ to ].flat()
+    }
 
     if (content.cc || cc) {
       params.content.cc = content.cc ? [ content.cc ].flat() : [ cc ].flat()
