@@ -8,13 +8,6 @@ import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addCo
 import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
-export type Parcel = {
-  to: string[] | string,
-  cc?: string[],
-  bcc?: string[],
-  data?: Record<string, any>
-}
-
 type IdentifyParams = Record<string, any>
 
 type GenerateIdentityTokenOptions = {
@@ -83,17 +76,14 @@ class Client {
     return Promise.reject(response.errors)
   }
 
-  async deliver(urn: string, parcel?: Parcel): Promise<any> {
+  async deliver(urn: string, options?: Record<string, any>): Promise<any> {
     const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
-
-    const { to = [], cc = [], bcc = [], data = {} } = parcel || {}
-
-    const content = { to: Array.isArray(to) ? to : [ to ], cc, bcc }
+    const { fields = {}, data = {} } = options || {}
 
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
-      content,
+      content: fields,
       data,
       to: [],
       cc: [],
