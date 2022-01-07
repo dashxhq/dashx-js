@@ -8,17 +8,10 @@ import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addCo
 import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
-export type Parcel = {
-  to: string[] | string,
-  cc?: string[],
-  bcc?: string[],
-  data?: Record<string, any>
-}
-
 type IdentifyParams = Record<string, any>
 
 type GenerateIdentityTokenOptions = {
-  kind?: string,
+  kind?: string
 }
 
 type CheckoutCartParams = {
@@ -83,22 +76,31 @@ class Client {
     return Promise.reject(response.errors)
   }
 
-  async deliver(urn: string, parcel?: Parcel): Promise<any> {
+  async deliver(urn: string, options?: Record<string, any>): Promise<any> {
     const [ contentTypeIdentifier, contentIdentifier ] = urn.split('/')
-
-    const { to = [], cc = [], bcc = [], data = {} } = parcel || {}
+    const { content, to, cc, bcc, ...rest } = options || {}
 
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
-      to: Array.isArray(to) ? to : [ to ],
-      cc,
-      bcc,
-      data,
-      attachments: [],
+      content,
+      ...rest
+    }
+
+    if (content.to || to) {
+      params.content.to = content.to ? [ content.to ].flat() : [ to ].flat()
+    }
+
+    if (content.cc || cc) {
+      params.content.cc = content.cc ? [ content.cc ].flat() : [ cc ].flat()
+    }
+
+    if (content.bcc || bcc) {
+      params.content.bcc = content.bcc ? [ content.bcc ].flat() : [ bcc ].flat()
     }
 
     const response = await this.makeHttpRequest(createDeliveryRequest, params)
+
     return response?.createDelivery
   }
 

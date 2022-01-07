@@ -53,14 +53,15 @@ The first parameter, `contentUrn`, can take the following forms:
 - `<content-type>` This is the *Content Type URN*, which points to a Content Type in Clay. Example: `onboarding-email` or `email`
 - `<system-content-type>` This is the *System Content Type URN*, which is one of `email`, `push`, `sms`, `universal`. Useful if you don't have any templates set up in Clay, or want to send an ad-hoc message.
 
-The second parameter, `parcelObject`, can include the following keys:
+The second parameter, `options`, can include the following keys:
 
-|Name|Type|
-|:---:|:--:|
-|**`to`**|`string or array of string`|
-|**`cc`**|`array of string`|
-|**`bcc`**|`array of string`|
-|**`data`**|`object`|
+|Name|Type|Specifies|
+|:---:|:--:|:--:|
+|**`to`**|`string or array of string`|List of recipients|
+|**`cc`**|`string or array of string`|List of 'cc' recipients (only applies to email)|
+|**`bcc`**|`string or array of string`|List of 'bcc' recipients (only applies to email)|
+|**`content`**|`object`|Can be used to specify ad-hoc `content` or override the fields of content fetched from Clay|
+|**`data`**|`object`|Can be any valid json to parse the content|
 
 ### Identify
 
