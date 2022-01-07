@@ -18,7 +18,7 @@ export type Parcel = {
 type IdentifyParams = Record<string, any>
 
 type GenerateIdentityTokenOptions = {
-  kind?: string,
+  kind?: string
 }
 
 type CheckoutCartParams = {
@@ -88,14 +88,17 @@ class Client {
 
     const { to = [], cc = [], bcc = [], data = {} } = parcel || {}
 
+    const content = { to: Array.isArray(to) ? to : [ to ], cc, bcc }
+
     const params = {
       contentTypeIdentifier,
       contentIdentifier,
-      to: Array.isArray(to) ? to : [ to ],
-      cc,
-      bcc,
+      content,
       data,
-      attachments: [],
+      to: [],
+      cc: [],
+      bcc: [],
+      attachments: []
     }
 
     const response = await this.makeHttpRequest(createDeliveryRequest, params)
