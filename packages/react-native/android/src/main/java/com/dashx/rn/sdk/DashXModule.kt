@@ -185,4 +185,9 @@ class DashXModule(private val reactContext: ReactApplicationContext) : ReactCont
             }
         )
     }
+    
+    @ReactMethod
+    fun subscribe() {
+        interceptor.getDashXClient().subscribe()
+    }
 }

@@ -11,12 +11,18 @@ class DashXClient {
     private var uid: String?
     private var deviceToken: String?
 
+    private var mustSubscribe: Bool = false;
+
     private init() {
         generateAnonymousUid()
     }
 
     func setDeviceToken(to: String) {
         self.deviceToken = to
+
+        if (self.mustSubscribe) {
+          self.subscribe()
+        }
     }
 
     func setTargetEnvironment(to: String) {
@@ -116,9 +122,12 @@ class DashXClient {
     // MARK: -- subscribe
 
     func subscribe() {
-        if deviceToken == nil || ConfigInterceptor.shared.identityToken == nil {
+        if deviceToken == nil {
+            self.mustSubscribe = true
             return
         }
+
+        self.mustSubscribe = false
 
         let deviceKind = "IOS"
 
