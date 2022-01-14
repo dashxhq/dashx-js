@@ -141,4 +141,9 @@ class DashX: RCTEventEmitter {
         )
     }
 
+    @objc
+    func subscribe() {
+        dashXClient.subscribe()
+    }
+
 }
