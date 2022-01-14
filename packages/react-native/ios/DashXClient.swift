@@ -132,7 +132,8 @@ class DashXClient {
         let deviceKind = "IOS"
 
         let subscribeContactInput  = DashXGql.SubscribeContactInput(
-            uid: uid!,
+            accountUid: uid,
+            accountAnonymousUid: anonymousUid!,
             name: deviceKind,
             kind: .ios,
             value: deviceToken!
