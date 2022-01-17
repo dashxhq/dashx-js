@@ -97,7 +97,7 @@ class DashXClient {
             event: event,
             accountUid: uid,
             accountAnonymousUid: anonymousUid,
-            data: withData as? [String: Any?]
+            data: withData as? [String: JSONDecodable?]
         )
 
         DashXLog.d(tag: #function, "Calling track with \(trackEventInput)")
