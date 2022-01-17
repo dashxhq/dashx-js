@@ -12,4 +12,5 @@ RCT_EXTERN_METHOD(searchContent:(NSString *)contentType options:(NSDictionary *)
 RCT_EXTERN_METHOD(fetchContent:(NSString *)urn options:(NSDictionary *)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(addItemToCart:(NSString *)itemId pricingId:(NSString *)pricingId quantity:(NSString *)quantity reset:(BOOL)reset custom:(NSDictionary *)custom resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(fetchCart:resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(subscribe)
 @end

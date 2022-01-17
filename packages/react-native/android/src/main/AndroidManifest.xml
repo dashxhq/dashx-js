@@ -2,7 +2,7 @@
           package="com.dashx.rn.sdk">
 
   <application>
-    <service android:name="com.dashx.reactnative.DashXMessagingService">
+    <service android:name="com.dashx.rn.sdk.DashXMessagingService">
       <intent-filter android:priority="1">
         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
       </intent-filter>

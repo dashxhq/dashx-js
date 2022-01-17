@@ -97,7 +97,7 @@ class DashXClient {
             event: event,
             accountUid: uid,
             accountAnonymousUid: anonymousUid,
-            data: withData as? [String: Any?]
+            data: withData as? [String: JSONDecodable?]
         )
 
         DashXLog.d(tag: #function, "Calling track with \(trackEventInput)")
@@ -132,7 +132,8 @@ class DashXClient {
         let deviceKind = "IOS"
 
         let subscribeContactInput  = DashXGql.SubscribeContactInput(
-            uid: uid!,
+            accountUid: uid,
+            accountAnonymousUid: anonymousUid!,
             name: deviceKind,
             kind: .ios,
             value: deviceToken!

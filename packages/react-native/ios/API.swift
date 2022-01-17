@@ -553,20 +553,38 @@ public enum DashXGql {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
-    ///   - uid
+    ///   - accountUid
+    ///   - accountAnonymousUid
     ///   - name
     ///   - kind
     ///   - value
-    public init(uid: String, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String) {
-      graphQLMap = ["uid": uid, "name": name, "kind": kind, "value": value]
+    ///   - userAgent
+    ///   - osName
+    ///   - osVersion
+    ///   - deviceModel
+    ///   - deviceManufacturer
+    ///   - deviceUid
+    ///   - deviceAdvertisingUid
+    ///   - isDeviceAdTrackingEnabled
+    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String, userAgent: Swift.Optional<String?> = nil, osName: Swift.Optional<String?> = nil, osVersion: Swift.Optional<String?> = nil, deviceModel: Swift.Optional<String?> = nil, deviceManufacturer: Swift.Optional<String?> = nil, deviceUid: Swift.Optional<String?> = nil, deviceAdvertisingUid: Swift.Optional<String?> = nil, isDeviceAdTrackingEnabled: Swift.Optional<Bool?> = nil) {
+      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "name": name, "kind": kind, "value": value, "userAgent": userAgent, "osName": osName, "osVersion": osVersion, "deviceModel": deviceModel, "deviceManufacturer": deviceManufacturer, "deviceUid": deviceUid, "deviceAdvertisingUid": deviceAdvertisingUid, "isDeviceAdTrackingEnabled": isDeviceAdTrackingEnabled]
     }
 
-    public var uid: String {
+    public var accountUid: Swift.Optional<String?> {
       get {
-        return graphQLMap["uid"] as! String
+        return graphQLMap["accountUid"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
       }
       set {
-        graphQLMap.updateValue(newValue, forKey: "uid")
+        graphQLMap.updateValue(newValue, forKey: "accountUid")
+      }
+    }
+
+    public var accountAnonymousUid: Swift.Optional<String?> {
+      get {
+        return graphQLMap["accountAnonymousUid"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "accountAnonymousUid")
       }
     }
 
@@ -596,43 +614,119 @@ public enum DashXGql {
         graphQLMap.updateValue(newValue, forKey: "value")
       }
     }
+
+    public var userAgent: Swift.Optional<String?> {
+      get {
+        return graphQLMap["userAgent"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "userAgent")
+      }
+    }
+
+    public var osName: Swift.Optional<String?> {
+      get {
+        return graphQLMap["osName"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "osName")
+      }
+    }
+
+    public var osVersion: Swift.Optional<String?> {
+      get {
+        return graphQLMap["osVersion"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "osVersion")
+      }
+    }
+
+    public var deviceModel: Swift.Optional<String?> {
+      get {
+        return graphQLMap["deviceModel"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "deviceModel")
+      }
+    }
+
+    public var deviceManufacturer: Swift.Optional<String?> {
+      get {
+        return graphQLMap["deviceManufacturer"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "deviceManufacturer")
+      }
+    }
+
+    public var deviceUid: Swift.Optional<String?> {
+      get {
+        return graphQLMap["deviceUid"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "deviceUid")
+      }
+    }
+
+    public var deviceAdvertisingUid: Swift.Optional<String?> {
+      get {
+        return graphQLMap["deviceAdvertisingUid"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "deviceAdvertisingUid")
+      }
+    }
+
+    public var isDeviceAdTrackingEnabled: Swift.Optional<Bool?> {
+      get {
+        return graphQLMap["isDeviceAdTrackingEnabled"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "isDeviceAdTrackingEnabled")
+      }
+    }
   }
 
   public enum ContactKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
     public typealias RawValue = String
-    case secondaryEmail
-    case secondaryPhone
+    case email
+    case phone
     case ios
     case android
+    case web
     /// Auto generated constant for unknown enum values
     case __unknown(RawValue)
 
     public init?(rawValue: RawValue) {
       switch rawValue {
-        case "SECONDARY_EMAIL": self = .secondaryEmail
-        case "SECONDARY_PHONE": self = .secondaryPhone
+        case "EMAIL": self = .email
+        case "PHONE": self = .phone
         case "IOS": self = .ios
         case "ANDROID": self = .android
+        case "WEB": self = .web
         default: self = .__unknown(rawValue)
       }
     }
 
     public var rawValue: RawValue {
       switch self {
-        case .secondaryEmail: return "SECONDARY_EMAIL"
-        case .secondaryPhone: return "SECONDARY_PHONE"
+        case .email: return "EMAIL"
+        case .phone: return "PHONE"
         case .ios: return "IOS"
         case .android: return "ANDROID"
+        case .web: return "WEB"
         case .__unknown(let value): return value
       }
     }
 
     public static func == (lhs: ContactKind, rhs: ContactKind) -> Bool {
       switch (lhs, rhs) {
-        case (.secondaryEmail, .secondaryEmail): return true
-        case (.secondaryPhone, .secondaryPhone): return true
+        case (.email, .email): return true
+        case (.phone, .phone): return true
         case (.ios, .ios): return true
         case (.android, .android): return true
+        case (.web, .web): return true
         case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
         default: return false
       }
@@ -640,10 +734,11 @@ public enum DashXGql {
 
     public static var allCases: [ContactKind] {
       return [
-        .secondaryEmail,
-        .secondaryPhone,
+        .email,
+        .phone,
         .ios,
         .android,
+        .web,
       ]
     }
   }
