@@ -131,6 +131,14 @@ class DashXClient {
 
         let deviceKind = "IOS"
 
+        let preferences = UserDefaults.standard
+        let deviceTokenKey = Constants.USER_PREFERENCES_KEY_DEVICE_TOKEN
+
+        if preferences.string(forKey: deviceTokenKey) == deviceToken {
+            DashXLog.d(tag: #function, "Already subscribed: \(String(describing: deviceToken))")
+            return
+        }
+        
         let subscribeContactInput  = DashXGql.SubscribeContactInput(
             accountUid: uid,
             accountAnonymousUid: anonymousUid!,
@@ -146,7 +154,10 @@ class DashXClient {
         Network.shared.apollo.perform(mutation: subscribeContactMutation) { result in
           switch result {
           case .success(let graphQLResult):
-            DashXLog.d(tag: #function, "Sent subscribe with \(String(describing: graphQLResult))")
+              if graphQLResult.data != nil {
+                    preferences.set(graphQLResult.data?.subscribeContact.value, forKey: deviceTokenKey)
+                    DashXLog.d(tag: #function, "Sent subscribe with \(String(describing: graphQLResult))")
+              }
           case .failure(let error):
             DashXLog.d(tag: #function, "Encountered an error during subscribe(): \(error)")
           }

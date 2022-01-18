@@ -2169,6 +2169,7 @@ public enum DashXGql {
         subscribeContact(input: $input) {
           __typename
           id
+          value
         }
       }
       """
@@ -2220,6 +2221,7 @@ public enum DashXGql {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(UUID.self))),
+            GraphQLField("value", type: .nonNull(.scalar(String.self))),
           ]
         }
 
@@ -2229,8 +2231,8 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID) {
-          self.init(unsafeResultMap: ["__typename": "Contact", "id": id])
+        public init(id: UUID, value: String) {
+          self.init(unsafeResultMap: ["__typename": "Contact", "id": id, "value": value])
         }
 
         public var __typename: String {
@@ -2248,6 +2250,15 @@ public enum DashXGql {
           }
           set {
             resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var value: String {
+          get {
+            return resultMap["value"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "value")
           }
         }
       }
