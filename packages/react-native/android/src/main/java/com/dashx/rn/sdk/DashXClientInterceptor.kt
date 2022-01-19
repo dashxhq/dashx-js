@@ -16,35 +16,37 @@ class DashXClientInterceptor private constructor() {
 
     fun createDashXClient(reactApplicationContext: ReactApplicationContext, publicKey: String, baseURI: String?, targetEnvironment: String?, targetInstallation: String?) {
         this.reactApplicationContext = reactApplicationContext
-        client = DashX(reactApplicationContext.applicationContext, publicKey!!, baseURI, targetEnvironment, targetInstallation)
+        client = DashX(reactApplicationContext.applicationContext, publicKey, baseURI, targetEnvironment, targetInstallation)
     }
 
-    fun getDashXClient(): com.dashx.sdk.DashXClient {
-        if (client == null) {
-            throw Exception("DashXClient not initialised")
-        }
-
-        return client!!
+    fun getDashXClient(): com.dashx.sdk.DashXClient? {
+        return client
     }
 
     fun handleMessage(remoteMessage: RemoteMessage) {
-        val notification = remoteMessage.notification
+        val notificationData = remoteMessage.getData()
+
+        DashXLog.d(tag, "Notification Data: " + notificationData)
+
         val eventProperties: WritableMap = Arguments.createMap()
-        DashXLog.d(tag, "Data: " + remoteMessage.data)
 
         try {
-            eventProperties.putMap("data", convertToWritableMap(remoteMessage.data, listOf(dashXNotificationFilter)))
+            eventProperties.putMap("data", convertToWritableMap(notificationData, listOf(dashXNotificationFilter)))
         } catch (e: Exception) {
-            DashXLog.d(tag, "Encountered an error while parsing notification data")
             e.printStackTrace()
+            DashXLog.d(tag, "Encountered an error while parsing notification data.")
         }
+
+        val notification = remoteMessage.getNotification()
 
         if (notification != null) {
             val notificationProperties: WritableMap = Arguments.createMap()
-            notificationProperties.putString("title", notification.title)
-            notificationProperties.putString("body", notification.body)
+            notificationProperties.putString("title", notification.getTitle())
+            notificationProperties.putString("body", notification.getBody())
+
             eventProperties.putMap("notification", notificationProperties)
-            DashXLog.d(tag, "onMessageReceived: " + notification.title)
+
+            DashXLog.d(tag, "onMessageReceived with Title: " + notification.getTitle() + " and Body: " + notification.getBody())
         }
 
         sendJsEvent("messageReceived", eventProperties)
