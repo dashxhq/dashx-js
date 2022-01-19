@@ -10,8 +10,11 @@ class DashXMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        dashXClient.setDeviceToken(token)
         DashXLog.d(tag, "onNewToken: $token")
+
+        if (dashXClient != null) {
+            dashXClient.setDeviceToken(token)
+        }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
