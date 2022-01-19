@@ -11,13 +11,18 @@ class DashXExceptionHandler(private val mainExceptionHandler: Thread.UncaughtExc
                 return
             }
 
-            val dashXExceptionHandler = DashXExceptionHandler(defaultExceptionHandler)
-            Thread.setDefaultUncaughtExceptionHandler(dashXExceptionHandler)
+            if (defaultExceptionHandler != null) {
+                val dashXExceptionHandler = DashXExceptionHandler(defaultExceptionHandler)
+                Thread.setDefaultUncaughtExceptionHandler(dashXExceptionHandler)
+            }
         }
     }
 
     override fun uncaughtException(thread: Thread, exception: Throwable) {
-        dashXClient.trackAppCrashed(exception)
+        if (dashXClient != null) {
+            dashXClient.trackAppCrashed(exception)
+        }
+
         mainExceptionHandler.uncaughtException(thread, exception)
     }
 }
