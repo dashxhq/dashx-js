@@ -119,6 +119,18 @@ class DashXClient {
 
         track(Constants.INTERNAL_EVENT_APP_SCREEN_VIEWED, withData: properties?.merging([ "name": screenName], uniquingKeysWith: { (_, new) in new }) as NSDictionary?)
     }
+
+    // https://stackoverflow.com/a/11197770
+    func getDeviceModel() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        return machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8, value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+    }
+
     // MARK: -- subscribe
 
     func subscribe() {
@@ -128,8 +140,6 @@ class DashXClient {
         }
 
         self.mustSubscribe = false
-
-        let deviceKind = "IOS"
 
         let preferences = UserDefaults.standard
         let deviceTokenKey = Constants.USER_PREFERENCES_KEY_DEVICE_TOKEN
@@ -142,9 +152,13 @@ class DashXClient {
         let subscribeContactInput  = DashXGql.SubscribeContactInput(
             accountUid: uid,
             accountAnonymousUid: anonymousUid!,
-            name: deviceKind,
+            name: UIDevice.current.model,
             kind: .ios,
-            value: deviceToken!
+            value: deviceToken!,
+            osName: UIDevice.current.systemName,
+            osVersion: UIDevice.current.systemVersion,
+            deviceModel: getDeviceModel(),
+            deviceManufacturer: "Apple"
         )
 
         DashXLog.d(tag: #function, "Calling subscribe with \(subscribeContactInput)")
