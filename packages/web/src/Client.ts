@@ -259,7 +259,7 @@ class Client {
     }
 
     const response = await this.makeHttpRequest(saveStoredPreferencesRequest, params)
-    return response?.saveStoredPreferences
+    return response?.saveStoredPreferences.preferenceData
   }
 }
 
