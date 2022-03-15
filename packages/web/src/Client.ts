@@ -1,7 +1,7 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
-import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest } from './graphql'
+import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest, fetchStoredPreferencesRequest, saveStoredPreferencesRequest } from './graphql'
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
@@ -241,6 +241,25 @@ class Client {
 
     const response = await this.makeHttpRequest(transferCartRequest, params)
     return response?.transferCart
+  }
+
+  async fetchStoredPreferences(uid: string): Promise<any> {
+    const params = {
+      accountUid: uid
+    }
+
+    const response = await this.makeHttpRequest(fetchStoredPreferencesRequest, params)
+    return response?.fetchStoredPreferences.preferenceData
+  }
+
+  async saveStoredPreferences(uid: string, preferenceData: any): Promise<any> {
+    const params = {
+      accountUid: uid,
+      preferenceData
+    }
+
+    const response = await this.makeHttpRequest(saveStoredPreferencesRequest, params)
+    return response?.saveStoredPreferences
   }
 }
 
