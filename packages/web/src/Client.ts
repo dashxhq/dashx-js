@@ -249,7 +249,7 @@ class Client {
     }
 
     const response = await this.makeHttpRequest(fetchStoredPreferencesRequest, params)
-    return response?.fetchStoredPreferences
+    return response?.fetchStoredPreferences.preferenceData
   }
 
   async saveStoredPreferences(uid: string, preferenceData: any): Promise<any> {
@@ -259,7 +259,7 @@ class Client {
     }
 
     const response = await this.makeHttpRequest(saveStoredPreferencesRequest, params)
-    return response?.saveStoredPreferences.preferenceData
+    return response?.saveStoredPreferences
   }
 }
 
