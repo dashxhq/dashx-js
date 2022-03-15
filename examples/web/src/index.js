@@ -22,6 +22,10 @@ dx.searchContent('page', { returnType: 'all', limit: 10 })
   .then(console.log);
 
 dx.fetchContent('page/new').then(console.log);
+dx.fetchStoredPreferences("0111c6f9-e8c8-492e-aa94-678b76bd3dc5").then((res) => {
+  const prefData = res.preferenceData
+  dx.saveStoredPreferences("0111c6f9-e8c8-492e-aa94-678b76bd3dc5", prefData).then(console.log)
+})
 
 ReactDOM.render(
   <React.StrictMode>
