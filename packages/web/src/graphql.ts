@@ -147,25 +147,14 @@ export const saveContactsRequest = `
       contacts {
         id
         accountId
-        environmentId
-        isAccountAnonymous
         name
         kind
         value
         unverifiedValue
         verifiedAt
-        verificationDigest
-        verificationExpiresAt
         status
-        userAgent
-        osName
-        osVersion
-        deviceModel
-        deviceManufacturer
-        deviceUid
-        deviceAdvertisingUid
-        isDeviceAdTrackingEnabled
         createdAt
+        updatedAt
       }
     }
   }
