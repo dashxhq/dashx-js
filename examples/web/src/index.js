@@ -11,6 +11,7 @@ const dx = DashX({
   targetInstallation: "clay-5TBlv8"
 });
 
+
 dx.identify({
   firstName: 'John',
   lastName: 'Doe',
@@ -18,10 +19,11 @@ dx.identify({
   phone: '+1-234-567-8910'
 }).then(console.log);
 
-dx.searchContent('page', { returnType: 'all', limit: 10 })
-  .then(console.log);
+dx.searchContent('page', { returnType: 'all', limit: 10 }).then(console.log);
 
+dx.setIdentity('7b5e1db0-da6f-4a29-ab2e-d3d4f7284e24')
 dx.fetchContent('page/new').then(console.log);
+dx.fetchCart().then(console.log)
 dx.fetchStoredPreferences("0111c6f9-e8c8-492e-aa94-678b76bd3dc5").then((res) => {
   dx.saveStoredPreferences("0111c6f9-e8c8-492e-aa94-678b76bd3dc5", res).then(console.log)
 })

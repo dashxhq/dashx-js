@@ -28,6 +28,8 @@ class Client {
 
   targetEnvironment?: string
 
+  identityToken?: string
+
   context: Context
 
   publicKey: string
@@ -61,7 +63,8 @@ class Client {
         'Content-Type': 'application/json',
         'X-Public-Key': this.publicKey,
         ...(this.targetInstallation ? { 'X-Target-Installation': this.targetInstallation } : {}),
-        ...(this.targetEnvironment ? { 'X-Target-Environment': this.targetEnvironment } : {})
+        ...(this.targetEnvironment ? { 'X-Target-Environment': this.targetEnvironment } : {}),
+        ...(this.identityToken ? { 'X-Identity-Token': this.identityToken } : {})
       },
       body: JSON.stringify({
         query: request,
@@ -95,6 +98,14 @@ class Client {
 
     return this.makeHttpRequest(identifyAccountRequest, params)
       .then((res) => res?.identifyAccount)
+  }
+
+  setIdentity(uid: string): void {
+    this.accountUid = uid
+  }
+
+  setIdentityToken(token: string): void {
+    this.identityToken = token
   }
 
   reset(): void {
