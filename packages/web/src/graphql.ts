@@ -140,3 +140,33 @@ export const saveStoredPreferencesRequest = `
     }
   }
 `
+
+export const saveContactsRequest = `
+  mutation SaveContacts($input: SaveContactsInput!) {
+    saveContacts(input: $input) {
+      contacts {
+        id
+        accountId
+        environmentId
+        isAccountAnonymous
+        name
+        kind
+        value
+        unverifiedValue
+        verifiedAt
+        verificationDigest
+        verificationExpiresAt
+        status
+        userAgent
+        osName
+        osVersion
+        deviceModel
+        deviceManufacturer
+        deviceUid
+        deviceAdvertisingUid
+        isDeviceAdTrackingEnabled
+        createdAt
+      }
+    }
+  }
+`

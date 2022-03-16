@@ -1,7 +1,7 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
-import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest, fetchStoredPreferencesRequest, saveStoredPreferencesRequest } from './graphql'
+import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest, fetchStoredPreferencesRequest, saveStoredPreferencesRequest, saveContactsRequest } from './graphql'
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
@@ -18,6 +18,12 @@ type ClientParams = {
 }
 
 type IdentifyParams = Record<string, any>
+
+type ContactStubInputType = {
+  kind: 'EMAIL' | 'PHONE' | 'IOS' | 'ANDROID' | 'WEB' | 'WHATSAPP',
+  value: string,
+  tag: string
+}
 
 class Client {
   accountAnonymousUid: string | null = null
@@ -260,6 +266,16 @@ class Client {
 
     const response = await this.makeHttpRequest(saveStoredPreferencesRequest, params)
     return response?.saveStoredPreferences
+  }
+
+  async saveContacts(accountId: string, contacts: ContactStubInputType[]): Promise<any> {
+    const params = {
+      accountId,
+      contacts
+    }
+
+    const response = await this.makeHttpRequest(saveContactsRequest, params)
+    return response?.saveContacts
   }
 }
 
