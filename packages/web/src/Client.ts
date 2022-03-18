@@ -100,11 +100,8 @@ class Client {
       .then((res) => res?.identifyAccount)
   }
 
-  setIdentity(uid: string): void {
+  setIdentity(uid: string, token?: string): void {
     this.accountUid = uid
-  }
-
-  setIdentityToken(token: string): void {
     this.identityToken = token
   }
 
