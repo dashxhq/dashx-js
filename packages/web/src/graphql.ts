@@ -140,3 +140,22 @@ export const saveStoredPreferencesRequest = `
     }
   }
 `
+
+export const saveContactsRequest = `
+  mutation SaveContacts($input: SaveContactsInput!) {
+    saveContacts(input: $input) {
+      contacts {
+        id
+        accountId
+        name
+        kind
+        value
+        unverifiedValue
+        verifiedAt
+        status
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`
