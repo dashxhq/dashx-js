@@ -276,9 +276,9 @@ class Client {
     return response?.saveStoredPreferences
   }
 
-  async saveContacts(accountId: string, contacts: ContactStubInputType[]): Promise<any> {
+  async saveContacts(uid: string, contacts: ContactStubInputType[]): Promise<any> {
     const params = {
-      accountId,
+      uid,
       contacts
     }
 
