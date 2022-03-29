@@ -159,3 +159,22 @@ export const saveContactsRequest = `
     }
   }
 `
+
+export const fetchContactsRequest = `
+  query FetchContacts($input: FetchContactsInput!) {
+    fetchContacts(input: $input) {
+      contacts {
+        id
+        accountId
+        name
+        kind
+        value
+        unverifiedValue
+        verifiedAt
+        status
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`
