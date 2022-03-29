@@ -184,4 +184,5 @@ yarn build
 
 ```sh
 yarn publish
+git push origin master
 ```
