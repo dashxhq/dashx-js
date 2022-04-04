@@ -120,7 +120,7 @@ const cart = `
 `
 
 export const fetchCartRequest = `
-  mutation FetchCart($input: FetchCartInput!) {
+  query FetchCart($input: FetchCartInput!) {
     fetchCart(input: $input) {
       ${cart}
     }
