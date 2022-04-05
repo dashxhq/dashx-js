@@ -237,8 +237,9 @@ class Client {
     return response?.removeCouponFromCart
   }
 
-  async fetchCart(): Promise<any> {
+  async fetchCart(options: { orderId?: string }): Promise<any> {
     const params = {
+      ...options,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }
@@ -247,8 +248,9 @@ class Client {
     return response?.fetchCart
   }
 
-  async transferCart(): Promise<any> {
+  async transferCart(options: { orderId?: string }): Promise<any> {
     const params = {
+      ...options,
       accountUid: this.accountUid,
       accountAnonymousUid: this.accountAnonymousUid
     }

@@ -56,31 +56,35 @@ export const createDeliveryRequest = `
   }
 `
 
+const item = `
+  id
+  installationId
+  name
+  identifier
+  description
+  createdAt
+  updatedAt
+
+  pricings {
+    id
+    kind
+    amount
+    originalAmount
+    isRecurring
+    recurringInterval
+    recurringIntervalUnit
+    appleProductIdentifier
+    googleProductIdentifier
+    currencyCode
+    createdAt
+    updatedAt
+  }
+`
+
 export const fetchItemRequest = `
   query FetchItem($input: FetchItemInput) {
     fetchItem(input: $input) {
-        id
-        installationId
-        name
-        identifier
-        description
-        createdAt
-        updatedAt
-
-        pricings {
-            id
-            kind
-            amount
-            originalAmount
-            isRecurring
-            recurringInterval
-            recurringIntervalUnit
-            appleProductIdentifier
-            googleProductIdentifier
-            currencyCode
-            createdAt
-            updatedAt
-        }
+      ${item}
     }
   }
 `
@@ -96,26 +100,38 @@ const cart = `
   currencyCode
 
   orderItems {
-      id
-      quantity
-      unitPrice
-      subtotal
-      discount
-      tax
-      total
-      custom
-      currencyCode
+    id
+    quantity
+    unitPrice
+    subtotal
+    discount
+    tax
+    total
+    custom
+    currencyCode
+
+    item {
+      ${item}
+    }
   }
 
   couponRedemptions {
-      coupon {
-          name
-          identifier
-          discountType
-          discountAmount
-          currencyCode
-          expiresAt
-      }
+    coupon {
+      name
+      identifier
+      discountType
+      discountAmount
+      currencyCode
+      expiresAt
+    }
+  }
+`
+
+export const fetchCartRequest = `
+  query FetchCart($input: FetchCartInput!) {
+    fetchCart(input: $input) {
+      ${cart}
+    }
   }
 `
 

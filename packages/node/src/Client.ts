@@ -4,7 +4,7 @@ import uuid from 'uuid-random'
 import type { Response } from 'got'
 
 import ContentOptionsBuilder from './ContentOptionsBuilder'
-import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest, capturePaymentRequest } from './graphql'
+import { createDeliveryRequest, identifyAccountRequest, trackEventRequest, addContentRequest, editContentRequest, fetchContentRequest, searchContentRequest, fetchItemRequest, checkoutCartRequest, capturePaymentRequest, fetchCartRequest } from './graphql'
 import { parseFilterObject } from './utils'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
@@ -14,14 +14,22 @@ type GenerateIdentityTokenOptions = {
   kind?: string
 }
 
+type FetchCartParams = {
+  uid?: string,
+  anonymousUid?: string,
+  orderId?: string
+}
+
 type CheckoutCartParams = {
-  anonymousUid: string,
-  gateway: string,
-  gatewayOptions: Record<string, any>
+  uid: string,
+  anonymousUid?: string,
+  gateway?: string,
+  gatewayOptions?: Record<string, any>
 }
 
 type CapturePaymentParams = {
-  anonymousUid: string,
+  uid: string,
+  anonymousUid?: string,
   gatewayResponse: Record<string, any>
 }
 
@@ -224,10 +232,20 @@ class Client {
     return response?.fetchItem
   }
 
-  async checkoutCart(
-    uid: string,
-    { anonymousUid, gateway, gatewayOptions } : CheckoutCartParams
-  ): Promise<any> {
+  async fetchCart({ uid, anonymousUid, orderId }: FetchCartParams): Promise<any> {
+    const params = {
+      accountUid: uid,
+      accountAnonymousUid: anonymousUid,
+      orderId
+    }
+
+    const response = await this.makeHttpRequest(fetchCartRequest, params)
+    return response?.fetchCart
+  }
+
+  async checkoutCart({
+    uid, anonymousUid, gateway, gatewayOptions
+  }: CheckoutCartParams): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
@@ -239,10 +257,9 @@ class Client {
     return response?.checkoutCart
   }
 
-  async capturePayment(
-    uid: string,
-    { anonymousUid, gatewayResponse } : CapturePaymentParams
-  ): Promise<any> {
+  async capturePayment({
+    uid, anonymousUid, gatewayResponse
+  }: CapturePaymentParams): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
