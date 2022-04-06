@@ -24,7 +24,8 @@ type CheckoutCartParams = {
   uid: string,
   anonymousUid?: string,
   gateway?: string,
-  gatewayOptions?: Record<string, any>
+  gatewayOptions?: Record<string, any>,
+  orderId?: string
 }
 
 type CapturePaymentParams = {
@@ -244,13 +245,14 @@ class Client {
   }
 
   async checkoutCart({
-    uid, anonymousUid, gateway, gatewayOptions
+    uid, anonymousUid, gateway, gatewayOptions, orderId
   }: CheckoutCartParams): Promise<any> {
     const params = {
       accountUid: uid,
       accountAnonymousUid: anonymousUid,
       gatewayIdentifier: gateway,
-      gatewayOptions
+      gatewayOptions,
+      orderId
     }
 
     const response = await this.makeHttpRequest(checkoutCartRequest, params)
