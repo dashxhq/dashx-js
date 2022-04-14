@@ -141,6 +141,25 @@ export const saveStoredPreferencesRequest = `
   }
 `
 
+export const fetchContactsRequest = `
+  query FetchContacts($input: FetchContactsInput!) {
+    fetchContacts(input: $input) {
+      contacts {
+        id
+        accountId
+        name
+        kind
+        value
+        unverifiedValue
+        verifiedAt
+        status
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`
+
 export const saveContactsRequest = `
   mutation SaveContacts($input: SaveContactsInput!) {
     saveContacts(input: $input) {

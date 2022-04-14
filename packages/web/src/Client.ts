@@ -1,7 +1,7 @@
 import fetch from 'unfetch'
 import uuid from 'uuid-random'
 
-import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest, fetchStoredPreferencesRequest, saveStoredPreferencesRequest, saveContactsRequest } from './graphql'
+import { addContentRequest, editContentRequest, fetchContentRequest, identifyAccountRequest, searchContentRequest, trackEventRequest, addItemToCartRequest, applyCouponToCartRequest, removeCouponFromCartRequest, fetchCartRequest, transferCartRequest, fetchStoredPreferencesRequest, saveStoredPreferencesRequest, fetchContactsRequest, saveContactsRequest } from './graphql'
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
@@ -276,6 +276,13 @@ class Client {
 
     const response = await this.makeHttpRequest(saveStoredPreferencesRequest, params)
     return response?.saveStoredPreferences
+  }
+
+  async fetchContacts(uid: string): Promise<any> {
+    const params = { uid }
+
+    const response = await this.makeHttpRequest(fetchContactsRequest, params)
+    return response?.fetchContacts.contacts
   }
 
   async saveContacts(uid: string, contacts: ContactStubInputType[]): Promise<any> {
