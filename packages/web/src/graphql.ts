@@ -153,6 +153,7 @@ export const fetchContactsRequest = `
         unverifiedValue
         verifiedAt
         status
+        tag
         createdAt
         updatedAt
       }
@@ -172,6 +173,7 @@ export const saveContactsRequest = `
         unverifiedValue
         verifiedAt
         status
+        tag
         createdAt
         updatedAt
       }
