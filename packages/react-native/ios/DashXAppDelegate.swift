@@ -50,11 +50,9 @@ class DashXAppDelegate: NSObject {
         let notificationContent = UNMutableNotificationContent()
         notificationContent.title = "TITLE"
         notificationContent.body = "Test body"
-        notificationContent.badge = NSNumber(value: 3)
+        notificationContent.sound = UNNotificationSound.default
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
-                                                      repeats: false)
-        let request = UNNotificationRequest(identifier: "testNotification", content: notificationContent, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "testNotification", content: notificationContent, trigger: nil)
         let notificationCenter = UNUserNotificationCenter.current()
 
         notificationCenter.add(request)
@@ -64,8 +62,9 @@ class DashXAppDelegate: NSObject {
 
     @objc
     func handleLocalNotification(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("local notification \(response)")
+        DashXLog.d(tag: #function, "Received Local Notification: \(response)")
 
         UIApplication.shared.applicationIconBadgeNumber = 0
+        completionHandler()
     }
 }
