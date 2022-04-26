@@ -4,10 +4,30 @@ import Foundation
 class DashXAppDelegate: NSObject {
     static func swizzleDidReceiveRemoteNotification() {
         let appDelegate = UIApplication.shared.delegate
-        let appDelegateClass = object_getClass(appDelegate)
+        let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
         let originalSelector = #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
         let swizzledSelector = #selector(DashXAppDelegate.self.handleMessage(_:didReceiveRemoteNotification:fetchCompletionHandler:))
+
+        guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
+            return
+        }
+
+        if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
+            // exchange implementation
+            method_exchangeImplementations(originalMethod, swizzledMethod)
+        } else {
+            // add implementation
+            class_addMethod(appDelegateClass, swizzledSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+        }
+    }
+
+    static func swizzleDidClickLocalNotification() {
+        let appDelegate = UNUserNotificationCenter.self
+        let appDelegateClass: AnyClass? = object_getClass(appDelegate)
+
+        let originalSelector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))
+        let swizzledSelector = #selector(DashXAppDelegate.self.handleLocalNotification(_:didReceive:withCompletionHandler:))
 
         guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
             return
@@ -27,12 +47,25 @@ class DashXAppDelegate: NSObject {
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
-        guard let remoteMessage = try? FirebaseRemoteMessage(decoding: userInfo) else {
-            DashXLog.d(tag: #function, "Non firebase notification received: \(userInfo)")
-            return
-        }
+        let notificationContent = UNMutableNotificationContent()
+        notificationContent.title = "TITLE"
+        notificationContent.body = "Test body"
+        notificationContent.badge = NSNumber(value: 3)
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1,
+                                                      repeats: false)
+        let request = UNNotificationRequest(identifier: "testNotification", content: notificationContent, trigger: trigger)
+        let notificationCenter = UNUserNotificationCenter.current()
+
+        notificationCenter.add(request)
 
         completionHandler(.newData)
-        DashXEventEmitter.instance.dispatch(name: "messageReceived", body: userInfo)
+    }
+
+    @objc
+    func handleLocalNotification(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("local notification \(response)")
+
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
 }
