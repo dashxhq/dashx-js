@@ -26,16 +26,13 @@ class DashXAppDelegate: NSObject {
         let appDelegate = UNUserNotificationCenter.current().delegate
         let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
-        print("before selectors")
         let originalSelector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))
         let swizzledSelector = #selector(DashXAppDelegate.self.handleLocalNotification(_:didReceive:withCompletionHandler:))
 
-        print("swizzled before guard")
         guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
             return
         }
 
-        print("swizzled after guard")
         if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
             // exchange implementation
             method_exchangeImplementations(originalMethod, swizzledMethod)
