@@ -2,7 +2,7 @@ import Foundation
 
 @objc(DashXAppDelegate)
 class DashXAppDelegate: NSObject {
-    static func swizzleDidReceiveRemoteNotification() {
+    static func swizzleDidReceiveRemoteNotificationFetchCompletionHandler() {
         let appDelegate = UIApplication.shared.delegate
         let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
@@ -22,17 +22,20 @@ class DashXAppDelegate: NSObject {
         }
     }
 
-    static func swizzleDidClickLocalNotification() {
-        let appDelegate = UNUserNotificationCenter.self
+    static func swizzleDidReceiveWithCompletionHandler() {
+        let appDelegate = UNUserNotificationCenter.current().delegate
         let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
+        print("before selectors")
         let originalSelector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))
         let swizzledSelector = #selector(DashXAppDelegate.self.handleLocalNotification(_:didReceive:withCompletionHandler:))
 
+        print("swizzled before guard")
         guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
             return
         }
 
+        print("swizzled after guard")
         if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
             // exchange implementation
             method_exchangeImplementations(originalMethod, swizzledMethod)
@@ -47,12 +50,33 @@ class DashXAppDelegate: NSObject {
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
+
         let notificationContent = UNMutableNotificationContent()
-        notificationContent.title = "TITLE"
-        notificationContent.body = "Test body"
+        notificationContent.title = "Title goes here"
+        notificationContent.body = "Body goes here"
         notificationContent.sound = UNNotificationSound.default
 
-        let request = UNNotificationRequest(identifier: "testNotification", content: notificationContent, trigger: nil)
+        var identifier = "dashxNotification"
+
+        if let dashx = userInfo["dashx"] as? String {
+            let maybeDashxDictionary = dashx.convertToDictionary()
+
+            if let parsedDashxDictionary = maybeDashxDictionary {
+                if let parsedIdentifier = parsedDashxDictionary["identifier"] as? String {
+                    identifier = parsedIdentifier
+                }
+
+                if let parsedTitle = parsedDashxDictionary["title"] as? String {
+                    notificationContent.title = parsedTitle
+                }
+
+                if let parsedBody = parsedDashxDictionary["body"] as? String {
+                    notificationContent.body = parsedBody
+                }
+            }
+        }
+
+        let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
         let notificationCenter = UNUserNotificationCenter.current()
 
         notificationCenter.add(request)
