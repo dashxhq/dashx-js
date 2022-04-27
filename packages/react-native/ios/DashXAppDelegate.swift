@@ -50,7 +50,6 @@ class DashXAppDelegate: NSObject {
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
-
         let notificationContent = UNMutableNotificationContent()
         notificationContent.title = "Title goes here"
         notificationContent.body = "Body goes here"
@@ -62,7 +61,7 @@ class DashXAppDelegate: NSObject {
             let maybeDashxDictionary = dashx.convertToDictionary()
 
             if let parsedDashxDictionary = maybeDashxDictionary {
-                if let parsedIdentifier = parsedDashxDictionary["identifier"] as? String {
+                if let parsedIdentifier = parsedDashxDictionary["id"] as? String {
                     identifier = parsedIdentifier
                 }
 
