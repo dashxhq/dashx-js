@@ -42,19 +42,22 @@ class DashXMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        val gson = Gson()
         val dashxDataMap = remoteMessage.getData()["dashx"]
-        var dashxData = gson.fromJson(dashxDataMap, DashXPayload::class.java)
 
-        val id = dashxData.id
-        val title = dashxData.title
-        val body = dashxData.body
+        if (dashxDataMap != null) {
+            val gson = Gson()
+            var dashxData = gson.fromJson(dashxDataMap, DashXPayload::class.java)
 
-        if ((title != null) || (body != null)) {
-            createNotificationChannel()
+            val id = dashxData.id
+            val title = dashxData.title
+            val body = dashxData.body
 
-            NotificationManagerCompat.from(this)
-                .notify(id, 1, createNotification(id, title, body))
+            if ((title != null) || (body != null)) {
+                createNotificationChannel()
+
+                NotificationManagerCompat.from(this)
+                    .notify(id, 1, createNotification(id, title, body))
+            }
         }
 
         DashXClientInterceptor.instance.handleMessage(remoteMessage)
