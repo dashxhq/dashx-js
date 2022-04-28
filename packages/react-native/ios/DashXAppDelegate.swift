@@ -2,9 +2,9 @@ import Foundation
 
 @objc(DashXAppDelegate)
 class DashXAppDelegate: NSObject {
-    static func swizzleDidReceiveRemoteNotification() {
+    static func swizzleDidReceiveRemoteNotificationFetchCompletionHandler() {
         let appDelegate = UIApplication.shared.delegate
-        let appDelegateClass = object_getClass(appDelegate)
+        let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
         let originalSelector = #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
         let swizzledSelector = #selector(DashXAppDelegate.self.handleMessage(_:didReceiveRemoteNotification:fetchCompletionHandler:))
@@ -27,12 +27,43 @@ class DashXAppDelegate: NSObject {
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
-        guard let remoteMessage = try? FirebaseRemoteMessage(decoding: userInfo) else {
-            DashXLog.d(tag: #function, "Non firebase notification received: \(userInfo)")
+        let state = UIApplication.shared.applicationState
+        // Do Nothing when app is in foreground
+        if state == .active {
+            completionHandler(.noData)
             return
         }
 
+        if let dashx = userInfo["dashx"] as? String {
+            let maybeDashxDictionary = dashx.convertToDictionary()
+
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.sound = UNNotificationSound.default
+
+            if let parsedDashxDictionary = maybeDashxDictionary {
+                guard let identifier = parsedDashxDictionary["id"] as? String else {
+                    completionHandler(.newData)
+                    // Do not handle non-DashX notifications
+                    return
+                }
+
+                if let parsedTitle = parsedDashxDictionary["title"] as? String {
+                    notificationContent.title = parsedTitle
+                }
+
+                if let parsedBody = parsedDashxDictionary["body"] as? String {
+                    notificationContent.body = parsedBody
+                }
+
+                let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
+                let notificationCenter = UNUserNotificationCenter.current()
+                notificationCenter.add(request)
+
+                let data = ["data": userInfo]
+                DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
+            }
+        }
+
         completionHandler(.newData)
-        DashXEventEmitter.instance.dispatch(name: "messageReceived", body: userInfo)
     }
 }
