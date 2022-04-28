@@ -28,25 +28,15 @@ class DashXAppDelegate: NSObject {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
         let state = UIApplication.shared.applicationState
-        if state == .active {
-            completionHandler(.noData)
-            return
-        }
 
         if let dashx = userInfo["dashx"] as? String {
             let maybeDashxDictionary = dashx.convertToDictionary()
 
             let notificationContent = UNMutableNotificationContent()
-            notificationContent.title = "Title goes here"
-            notificationContent.body = "Body goes here"
             notificationContent.sound = UNNotificationSound.default
 
-            var identifier = "dashxNotification"
-
             if let parsedDashxDictionary = maybeDashxDictionary {
-                if let parsedIdentifier = parsedDashxDictionary["id"] as? String {
-                    identifier = parsedIdentifier
-                } else {
+                guard let identifier = parsedDashxDictionary["id"] as? String else {
                     completionHandler(.newData)
                     // Do not handle non-DashX notifications
                     return
@@ -59,14 +49,17 @@ class DashXAppDelegate: NSObject {
                 if let parsedBody = parsedDashxDictionary["body"] as? String {
                     notificationContent.body = parsedBody
                 }
+
+                let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
+                let notificationCenter = UNUserNotificationCenter.current()
+                notificationCenter.add(request)
+
+                // Call onMessageReceived only when the app is in background
+                if state == .background {
+                    let data = ["data": userInfo]
+                    DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
+                }
             }
-
-            let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
-            let notificationCenter = UNUserNotificationCenter.current()
-
-            notificationCenter.add(request)
-            let data = ["data": userInfo]
-            DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
         }
 
         completionHandler(.newData)
