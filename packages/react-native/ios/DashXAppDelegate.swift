@@ -47,19 +47,23 @@ class DashXAppDelegate: NSObject {
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
-        let notificationContent = UNMutableNotificationContent()
-        notificationContent.title = "Title goes here"
-        notificationContent.body = "Body goes here"
-        notificationContent.sound = UNNotificationSound.default
-
-        var identifier = "dashxNotification"
-
         if let dashx = userInfo["dashx"] as? String {
             let maybeDashxDictionary = dashx.convertToDictionary()
+
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.title = "Title goes here"
+            notificationContent.body = "Body goes here"
+            notificationContent.sound = UNNotificationSound.default
+
+            var identifier = "dashxNotification"
 
             if let parsedDashxDictionary = maybeDashxDictionary {
                 if let parsedIdentifier = parsedDashxDictionary["id"] as? String {
                     identifier = parsedIdentifier
+                } else {
+                    completionHandler(.noData)
+                    // Do not handle non-DashX notifications
+                    return
                 }
 
                 if let parsedTitle = parsedDashxDictionary["title"] as? String {
@@ -70,12 +74,14 @@ class DashXAppDelegate: NSObject {
                     notificationContent.body = parsedBody
                 }
             }
+
+            let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
+            let notificationCenter = UNUserNotificationCenter.current()
+
+            notificationCenter.add(request)
+            let data = ["data": userInfo]
+            DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
         }
-
-        let request = UNNotificationRequest(identifier: identifier, content: notificationContent, trigger: nil)
-        let notificationCenter = UNUserNotificationCenter.current()
-
-        notificationCenter.add(request)
 
         completionHandler(.newData)
     }
