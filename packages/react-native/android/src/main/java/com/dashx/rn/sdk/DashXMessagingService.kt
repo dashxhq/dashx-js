@@ -1,6 +1,7 @@
 package com.dashx.rn.sdk
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -41,6 +42,10 @@ class DashXMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+
+        if (appInForeground()) {
+            return
+        }
 
         val dashxDataMap = remoteMessage.getData()["dashx"]
 
@@ -154,6 +159,13 @@ class DashXMessagingService : FirebaseMessagingService() {
         }
 
         return smallIconInt
+    }
+
+    fun appInForeground(): Boolean {
+        val context = getApplicationContext()
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningAppProcesses = activityManager.runningAppProcesses ?: return false
+        return runningAppProcesses.any { it.processName == context.packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
     }
 
     companion object {
