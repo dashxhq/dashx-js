@@ -24,7 +24,6 @@ class DashX: RCTEventEmitter {
         ConfigInterceptor.shared.publicKey = options?.value(forKey: "publicKey") as? String
 
         DashXAppDelegate.swizzleDidReceiveRemoteNotificationFetchCompletionHandler()
-        DashXAppDelegate.swizzleDidReceiveWithCompletionHandler()
 
         if let baseUri = options?.value(forKey: "baseUri") {
             Network.shared.setBaseUri(to: baseUri as! String)

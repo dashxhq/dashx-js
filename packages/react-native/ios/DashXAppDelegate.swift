@@ -22,30 +22,16 @@ class DashXAppDelegate: NSObject {
         }
     }
 
-    static func swizzleDidReceiveWithCompletionHandler() {
-        let appDelegate = UNUserNotificationCenter.current().delegate
-        let appDelegateClass: AnyClass? = object_getClass(appDelegate)
-
-        let originalSelector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))
-        let swizzledSelector = #selector(DashXAppDelegate.self.handleLocalNotification(_:didReceive:withCompletionHandler:))
-
-        guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
-            return
-        }
-
-        if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
-            // exchange implementation
-            method_exchangeImplementations(originalMethod, swizzledMethod)
-        } else {
-            // add implementation
-            class_addMethod(appDelegateClass, swizzledSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
-        }
-    }
-
     // Based on - https://firebase.google.com/docs/cloud-messaging/ios/receive
     @objc
     func handleMessage(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
+
+        let state = UIApplication.shared.applicationState
+        if state == .active {
+            completionHandler(.noData)
+            return
+        }
 
         if let dashx = userInfo["dashx"] as? String {
             let maybeDashxDictionary = dashx.convertToDictionary()
@@ -61,7 +47,7 @@ class DashXAppDelegate: NSObject {
                 if let parsedIdentifier = parsedDashxDictionary["id"] as? String {
                     identifier = parsedIdentifier
                 } else {
-                    completionHandler(.noData)
+                    completionHandler(.newData)
                     // Do not handle non-DashX notifications
                     return
                 }
@@ -84,13 +70,5 @@ class DashXAppDelegate: NSObject {
         }
 
         completionHandler(.newData)
-    }
-
-    @objc
-    func handleLocalNotification(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        DashXLog.d(tag: #function, "Received Local Notification: \(response)")
-
-        UIApplication.shared.applicationIconBadgeNumber = 0
-        completionHandler()
     }
 }
