@@ -28,6 +28,11 @@ class DashXAppDelegate: NSObject {
         DashXLog.d(tag: #function, "Received APN: \(userInfo)")
 
         let state = UIApplication.shared.applicationState
+        // Do Nothing when app is in foreground
+        if state == .active {
+            completionHandler(.noData)
+            return
+        }
 
         if let dashx = userInfo["dashx"] as? String {
             let maybeDashxDictionary = dashx.convertToDictionary()
@@ -54,11 +59,8 @@ class DashXAppDelegate: NSObject {
                 let notificationCenter = UNUserNotificationCenter.current()
                 notificationCenter.add(request)
 
-                // Call onMessageReceived only when the app is in background
-                if state == .background {
-                    let data = ["data": userInfo]
-                    DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
-                }
+                let data = ["data": userInfo]
+                DashXEventEmitter.instance.dispatch(name: "messageReceived", body: data)
             }
         }
 
