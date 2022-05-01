@@ -23,8 +23,5 @@ Pod::Spec.new do |s|
 
   s.dependency "React"
   s.dependency "Apollo"
-  s.dependency "FirebaseInstanceID"
-  s.dependency "Firebase/Messaging"
-  # ...
-  # s.dependency "..."
+  s.dependency "FirebaseMessaging"
 end
