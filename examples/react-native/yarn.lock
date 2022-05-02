@@ -1250,7 +1250,7 @@
     minimist "^1.2.0"
 
 "@dashx/react-native@../../packages/react-native/":
-  version "0.1.13"
+  version "0.1.20"
 
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
