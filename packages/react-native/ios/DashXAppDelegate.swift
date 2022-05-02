@@ -3,22 +3,26 @@ import Foundation
 @objc(DashXAppDelegate)
 class DashXAppDelegate: NSObject {
     static func swizzleDidReceiveRemoteNotificationFetchCompletionHandler() {
-        let appDelegate = UIApplication.shared.delegate
-        let appDelegateClass: AnyClass? = object_getClass(appDelegate)
+        // To remove the warning -[UIApplication delegate] must be called from main thread only
+        // and to call the UI controlling method from the main thread, use `DispatchQueue.main.async`
+        DispatchQueue.main.async {
+            let appDelegate = UIApplication.shared.delegate
+            let appDelegateClass: AnyClass? = object_getClass(appDelegate)
 
-        let originalSelector = #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
-        let swizzledSelector = #selector(DashXAppDelegate.self.handleMessage(_:didReceiveRemoteNotification:fetchCompletionHandler:))
+            let originalSelector = #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
+            let swizzledSelector = #selector(DashXAppDelegate.self.handleMessage(_:didReceiveRemoteNotification:fetchCompletionHandler:))
 
-        guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
-            return
-        }
+            guard let swizzledMethod = class_getInstanceMethod(DashXAppDelegate.self, swizzledSelector) else {
+                return
+            }
 
-        if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
-            // exchange implementation
-            method_exchangeImplementations(originalMethod, swizzledMethod)
-        } else {
-            // add implementation
-            class_addMethod(appDelegateClass, swizzledSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+            if let originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector)  {
+                // exchange implementation
+                method_exchangeImplementations(originalMethod, swizzledMethod)
+            } else {
+                // add implementation
+                class_addMethod(appDelegateClass, swizzledSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+            }
         }
     }
 

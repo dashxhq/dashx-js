@@ -49,15 +49,19 @@ apply plugin: 'com.google.gms.google-services'
 
 ### Setup for iOS
 
-- At the top of the file `/ios/{projectName}/AppDelegate.m` import Firebase:
+- At the top of the file `/ios/{projectName}/AppDelegate.m` before [#if defined(FB_SONARKIT_ENABLED)](https://github.com/react-native-camera/react-native-camera/issues/3008#issuecomment-726432198), import Firebase:
 
 ```objective-c
-#import <Firebase.h>
+#import <FirebaseCore/FirebaseCore.h>
+#import <FirebaseMessaging/FirebaseMessaging.h>
 ```
 
 - In the same file, inside your `didFinishLaunchingWithOptions` add this:
 
 ```objective-c
+// Register for remote notifications. This shows a permission dialog on first run, to
+// show the dialog at a more appropriate time move this registration accordingly.
+// [START register_for_notifications]
 [UNUserNotificationCenter currentNotificationCenter].delegate = self;
 UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
     UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
@@ -67,18 +71,23 @@ UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
     }];
 
 [application registerForRemoteNotifications];
+// [END register_for_notifications]
 
+// [START configure_firebase]
 if ([FIRApp defaultApp] == nil) {
   [FIRApp configure];
 }
+// [END configure_firebase]
 
+// [START set_messaging_delegate]
 [FIRMessaging messaging].delegate = self;
+// [END set_messaging_delegate]
 ```
 
 - In your `Podfile` add this:
 
 ```ruby
-pod 'FirebaseInstanceID', :modular_headers => true
+pod 'FirebaseMessaging', :modular_headers => true
 ```
 
 - Add your iOS app on Firebase Console: `Project Overview > Add App > iOS`

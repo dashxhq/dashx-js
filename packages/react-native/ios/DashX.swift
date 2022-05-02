@@ -1,5 +1,5 @@
 import Foundation
-import FirebaseInstanceID
+import FirebaseMessaging
 
 @objc(DashX)
 class DashX: RCTEventEmitter {
@@ -45,12 +45,13 @@ class DashX: RCTEventEmitter {
             UIViewController.swizzle()
         }
 
-        InstanceID.instanceID().instanceID { (result, error) in
+        // Based on https://firebase.google.com/docs/cloud-messaging/ios/client#access_the_registration_token
+        Messaging.messaging().token { token, error in
             if let error = error {
-                DashXLog.d(tag: #function, "Error fetching remote instance ID: \(error)")
-            } else if let result = result {
-                DashXLog.d(tag: #function, "Firebase initialised with: \(result.token)")
-                self.dashXClient.setDeviceToken(to: result.token)
+                DashXLog.d(tag: #function, "Error fetching FCM registration token: \(error)")
+            } else if let token = token {
+                DashXLog.d(tag: #function, "Firebase initialised with: \(token)")
+                self.dashXClient.setDeviceToken(to: token)
             }
         }
     }
@@ -145,5 +146,4 @@ class DashX: RCTEventEmitter {
     func subscribe() {
         dashXClient.subscribe()
     }
-
 }
