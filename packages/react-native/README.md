@@ -56,8 +56,6 @@ apply plugin: 'com.google.gms.google-services'
 #import <FirebaseMessaging/FirebaseMessaging.h>
 ```
 
-NOTE:
-
 - In the same file, inside your `didFinishLaunchingWithOptions` add this:
 
 ```objective-c
