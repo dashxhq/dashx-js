@@ -21,9 +21,6 @@ def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
-
 buildscript {
   ext.kotlin_version = '1.5.20'
   ext.apollo_version = '2.5.3'
@@ -52,8 +49,8 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'maven'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.apollographql.apollo'
 
 android {
@@ -90,7 +87,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.dashxhq:dashx-android:main-SNAPSHOT'
+  implementation 'com.github.dashxhq.dashx-android:app:537657701e'
     //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'   // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
