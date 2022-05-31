@@ -5,7 +5,7 @@ import { addContentRequest, editContentRequest, fetchContentRequest, identifyAcc
 import generateContext from './context'
 import ContentOptionsBuilder from './ContentOptionsBuilder'
 import { getItem, setItem } from './storage'
-import { parseFilterObject } from './utils'
+import { parseFilterObject, urlBase64ToUint8Array } from './utils'
 import type { Context } from './context'
 import type { ContentOptions, FetchContentOptions } from './ContentOptionsBuilder'
 
@@ -293,6 +293,31 @@ class Client {
 
     const response = await this.makeHttpRequest(saveContactsRequest, params)
     return response?.saveContacts
+  }
+
+  async registerPushNotification(serviceWorker: string): Promise<PushSubscription> {
+    if (!("Notification" in window)) {
+      throw new Error("This browser does not support desktop notification");
+    }
+
+    if (Notification.permission !== "granted") {
+      await Notification.requestPermission();
+    }
+
+    const registration = await  navigator.serviceWorker.register(serviceWorker)
+
+    const subscribeOptions = {
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(
+        'BJthRQ5myDgc7OSXzPCMftGw-n16F7zQBEN7EUD6XxcfTTvrLGWSIG7y_JxiWtVlCFua0S8MTB5rPziBqNx1qIo', // TODO change public vapid key with dashx server key
+      ),
+    };
+
+    const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+
+    // TODO: store pushSubscription in DB
+
+    return pushSubscription
   }
 }
 

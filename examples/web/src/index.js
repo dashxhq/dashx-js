@@ -29,6 +29,7 @@ dx.fetchStoredPreferences("0111c6f9-e8c8-492e-aa94-678b76bd3dc5").then((res) => 
 })
 dx.saveContacts("6ca763ab-4f21-4c97-bbdd-9b1223762846", [{kind: 'PHONE',tag: '', value:'+91 9876543210'}]).then(console.log).catch(console.log)
 
+dx.registerPushNotification('/sw.js').then(console.log).catch(console.log)
 
 ReactDOM.render(
   <React.StrictMode>
