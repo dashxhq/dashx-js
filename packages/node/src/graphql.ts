@@ -1,7 +1,7 @@
 export const trackEventRequest = `
   mutation TrackEvent($input: TrackEventInput!) {
     trackEvent(input: $input) {
-        id
+        success
     }
   }
 `
