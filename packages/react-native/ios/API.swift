@@ -126,6 +126,7 @@ public enum DashXGql {
 
   public enum OrderStatus: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
     public typealias RawValue = String
+    case draft
     case initial
     case checkedOut
     case paid
@@ -135,6 +136,7 @@ public enum DashXGql {
 
     public init?(rawValue: RawValue) {
       switch rawValue {
+        case "DRAFT": self = .draft
         case "INITIAL": self = .initial
         case "CHECKED_OUT": self = .checkedOut
         case "PAID": self = .paid
@@ -145,6 +147,7 @@ public enum DashXGql {
 
     public var rawValue: RawValue {
       switch self {
+        case .draft: return "DRAFT"
         case .initial: return "INITIAL"
         case .checkedOut: return "CHECKED_OUT"
         case .paid: return "PAID"
@@ -155,6 +158,7 @@ public enum DashXGql {
 
     public static func == (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
       switch (lhs, rhs) {
+        case (.draft, .draft): return true
         case (.initial, .initial): return true
         case (.checkedOut, .checkedOut): return true
         case (.paid, .paid): return true
@@ -166,6 +170,7 @@ public enum DashXGql {
 
     public static var allCases: [OrderStatus] {
       return [
+        .draft,
         .initial,
         .checkedOut,
         .paid,
@@ -259,8 +264,9 @@ public enum DashXGql {
     /// - Parameters:
     ///   - accountUid
     ///   - accountAnonymousUid
-    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil) {
-      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid]
+    ///   - orderId
+    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, orderId: Swift.Optional<UUID?> = nil) {
+      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "orderId": orderId]
     }
 
     public var accountUid: Swift.Optional<String?> {
@@ -280,12 +286,22 @@ public enum DashXGql {
         graphQLMap.updateValue(newValue, forKey: "accountAnonymousUid")
       }
     }
+
+    public var orderId: Swift.Optional<UUID?> {
+      get {
+        return graphQLMap["orderId"] as? Swift.Optional<UUID?> ?? Swift.Optional<UUID?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "orderId")
+      }
+    }
   }
 
   public struct FetchContentInput: GraphQLMapConvertible {
     public var graphQLMap: GraphQLMap
 
     /// - Parameters:
+    ///   - contentId
     ///   - contentType
     ///   - content
     ///   - preview
@@ -293,22 +309,31 @@ public enum DashXGql {
     ///   - fields
     ///   - include
     ///   - exclude
-    public init(contentType: String, content: String, preview: Swift.Optional<Bool?> = nil, language: Swift.Optional<String?> = nil, fields: Swift.Optional<[String]?> = nil, include: Swift.Optional<[String]?> = nil, exclude: Swift.Optional<[String]?> = nil) {
-      graphQLMap = ["contentType": contentType, "content": content, "preview": preview, "language": language, "fields": fields, "include": include, "exclude": exclude]
+    public init(contentId: Swift.Optional<UUID?> = nil, contentType: Swift.Optional<String?> = nil, content: Swift.Optional<String?> = nil, preview: Swift.Optional<Bool?> = nil, language: Swift.Optional<String?> = nil, fields: Swift.Optional<[String]?> = nil, include: Swift.Optional<[String]?> = nil, exclude: Swift.Optional<[String]?> = nil) {
+      graphQLMap = ["contentId": contentId, "contentType": contentType, "content": content, "preview": preview, "language": language, "fields": fields, "include": include, "exclude": exclude]
     }
 
-    public var contentType: String {
+    public var contentId: Swift.Optional<UUID?> {
       get {
-        return graphQLMap["contentType"] as! String
+        return graphQLMap["contentId"] as? Swift.Optional<UUID?> ?? Swift.Optional<UUID?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "contentId")
+      }
+    }
+
+    public var contentType: Swift.Optional<String?> {
+      get {
+        return graphQLMap["contentType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
       }
       set {
         graphQLMap.updateValue(newValue, forKey: "contentType")
       }
     }
 
-    public var content: String {
+    public var content: Swift.Optional<String?> {
       get {
-        return graphQLMap["content"] as! String
+        return graphQLMap["content"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
       }
       set {
         graphQLMap.updateValue(newValue, forKey: "content")
@@ -372,8 +397,9 @@ public enum DashXGql {
     ///   - name
     ///   - firstName
     ///   - lastName
-    public init(uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
-      graphQLMap = ["uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName]
+    ///   - scope
+    public init(uid: Swift.Optional<String?> = nil, anonymousUid: Swift.Optional<String?> = nil, email: Swift.Optional<String?> = nil, phone: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil, scope: Swift.Optional<String?> = nil) {
+      graphQLMap = ["uid": uid, "anonymousUid": anonymousUid, "email": email, "phone": phone, "name": name, "firstName": firstName, "lastName": lastName, "scope": scope]
     }
 
     public var uid: Swift.Optional<String?> {
@@ -436,6 +462,15 @@ public enum DashXGql {
       }
       set {
         graphQLMap.updateValue(newValue, forKey: "lastName")
+      }
+    }
+
+    public var scope: Swift.Optional<String?> {
+      get {
+        return graphQLMap["scope"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "scope")
       }
     }
   }
@@ -566,8 +601,9 @@ public enum DashXGql {
     ///   - deviceUid
     ///   - deviceAdvertisingUid
     ///   - isDeviceAdTrackingEnabled
-    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String, userAgent: Swift.Optional<String?> = nil, osName: Swift.Optional<String?> = nil, osVersion: Swift.Optional<String?> = nil, deviceModel: Swift.Optional<String?> = nil, deviceManufacturer: Swift.Optional<String?> = nil, deviceUid: Swift.Optional<String?> = nil, deviceAdvertisingUid: Swift.Optional<String?> = nil, isDeviceAdTrackingEnabled: Swift.Optional<Bool?> = nil) {
-      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "name": name, "kind": kind, "value": value, "userAgent": userAgent, "osName": osName, "osVersion": osVersion, "deviceModel": deviceModel, "deviceManufacturer": deviceManufacturer, "deviceUid": deviceUid, "deviceAdvertisingUid": deviceAdvertisingUid, "isDeviceAdTrackingEnabled": isDeviceAdTrackingEnabled]
+    ///   - tag
+    public init(accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, name: Swift.Optional<String?> = nil, kind: ContactKind, value: String, userAgent: Swift.Optional<String?> = nil, osName: Swift.Optional<String?> = nil, osVersion: Swift.Optional<String?> = nil, deviceModel: Swift.Optional<String?> = nil, deviceManufacturer: Swift.Optional<String?> = nil, deviceUid: Swift.Optional<String?> = nil, deviceAdvertisingUid: Swift.Optional<String?> = nil, isDeviceAdTrackingEnabled: Swift.Optional<Bool?> = nil, tag: Swift.Optional<String?> = nil) {
+      graphQLMap = ["accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "name": name, "kind": kind, "value": value, "userAgent": userAgent, "osName": osName, "osVersion": osVersion, "deviceModel": deviceModel, "deviceManufacturer": deviceManufacturer, "deviceUid": deviceUid, "deviceAdvertisingUid": deviceAdvertisingUid, "isDeviceAdTrackingEnabled": isDeviceAdTrackingEnabled, "tag": tag]
     }
 
     public var accountUid: Swift.Optional<String?> {
@@ -686,6 +722,15 @@ public enum DashXGql {
         graphQLMap.updateValue(newValue, forKey: "isDeviceAdTrackingEnabled")
       }
     }
+
+    public var tag: Swift.Optional<String?> {
+      get {
+        return graphQLMap["tag"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "tag")
+      }
+    }
   }
 
   public enum ContactKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -695,6 +740,7 @@ public enum DashXGql {
     case ios
     case android
     case web
+    case whatsapp
     /// Auto generated constant for unknown enum values
     case __unknown(RawValue)
 
@@ -705,6 +751,7 @@ public enum DashXGql {
         case "IOS": self = .ios
         case "ANDROID": self = .android
         case "WEB": self = .web
+        case "WHATSAPP": self = .whatsapp
         default: self = .__unknown(rawValue)
       }
     }
@@ -716,6 +763,7 @@ public enum DashXGql {
         case .ios: return "IOS"
         case .android: return "ANDROID"
         case .web: return "WEB"
+        case .whatsapp: return "WHATSAPP"
         case .__unknown(let value): return value
       }
     }
@@ -727,6 +775,7 @@ public enum DashXGql {
         case (.ios, .ios): return true
         case (.android, .android): return true
         case (.web, .web): return true
+        case (.whatsapp, .whatsapp): return true
         case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
         default: return false
       }
@@ -739,6 +788,7 @@ public enum DashXGql {
         .ios,
         .android,
         .web,
+        .whatsapp,
       ]
     }
   }
@@ -751,8 +801,9 @@ public enum DashXGql {
     ///   - accountUid
     ///   - accountAnonymousUid
     ///   - data
-    public init(event: String, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, data: Swift.Optional<JSON?> = nil) {
-      graphQLMap = ["event": event, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "data": data]
+    ///   - timestamp
+    public init(event: String, accountUid: Swift.Optional<String?> = nil, accountAnonymousUid: Swift.Optional<String?> = nil, data: Swift.Optional<JSON?> = nil, timestamp: Swift.Optional<DateTime?> = nil) {
+      graphQLMap = ["event": event, "accountUid": accountUid, "accountAnonymousUid": accountAnonymousUid, "data": data, "timestamp": timestamp]
     }
 
     public var event: String {
@@ -788,6 +839,15 @@ public enum DashXGql {
       }
       set {
         graphQLMap.updateValue(newValue, forKey: "data")
+      }
+    }
+
+    public var timestamp: Swift.Optional<DateTime?> {
+      get {
+        return graphQLMap["timestamp"] as? Swift.Optional<DateTime?> ?? Swift.Optional<DateTime?>.none
+      }
+      set {
+        graphQLMap.updateValue(newValue, forKey: "timestamp")
       }
     }
   }
@@ -848,7 +908,7 @@ public enum DashXGql {
       }
 
       public struct AddContent: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["Content"]
+        public static let possibleTypes: [String] = ["CustomContent"]
 
         public static var selections: [GraphQLSelection] {
           return [
@@ -856,7 +916,7 @@ public enum DashXGql {
             GraphQLField("id", type: .nonNull(.scalar(UUID.self))),
             GraphQLField("position", type: .nonNull(.scalar(Int.self))),
             GraphQLField("identifier", type: .nonNull(.scalar(String.self))),
-            GraphQLField("data", type: .nonNull(.scalar(Json.self))),
+            GraphQLField("data", type: .nonNull(.scalar(JSON.self))),
           ]
         }
 
@@ -866,8 +926,8 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID, position: Int, identifier: String, data: Json) {
-          self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "identifier": identifier, "data": data])
+        public init(id: UUID, position: Int, identifier: String, data: JSON) {
+          self.init(unsafeResultMap: ["__typename": "CustomContent", "id": id, "position": position, "identifier": identifier, "data": data])
         }
 
         public var __typename: String {
@@ -906,9 +966,9 @@ public enum DashXGql {
           }
         }
 
-        public var data: Json {
+        public var data: JSON {
           get {
-            return resultMap["data"]! as! Json
+            return resultMap["data"]! as! JSON
           }
           set {
             resultMap.updateValue(newValue, forKey: "data")
@@ -1013,7 +1073,7 @@ public enum DashXGql {
             GraphQLField("discount", type: .nonNull(.scalar(Decimal.self))),
             GraphQLField("tax", type: .nonNull(.scalar(Decimal.self))),
             GraphQLField("total", type: .nonNull(.scalar(Decimal.self))),
-            GraphQLField("gatewayMeta", type: .scalar(Json.self)),
+            GraphQLField("gatewayMeta", type: .scalar(JSON.self)),
             GraphQLField("currencyCode", type: .nonNull(.scalar(String.self))),
             GraphQLField("orderItems", type: .nonNull(.list(.nonNull(.object(OrderItem.selections))))),
             GraphQLField("couponRedemptions", type: .nonNull(.list(.nonNull(.object(CouponRedemption.selections))))),
@@ -1026,7 +1086,7 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID, status: OrderStatus, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, gatewayMeta: Json? = nil, currencyCode: String, orderItems: [OrderItem], couponRedemptions: [CouponRedemption]) {
+        public init(id: UUID, status: OrderStatus, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, gatewayMeta: JSON? = nil, currencyCode: String, orderItems: [OrderItem], couponRedemptions: [CouponRedemption]) {
           self.init(unsafeResultMap: ["__typename": "Order", "id": id, "status": status, "subtotal": subtotal, "discount": discount, "tax": tax, "total": total, "gatewayMeta": gatewayMeta, "currencyCode": currencyCode, "orderItems": orderItems.map { (value: OrderItem) -> ResultMap in value.resultMap }, "couponRedemptions": couponRedemptions.map { (value: CouponRedemption) -> ResultMap in value.resultMap }])
         }
 
@@ -1093,9 +1153,9 @@ public enum DashXGql {
           }
         }
 
-        public var gatewayMeta: Json? {
+        public var gatewayMeta: JSON? {
           get {
-            return resultMap["gatewayMeta"] as? Json
+            return resultMap["gatewayMeta"] as? JSON
           }
           set {
             resultMap.updateValue(newValue, forKey: "gatewayMeta")
@@ -1142,7 +1202,7 @@ public enum DashXGql {
               GraphQLField("discount", type: .nonNull(.scalar(Decimal.self))),
               GraphQLField("tax", type: .nonNull(.scalar(Decimal.self))),
               GraphQLField("total", type: .nonNull(.scalar(Decimal.self))),
-              GraphQLField("custom", type: .nonNull(.scalar(Json.self))),
+              GraphQLField("custom", type: .nonNull(.scalar(JSON.self))),
               GraphQLField("currencyCode", type: .nonNull(.scalar(String.self))),
             ]
           }
@@ -1153,7 +1213,7 @@ public enum DashXGql {
             self.resultMap = unsafeResultMap
           }
 
-          public init(id: UUID, quantity: Decimal, unitPrice: Decimal, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, custom: Json, currencyCode: String) {
+          public init(id: UUID, quantity: Decimal, unitPrice: Decimal, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, custom: JSON, currencyCode: String) {
             self.init(unsafeResultMap: ["__typename": "OrderItem", "id": id, "quantity": quantity, "unitPrice": unitPrice, "subtotal": subtotal, "discount": discount, "tax": tax, "total": total, "custom": custom, "currencyCode": currencyCode])
           }
 
@@ -1229,9 +1289,9 @@ public enum DashXGql {
             }
           }
 
-          public var custom: Json {
+          public var custom: JSON {
             get {
-              return resultMap["custom"]! as! Json
+              return resultMap["custom"]! as! JSON
             }
             set {
               resultMap.updateValue(newValue, forKey: "custom")
@@ -1435,7 +1495,7 @@ public enum DashXGql {
       }
 
       public struct EditContent: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["Content"]
+        public static let possibleTypes: [String] = ["CustomContent"]
 
         public static var selections: [GraphQLSelection] {
           return [
@@ -1443,7 +1503,7 @@ public enum DashXGql {
             GraphQLField("id", type: .nonNull(.scalar(UUID.self))),
             GraphQLField("position", type: .nonNull(.scalar(Int.self))),
             GraphQLField("identifier", type: .nonNull(.scalar(String.self))),
-            GraphQLField("data", type: .nonNull(.scalar(Json.self))),
+            GraphQLField("data", type: .nonNull(.scalar(JSON.self))),
           ]
         }
 
@@ -1453,8 +1513,8 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID, position: Int, identifier: String, data: Json) {
-          self.init(unsafeResultMap: ["__typename": "Content", "id": id, "position": position, "identifier": identifier, "data": data])
+        public init(id: UUID, position: Int, identifier: String, data: JSON) {
+          self.init(unsafeResultMap: ["__typename": "CustomContent", "id": id, "position": position, "identifier": identifier, "data": data])
         }
 
         public var __typename: String {
@@ -1493,9 +1553,9 @@ public enum DashXGql {
           }
         }
 
-        public var data: Json {
+        public var data: JSON {
           get {
-            return resultMap["data"]! as! Json
+            return resultMap["data"]! as! JSON
           }
           set {
             resultMap.updateValue(newValue, forKey: "data")
@@ -1600,7 +1660,7 @@ public enum DashXGql {
             GraphQLField("discount", type: .nonNull(.scalar(Decimal.self))),
             GraphQLField("tax", type: .nonNull(.scalar(Decimal.self))),
             GraphQLField("total", type: .nonNull(.scalar(Decimal.self))),
-            GraphQLField("gatewayMeta", type: .scalar(Json.self)),
+            GraphQLField("gatewayMeta", type: .scalar(JSON.self)),
             GraphQLField("currencyCode", type: .nonNull(.scalar(String.self))),
             GraphQLField("orderItems", type: .nonNull(.list(.nonNull(.object(OrderItem.selections))))),
             GraphQLField("couponRedemptions", type: .nonNull(.list(.nonNull(.object(CouponRedemption.selections))))),
@@ -1613,7 +1673,7 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID, status: OrderStatus, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, gatewayMeta: Json? = nil, currencyCode: String, orderItems: [OrderItem], couponRedemptions: [CouponRedemption]) {
+        public init(id: UUID, status: OrderStatus, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, gatewayMeta: JSON? = nil, currencyCode: String, orderItems: [OrderItem], couponRedemptions: [CouponRedemption]) {
           self.init(unsafeResultMap: ["__typename": "Order", "id": id, "status": status, "subtotal": subtotal, "discount": discount, "tax": tax, "total": total, "gatewayMeta": gatewayMeta, "currencyCode": currencyCode, "orderItems": orderItems.map { (value: OrderItem) -> ResultMap in value.resultMap }, "couponRedemptions": couponRedemptions.map { (value: CouponRedemption) -> ResultMap in value.resultMap }])
         }
 
@@ -1680,9 +1740,9 @@ public enum DashXGql {
           }
         }
 
-        public var gatewayMeta: Json? {
+        public var gatewayMeta: JSON? {
           get {
-            return resultMap["gatewayMeta"] as? Json
+            return resultMap["gatewayMeta"] as? JSON
           }
           set {
             resultMap.updateValue(newValue, forKey: "gatewayMeta")
@@ -1729,7 +1789,7 @@ public enum DashXGql {
               GraphQLField("discount", type: .nonNull(.scalar(Decimal.self))),
               GraphQLField("tax", type: .nonNull(.scalar(Decimal.self))),
               GraphQLField("total", type: .nonNull(.scalar(Decimal.self))),
-              GraphQLField("custom", type: .nonNull(.scalar(Json.self))),
+              GraphQLField("custom", type: .nonNull(.scalar(JSON.self))),
               GraphQLField("currencyCode", type: .nonNull(.scalar(String.self))),
             ]
           }
@@ -1740,7 +1800,7 @@ public enum DashXGql {
             self.resultMap = unsafeResultMap
           }
 
-          public init(id: UUID, quantity: Decimal, unitPrice: Decimal, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, custom: Json, currencyCode: String) {
+          public init(id: UUID, quantity: Decimal, unitPrice: Decimal, subtotal: Decimal, discount: Decimal, tax: Decimal, total: Decimal, custom: JSON, currencyCode: String) {
             self.init(unsafeResultMap: ["__typename": "OrderItem", "id": id, "quantity": quantity, "unitPrice": unitPrice, "subtotal": subtotal, "discount": discount, "tax": tax, "total": total, "custom": custom, "currencyCode": currencyCode])
           }
 
@@ -1816,9 +1876,9 @@ public enum DashXGql {
             }
           }
 
-          public var custom: Json {
+          public var custom: JSON {
             get {
-              return resultMap["custom"]! as! Json
+              return resultMap["custom"]! as! JSON
             }
             set {
               resultMap.updateValue(newValue, forKey: "custom")
@@ -1992,7 +2052,7 @@ public enum DashXGql {
 
       public static var selections: [GraphQLSelection] {
         return [
-          GraphQLField("fetchContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Json.self))),
+          GraphQLField("fetchContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(JSON.self))),
         ]
       }
 
@@ -2002,13 +2062,13 @@ public enum DashXGql {
         self.resultMap = unsafeResultMap
       }
 
-      public init(fetchContent: Json) {
+      public init(fetchContent: JSON) {
         self.init(unsafeResultMap: ["__typename": "Query", "fetchContent": fetchContent])
       }
 
-      public var fetchContent: Json {
+      public var fetchContent: JSON {
         get {
-          return resultMap["fetchContent"]! as! Json
+          return resultMap["fetchContent"]! as! JSON
         }
         set {
           resultMap.updateValue(newValue, forKey: "fetchContent")
@@ -2136,7 +2196,7 @@ public enum DashXGql {
 
       public static var selections: [GraphQLSelection] {
         return [
-          GraphQLField("searchContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.list(.nonNull(.scalar(Json.self))))),
+          GraphQLField("searchContent", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.list(.nonNull(.scalar(JSON.self))))),
         ]
       }
 
@@ -2146,13 +2206,13 @@ public enum DashXGql {
         self.resultMap = unsafeResultMap
       }
 
-      public init(searchContent: [Json]) {
+      public init(searchContent: [JSON]) {
         self.init(unsafeResultMap: ["__typename": "Query", "searchContent": searchContent])
       }
 
-      public var searchContent: [Json] {
+      public var searchContent: [JSON] {
         get {
-          return resultMap["searchContent"]! as! [Json]
+          return resultMap["searchContent"]! as! [JSON]
         }
         set {
           resultMap.updateValue(newValue, forKey: "searchContent")
@@ -2272,7 +2332,7 @@ public enum DashXGql {
       mutation TrackEvent($input: TrackEventInput!) {
         trackEvent(input: $input) {
           __typename
-          id
+          success
         }
       }
       """
@@ -2318,12 +2378,12 @@ public enum DashXGql {
       }
 
       public struct TrackEvent: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["Event"]
+        public static let possibleTypes: [String] = ["TrackEventResponse"]
 
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("id", type: .nonNull(.scalar(UUID.self))),
+            GraphQLField("success", type: .nonNull(.scalar(Bool.self))),
           ]
         }
 
@@ -2333,8 +2393,8 @@ public enum DashXGql {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: UUID) {
-          self.init(unsafeResultMap: ["__typename": "Event", "id": id])
+        public init(success: Bool) {
+          self.init(unsafeResultMap: ["__typename": "TrackEventResponse", "success": success])
         }
 
         public var __typename: String {
@@ -2346,12 +2406,12 @@ public enum DashXGql {
           }
         }
 
-        public var id: UUID {
+        public var success: Bool {
           get {
-            return resultMap["id"]! as! UUID
+            return resultMap["success"]! as! Bool
           }
           set {
-            resultMap.updateValue(newValue, forKey: "id")
+            resultMap.updateValue(newValue, forKey: "success")
           }
         }
       }
